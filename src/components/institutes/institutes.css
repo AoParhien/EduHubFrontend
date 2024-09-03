@@ -1,0 +1,41 @@
+.eduhub__institutes{
+    display: flex;
+    flex-direction: column;
+    padding: 0 8rem;
+}
+
+.eduhub__institutes-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+
+    margin-right: 5rem;
+}
+
+.eduhub__institutes-content h1 {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 35px;
+    line-height: 83px;
+    letter-spacing: -0.04em;
+}
+.eduhub__institutes-tabbar{
+    padding: 1rem 0rem;
+}
+
+.eduhub__institutes-cards {
+    display: grid;
+    grid-template-columns: repeat(3, auto); /* Three columns with automatic width */
+    justify-content: center; /* Center the grid on the screen */
+    gap: 1rem; /* Space between cards */
+    padding: 0.5rem 0;
+}
+
+/* Optional media query to handle smaller screens */
+@media screen and (max-width: 768px) {
+    .eduhub__institutes-cards {
+        grid-template-columns: repeat(2, auto); /* Switch to two columns on smaller screens */
+    }
+}

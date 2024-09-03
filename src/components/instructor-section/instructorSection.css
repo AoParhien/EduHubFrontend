@@ -1,0 +1,44 @@
+.eduhub__instructor-section {
+    display: flex;
+    flex-direction: row;
+}
+
+.eduhub__instructor-section-content{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: -1rem;
+}
+
+.eduhub__instructor-section-content h1{
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 83px;
+    letter-spacing: -0.04em;
+}
+
+.eduhub__instructor-section-content p {
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 18px;
+    color: black;
+    padding-left: 0.1rem;
+}
+
+.eduhub__instructor-section-instructors {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping to the next line */
+    gap: 1rem; /* Space between cards */
+    justify-content: space-between; /* Distributes space between cards */
+    margin-left: 1rem;
+}
+
+.eduhub__instructor-section-instructors > * {
+    flex: 1 1 calc(33.333% - 1rem); /* 3 cards per line, minus gap */
+    box-sizing: border-box; /* Ensures padding and borders are included in width */
+    max-width: calc(33.333% - 1rem); /* Ensures cards don't exceed the desired width */
+}

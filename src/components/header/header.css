@@ -1,0 +1,174 @@
+.eduhub__header {
+    display: flex;
+    flex-direction: row;
+}
+
+.eduhub__header-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+
+    margin-right: 5rem;
+}
+
+.eduhub__header-content h1 {
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 80px;
+    line-height: 83px;
+    letter-spacing: -0.04em;
+}
+
+.eduhub__header-content p {
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 18px;
+    color: var(--color-text);
+
+    margin-top: 1.5rem;
+}
+
+.eduhub__header-content__input {
+    width: 100%;
+    margin: 2rem 0 1rem 1rem;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10rem;
+}
+
+.eduhub__header-register-button{
+    width: 25%;
+    height: 40px;
+    /* flex: 0.6; */
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 26px;
+    color: white;
+    background-color: #3329A8;
+    cursor: pointer;
+    outline: none;
+    border-color: transparent;
+    border-radius: 39px;
+    margin-right: 2rem;
+}
+
+.eduhub__header-learn-more-button{
+    width: 25%;
+    height: 40px;
+    /* flex: 0.6; */
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 26px;
+    color: black;
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+    border-color: black;
+    border-width: 1px;
+    border-radius: 39px;
+}
+
+
+.eduhub__header-content__people {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+
+    margin-top: 2rem;
+}
+
+.eduhub__header-content__people img {
+    width: 181.79px;
+    height: 38px;
+}
+
+.eduhub__header-content__people p {
+    margin: 0 0 0 1rem;
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 38px;
+    color: #fff;
+    text-align: center;
+}
+
+.eduhub__header-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.eduhub__header-image img {
+    width: 100%;
+    height: 100%;
+}
+
+.highlighted-text {
+    color: #9E5CF2;
+}
+
+
+@media screen and (max-width: 1050px) {
+    .eduhub__header {
+        flex-direction: column;
+    }
+
+    .eduhub__header-content {
+        margin: 0 0 3rem;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .eduhub__header-content h1 {
+        font-size: 48px;
+        line-height: 60px;
+    }
+
+    .eduhub__header-content p {
+        font-size: 16px;
+        line-height: 24px;
+    }
+    
+    .eduhub__header-content__people {
+        flex-direction: column;
+    }
+
+    .eduhub__header-content__people p {
+        margin: 0;
+    }
+
+    .eduhub__header-content__input input,
+    .eduhub__header-content__input button {
+        font-size: 16px;
+        line-height: 24px;
+    }
+}
+
+@media screen and (max-width: 490px) {
+    .eduhub__header-content h1 {
+        font-size: 36px;
+        line-height: 48px;
+    }
+
+    .eduhub__header-content p {
+        font-size: 14px;
+        line-height: 24px;
+    }
+
+    .eduhub__header-content__input{
+        font-size: 12px;
+        line-height: 16px;
+    }
+    .eduhub__header-learn-more-button{
+        width: auto;
+        padding: 0 1rem;
+    }
+}
