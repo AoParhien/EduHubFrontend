@@ -1,0 +1,28 @@
+.eduhub__course-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+.eduhub__course-section-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.eduhub__course-section-content h1{
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 35px;
+    line-height: 83px;
+    letter-spacing: -0.04em;
+}
+
+.eduhub__course-cards {
+    display: flex;
+    gap: 1rem; /* Space between cards */
+    flex-wrap: wrap; /* Allows cards to wrap to the next line if needed */
+    justify-content: center; /* Center cards horizontally */
+    padding: 4rem 0;
+}

@@ -1,0 +1,53 @@
+.tabbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(151, 151, 153, 0.23);
+    padding: 6px;
+    border-radius: 8px;
+    position: relative; /* Ensure correct positioning of scroll buttons */
+    width: 100%;
+}
+
+.tabbar-scroll {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+    -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
+    color: #1E1769;
+    font-size: 17px;
+    white-space: nowrap; /* Prevent wrapping */
+    flex: 1;
+}
+
+.tabbar-scroll::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+}
+
+.tabbar-tab {
+    background-color: #fff;
+    border: none;
+    padding: 0.3rem 1.8rem;
+    margin: 0 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.tabbar-tab.selected {
+    font-weight: bold;
+    border: 2px solid #1E1769; /* Add border to the selected button */
+}
+
+.tabbar-button {
+    margin: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #1E1769;
+    font-size: 24px; /* Adjust size for better visibility */
+}
+
+.tabbar-button:disabled {
+    color: #ccc; /* Style for disabled state if needed */
+}
