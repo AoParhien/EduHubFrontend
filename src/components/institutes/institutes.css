@@ -1,41 +1,76 @@
-.eduhub__institutes{
+.eduhub__institutes {
     display: flex;
     flex-direction: column;
-    padding: 0 8rem;
+    padding: 2rem 8rem;
+    background-color: #f9f9f9;
+    min-height: 100vh;
 }
 
-.eduhub__institutes-content {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    flex-direction: column;
-
-    margin-right: 5rem;
+.eduhub__institutes-header {
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
-.eduhub__institutes-content h1 {
-    font-family: var(--font-family);
-    font-weight: 500;
-    font-size: 35px;
-    line-height: 83px;
-    letter-spacing: -0.04em;
+.eduhub__institutes-header h1 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: #333;
 }
-.eduhub__institutes-tabbar{
-    padding: 1rem 0rem;
+
+.eduhub__institutes-header p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    color: #555;
+    margin-top: 0.5rem;
+}
+
+.eduhub__institutes-tabbar {
+    padding: 1rem 0;
+    margin-bottom: 2rem;
+    text-align: center;
 }
 
 .eduhub__institutes-cards {
     display: grid;
-    grid-template-columns: repeat(3, auto); /* Three columns with automatic width */
-    justify-content: center; /* Center the grid on the screen */
-    gap: 1rem; /* Space between cards */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
     padding: 0.5rem 0;
 }
 
-/* Optional media query to handle smaller screens */
-@media screen and (max-width: 768px) {
+.eduhub__institutes-cards > div {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.eduhub__institutes-cards > div:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Layout */
+@media (max-width: 1024px) {
+    .eduhub__institutes {
+        padding: 2rem;
+    }
+
+    .eduhub__institutes-header h1 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .eduhub__institutes {
+        padding: 1rem;
+    }
+
+    .eduhub__institutes-header h1 {
+        font-size: 1.8rem;
+    }
+    
     .eduhub__institutes-cards {
-        grid-template-columns: repeat(2, auto); /* Switch to two columns on smaller screens */
+        grid-template-columns: 1fr;
     }
 }

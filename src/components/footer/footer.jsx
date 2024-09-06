@@ -1,44 +1,36 @@
 import React from 'react';
-import gpt3Logo from '../../logo.svg';
+import eduhubLogo from '../../logo.svg';
 import './footer.css';
 
 const Footer = () => (
-    <div className="gpt3__footer section__padding">
-        {/* <div className="gpt3__footer-heading">
-            <h1 className="gradient__text">Do you want to step in to the future before others</h1>
-        </div>
-
-        <div className="gpt3__footer-btn">
-            <p>Request Early Access</p>
-        </div> */}
-
-        <div className="gpt3__footer-links">
-            <div className="gpt3__footer-links_div">
-                <h4>Links</h4>
-                <p>Overons</p>
-                <p>Social Media</p>
-                <p>Counters</p>
-                <p>Contact</p>
+    <div className="eduhub__footer section__padding">
+        <div className="eduhub__footer-links">
+            <div className="eduhub__footer-links_div">
+                <h4>Quick Links</h4>
+                <p>About Us</p>
+                <p>Blog</p>
+                <p>FAQs</p>
+                <p>Contact Us</p>
             </div>
-            <div className="gpt3__footer-links_div">
+            <div className="eduhub__footer-links_div">
                 <h4>Company</h4>
-                <p>Terms & Conditions </p>
+                <p>Terms & Conditions</p>
                 <p>Privacy Policy</p>
-                <p>Contact</p>
+                <p>Careers</p>
             </div>
-            <div className="gpt3__footer-links_div">
-                <h4>Get in touch</h4>
-                <p>Crechterwoord K12 182 DK Alknjkcb</p>
-                <p>085-132567</p>
-                <p>info@payme.net</p>
+            <div className="eduhub__footer-links_div">
+                <h4>Contact Us</h4>
+                <p>1234 Elm Street, Suite 567</p>
+                <p>+1 (234) 567-890</p>
+                <p>support@eduhub.com</p>
             </div>
-            <div className="gpt3__footer-links_logo">
-                <img src={gpt3Logo} alt="gpt3_logo" />
-                <p>Crechterwoord K12 182 DK Alknjkcb, <br /> All Rights Reserved</p>
+            <div className="eduhub__footer-links_logo">
+                <img src={eduhubLogo} alt="eduhub_logo" />
+                <p>1234 Elm Street, Suite 567, <br /> All Rights Reserved</p>
             </div>
         </div>
-        <div className="gpt3__footer-copyright">
-            <p>StartUp X, Inc. 2024</p>
+        <div className="eduhub__footer-copyright">
+            <p>&copy; {new Date().getFullYear()} EduHub. All rights reserved.</p>
         </div>
     </div>
 );

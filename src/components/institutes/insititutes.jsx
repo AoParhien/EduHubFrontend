@@ -1,41 +1,33 @@
-import { React, useState } from 'react'
-import './institutes.css'
+import React, { useState } from 'react';
+import './institutes.css';
 import TabBar from '../TabBar/TabBar';
 import InstituteCard from '../institute-card/instituteCard';
-// import { Flex, Button, IconButton } from '@chakra-ui/react';
-// import { ArrowLeftIcon, ArrowRightIcon } from '@chakra-ui/icons';
-// import { Card, CardBody, Image, Heading, Stack, Flex, Icon, Text, Box } from '@chakra-ui/react'
 
-
-const Insititutes = () => {
+const Institutes = () => {
     const tabs = ['O\'Levels', 'A\'Levels', 'Edexcel', 'Matric', 'Inter', 'ECAT', 'MCAT', 'BCOM'];
     const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
     const handleTabSelect = (tab) => {
         setSelectedTab(tab);
-        console.log(selectedTab)
+        console.log(selectedTab);
     };
 
     return (
         <div className='eduhub__institutes section__padding'>
-            <div className='eduhub__institutes-content'>
-                <h1>Insitutes On Board</h1>
+            <div className='eduhub__institutes-header'>
+                <h1>Institutes On Board</h1>
+                <p>Explore and find the best institutes for your preferred education track.</p>
             </div>
             <div className='eduhub__institutes-tabbar'>
-                <TabBar tabs={tabs} onSelect={handleTabSelect} />
+                <TabBar tabs={tabs} onSelect={handleTabSelect} selectedTab={selectedTab} />
             </div>
-            <div>
-                <div className='eduhub__institutes-cards'>
-                    <InstituteCard />
-                    <InstituteCard />
-                    <InstituteCard />
-                    <InstituteCard />
-                    <InstituteCard />
-                </div>
+            <div className='eduhub__institutes-cards'>
+                {[...Array(5)].map((_, index) => (
+                    <InstituteCard key={index} />
+                ))}
             </div>
-
         </div>
-    )
-}
+    );
+};
 
-export default Insititutes
+export default Institutes;
