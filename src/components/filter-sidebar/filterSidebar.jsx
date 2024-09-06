@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Text, Collapse, Button, Input, VStack } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 
-const institutes = ['Any', 'Harvard', 'MIT'];
-const subjects = ['Mathematics', 'Physics', 'Chemistry'];
 const locations = ['Saddar, Karachi', 'Gulshan, Karachi', 'DHA, Karachi'];
 const fontWeight = '500';
 const fontSize = '1.35vw'
@@ -13,14 +11,18 @@ const fontColor = "black"
 const boxWidth = '60%'
 
 const FilterSidebar = ({ onFilterChange }) => {
+
+    const [institutes, setInstitutes] = useState([{ "name": "Any" }])
+    const [subjects, setSubjects] = useState(['Any'])
+
     const [localFilters, setLocalFilters] = useState({
-        institute: '',
-        location: '',
-        fees: '',
-        // Add other filters as needed
+        institute: 'Any',
+        subject: 'Any',
+        location: 'Any',
+        fees: { min: 0, max: 15000 },
     });
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+
+    const handleChange = (name, value) => {
         const updatedFilters = { ...localFilters, [name]: value };
         setLocalFilters(updatedFilters);
         onFilterChange(updatedFilters); // Notify parent component of filter changes
@@ -29,30 +31,65 @@ const FilterSidebar = ({ onFilterChange }) => {
     const [isSubjectOpen, setSubjectOpen] = useState(false);
     const [isLocationOpen, setLocationOpen] = useState(false);
 
-    const [selectedInstitute, setSelectedInstitute] = useState('Any');
-    const [selectedSubject, setSelectedSubject] = useState('Any');
-    const [selectedLocation, setSelectedLocation] = useState('Any');
-    const [minFee, setMinFee] = useState(0);
-    const [maxFee, setMaxFee] = useState(15000);
-
     const handleCollapseSelect = (type, value) => {
+        handleChange(type, value); // Use handleChange to update state and notify parent
         switch (type) {
             case 'institute':
-                setSelectedInstitute(value);
                 setInstituteOpen(false);
                 break;
             case 'subject':
-                setSelectedSubject(value);
                 setSubjectOpen(false);
                 break;
             case 'location':
-                setSelectedLocation(value);
                 setLocationOpen(false);
                 break;
             default:
                 break;
         }
     };
+
+    const getSubjects = async () => {
+        try {
+            const response = await fetch('https://localhost:3001/api/courses/getSubjects', {
+                method: 'GET',
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json()
+            // Assuming `data` is the new array of subjects you want to append
+            setSubjects((prevSubjects) => [...prevSubjects, ...data]);
+        }
+        catch (error) {
+            console.error('Error fetching courses:', error);
+
+        }
+    }
+
+    const getInstitutes = async () => {
+        try {
+            const response = await fetch('https://localhost:3001/api/institutes/getInstituteNames', {
+                method: 'GET',
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json()
+            // Assuming `data` is the new array of subjects you want to append
+            setInstitutes((prevInstitutes) => [...prevInstitutes, ...data]);
+        }
+        catch (error) {
+            console.error('Error fetching courses:', error);
+
+        }
+    }
+
+    useEffect(() => {
+        getSubjects()
+        getInstitutes()
+    }, [])
 
     return (
         <Box padding="0">
@@ -80,17 +117,17 @@ const FilterSidebar = ({ onFilterChange }) => {
                             <Button
                                 key={institute}
                                 variant="ghost"
-                                onClick={() => handleCollapseSelect('institute', institute)}
-                                fontWeight={institute === selectedInstitute ? 'bold' : 'normal'}
+                                onClick={() => handleCollapseSelect('institute', institute.name)}
+                                fontWeight={institute.name === localFilters.institute ? 'bold' : 'normal'}
                             >
-                                {institute}
+                                {institute.name}
                             </Button>
                         ))}
                     </VStack>
                 </Collapse>
 
                 {!isInstituteOpen && (
-                    <Text mt='8px' fontSize={fontSizeSelection} color={fontColor} marginTop="0.5rem">{selectedInstitute}</Text>
+                    <Text mt='8px' fontSize={fontSizeSelection} color={fontColor} marginTop="0.5rem">{localFilters.institute}</Text>
                 )}
             </Box>
 
@@ -126,7 +163,7 @@ const FilterSidebar = ({ onFilterChange }) => {
                                 key={subject}
                                 variant="ghost"
                                 onClick={() => handleCollapseSelect('subject', subject)}
-                                fontWeight={subject === selectedSubject ? 'bold' : 'normal'}
+                                fontWeight={subject === localFilters.subject ? 'bold' : 'normal'}
                             >
                                 {subject}
                             </Button>
@@ -134,7 +171,7 @@ const FilterSidebar = ({ onFilterChange }) => {
                     </VStack>
                 </Collapse>
                 {!isSubjectOpen && (
-                    <Text mt='8px' fontSize={fontSizeSelection} color={fontColor}>{selectedSubject}</Text>
+                    <Text mt='8px' fontSize={fontSizeSelection} color={fontColor}>{localFilters.subject}</Text>
                 )}
             </Box>
 
@@ -163,7 +200,7 @@ const FilterSidebar = ({ onFilterChange }) => {
                                 key={location}
                                 variant="ghost"
                                 onClick={() => handleCollapseSelect('location', location)}
-                                fontWeight={location === selectedLocation ? 'bold' : 'normal'}
+                                fontWeight={location === localFilters.location ? 'bold' : 'normal'}
                             >
                                 {location}
                             </Button>
@@ -171,7 +208,7 @@ const FilterSidebar = ({ onFilterChange }) => {
                     </VStack>
                 </Collapse>
                 {!isLocationOpen && (
-                    <Text mt='8px' fontSize={fontSizeSelection} color={fontColor}>{selectedLocation}</Text>
+                    <Text mt='8px' fontSize={fontSizeSelection} color={fontColor}>{localFilters.location}</Text>
                 )}
             </Box>
 
@@ -182,14 +219,14 @@ const FilterSidebar = ({ onFilterChange }) => {
                     <Input
                         placeholder="Min"
                         type="number"
-                        value={minFee}
-                        onChange={(e) => setMinFee(e.target.value)}
+                        value={localFilters.fees.min}
+                        onChange={(e) => handleChange('fees', { ...localFilters.fees, min: e.target.value })}
                     />
                     <Input
                         placeholder="Max"
                         type="number"
-                        value={maxFee}
-                        onChange={(e) => setMaxFee(e.target.value)}
+                        value={localFilters.fees.max}
+                        onChange={(e) => handleChange('fees', { ...localFilters.fees, max: e.target.value })}
                         mb='1rem'
                     />
                 </Box>

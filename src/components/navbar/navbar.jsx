@@ -2,7 +2,7 @@ import { React, useState } from 'react';
 // import logo from '../../logo-eduhub.svg';
 import './navbar.css';
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
-
+import { Link } from 'react-router-dom';
 
 
 const Navbar = () => {
@@ -36,7 +36,8 @@ const Navbar = () => {
                 </div>
                 <div className="eduhub__navbar-left">
                     <div className="eduhub__navbar-links_logo">
-                        <h1>LOGO</h1>
+                        <Link to='/'><h1>LOGO</h1>
+                        </Link>
                     </div>
                     <div className="eduhub__search-container">
                         <div className='eduhub__search-icon-wrapper'>
@@ -54,10 +55,18 @@ const Navbar = () => {
                         <button className="eduhub__categories_button">Courses</button>
                         {showCategories && (
                             <div className="eduhub__categories_dropdown">
-                                <p>Olevels</p>
-                                <p>Alevels</p>
-                                <p>Matric</p>
-                                <p>Intermediate</p>
+                                <Link to="/courses/Olevels">
+                                    <p>Olevels</p>
+                                </Link>
+                                <Link to="/courses/Alevels">
+                                    <p>Alevels</p>
+                                </Link>
+                                <Link to="/courses/Matric">
+                                    <p>Matric</p>
+                                </Link>
+                                <Link to="/courses/Intermediate">
+                                    <p>Intermediate</p>
+                                </Link>
                             </div>
                         )}
                     </div>
