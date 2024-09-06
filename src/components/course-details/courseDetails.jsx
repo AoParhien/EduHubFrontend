@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Heading, Stack, Flex, Icon, Button, Divider } from '@chakra-ui/react';
+import { Box, Text, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Heading, Stack, Flex, Icon, Button, Divider, useBreakpointValue } from '@chakra-ui/react';
 import { BsCreditCard2Back, BsArrowRight } from 'react-icons/bs';
 import { FaUser, FaClock } from 'react-icons/fa';
 import { Tabs, TabList, Tab } from "@chakra-ui/react";
@@ -9,70 +9,63 @@ import Schedule from '../schedule/schedule';
 import OSMMap from '../map/map';
 import FeeTable from '../fee-table/FeeTable';
 import CourseCarousel from '../course-carousal/CourseCarousel';
-// import MapComponent from '../map/hereMap';
-// import MapboxMap from '../map/mapBox';
-// import HereMap from '../map/hereMap';
 
-
-const selectedFontWeight = 650
+const selectedFontWeight = 650;
 const courses = [
     { id: 1, title: 'Course 1' },
     { id: 2, title: 'Course 2' },
     { id: 3, title: 'Course 3' },
-    { id: 4, title: 'Course 3' },
-    { id: 5, title: 'Course 3' },
-    { id: 6, title: 'Course 3' },
-
     // Add more courses here
 ];
+
 const CourseDetails = () => {
+    const isMobile = useBreakpointValue({ base: true, md: false });
+
     return (
-        <div className='section__padding'>
-            <Box maxW="7xl" mx="auto" p={5} backgroundColor="purple.100">
-                {/* Breadcrumb */}
-                <Breadcrumb fontSize="sm" color="black" separator=">" fontWeight="500">
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="#">Home</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="#">Courses</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbItem isCurrentPage>
-                        <BreadcrumbLink href="#">O'Levels Mathematics By Ahmad Saya</BreadcrumbLink>
-                    </BreadcrumbItem>
-                </Breadcrumb>
+        <Box className='section__padding' maxW="7xl" mx="auto" p={5} bg="white" boxShadow="md" borderRadius="lg">
+            {/* Breadcrumb */}
+            <Breadcrumb fontSize="sm" color="gray.500" separator=">">
+                <BreadcrumbItem>
+                    <BreadcrumbLink href="#">Home</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbItem>
+                    <BreadcrumbLink href="#">Courses</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbItem isCurrentPage>
+                    <BreadcrumbLink href="#">O'Levels Mathematics By Ahmad Saya</BreadcrumbLink>
+                </BreadcrumbItem>
+            </Breadcrumb>
 
-                <Flex>
-                    <Stack>
-                        {/* Course Title Section */}
-                        <Stack spacing={3} mt={5}>
-                            <Text color="black.500" fontWeight="bold" textDecoration="underline">ASTC</Text>
-                            <Heading size="xl">O'Levels Mathematics By Ahmad Saya</Heading>
-                            <Box mt={3}>
-                                <Text fontSize="lg" fontWeight="bold">Course Details:</Text>
-                                <Stack pl={4} mt={2} spacing={1} fontSize="md" color="gray.700">
-                                    <Text>• Instructor: Ahmad Saya</Text>
-                                    <Text>• Board: O Levels</Text>
-                                    <Text>• Duration: [Specify duration, e.g., 3 months]</Text>
-                                    <Text>• Class Format: [In-person/Online/Hybrid]</Text>
-                                </Stack>
-                            </Box>
+            <Flex flexDirection={{ base: 'column', md: 'row' }} mt={5}>
+                <Stack flex="1" spacing={5}>
+                    {/* Course Title Section */}
+                    <Heading color="purple.700" size="lg">O'Levels Mathematics By Ahmad Saya</Heading>
+                    <Box>
+                        <Text fontSize="lg" fontWeight="bold">Course Details:</Text>
+                        <Stack pl={4} mt={2} spacing={1} fontSize="md" color="gray.700">
+                            <Text>• Instructor: Ahmad Saya</Text>
+                            <Text>• Board: O Levels</Text>
+                            <Text>• Duration: 9 months</Text>
+                            <Text>• Class Format: Hybrid</Text>
                         </Stack>
+                    </Box>
 
-                        {/* Icon Section */}
-                        <Flex mt={5} align="center" color="gray.600" fontSize={15} flexWrap="wrap">
-                            <Flex align="center" mr={5}>
-                                <Icon as={FaUser} boxSize={4} mr={1} />
-                                <Text>Instructor: Ahmad Saya</Text>
-                            </Flex>
-                            <Flex align="center" mr={5}>
-                                <Icon as={FaClock} boxSize={4} mr={1} />
-                                <Text>Duration: 9 months</Text>
-                            </Flex>
+                    {/* Icon Section */}
+                    <Flex color="gray.600" fontSize="md" gap={5}>
+                        <Flex align="center">
+                            <Icon as={FaUser} boxSize={4} mr={2} />
+                            <Text>Instructor: Ahmad Saya</Text>
                         </Flex>
-                    </Stack>
-                    {/* Fee Section */}
-                    <Flex ml="auto" mt="auto" justify="flex-end" >
+                        <Flex align="center">
+                            <Icon as={FaClock} boxSize={4} mr={2} />
+                            <Text>Duration: 9 months</Text>
+                        </Flex>
+                    </Flex>
+                </Stack>
+
+               
+         {/* Fee Section */}
+         <Flex ml="auto" mt="auto" justify="flex-end" >
                         <Box
                             border="1px"
                             borderColor="gray.300"
@@ -92,7 +85,7 @@ const CourseDetails = () => {
                             <Divider my={4} />
                             <Button
                                 color="white"
-                                background="#362AC1"
+                                background="purple.300"
                                 width="full"
                                 rightIcon={<Icon as={BsArrowRight} boxSize={6} strokeWidth={0.3} mt={0.97} />}
                             >
@@ -100,88 +93,89 @@ const CourseDetails = () => {
                             </Button>
                         </Box>
                     </Flex >
-                </Flex >
-            </Box >
+                    </Flex >
+
+
             {/* Tab Navigation */}
-            <Tabs variant="unstyled" mt={5} mb={5} >
-                <TabList justifyContent="left" bg="#362AC1" color="white" pl={10} py={5}>
-                    <Tab _selected={{ fontWeight: selectedFontWeight }}>
-                        <ScrollLink to="about" smooth={true} duration={500}>About</ScrollLink>
-                    </Tab>
-                    <Tab _selected={{ fontWeight: selectedFontWeight }}>
-                        <ScrollLink to="schedule" smooth={true} duration={500}>Schedule</ScrollLink>
-                    </Tab>
-                    <Tab _selected={{ fontWeight: selectedFontWeight }}>
-                        <ScrollLink to="location" smooth={true} duration={500}>Location</ScrollLink>
-                    </Tab>
-                    <Tab _selected={{ fontWeight: selectedFontWeight }}>
-                        <ScrollLink to="fees" smooth={true} duration={500}>Fees Structure</ScrollLink>
-                    </Tab>
-                    <Tab _selected={{ fontWeight: selectedFontWeight }}>
-                        <ScrollLink to="reviews" smooth={true} duration={500}>Reviews</ScrollLink>
-                    </Tab>
+            <Tabs variant="unstyled" mt={5}>
+                <TabList justifyContent="flex-start" bg="purple.600" pl={10} py={3}>
+                    {['About', 'Schedule', 'Location', 'Fees Structure', 'Reviews'].map((tab) => (
+                        <Tab key={tab} _selected={{ fontWeight: selectedFontWeight, color: 'white' }}  _hover={{ color: 'whiteAlpha.800' }} color={'white'}>
+                            <ScrollLink to={tab.toLowerCase().replace(' ', '')} smooth={true} duration={500}>{tab}</ScrollLink>
+                        </Tab>
+                    ))}
                 </TabList>
             </Tabs>
 
-            <Box pl={8}>
-                {/* Sections */}
+            <Box pl={8} mt={8}>
+                {/* About Section */}
                 <Box id="about" py={4}>
-                    <Heading as="h1">About Instructor</Heading>
+                    <Heading as="h2" size="lg">About Instructor</Heading>
                     <Flex pt={5} gap={6} pr={150}>
                         <Image
-                            src="https://i.dawn.com/primary/2019/02/5c54a134a9d2e.jpg" // Replace with your image URL
-                            alt="Circular Image"
-                            boxSize="130px" // Adjust the size of the circle
+                            src="https://i.dawn.com/primary/2019/02/5c54a134a9d2e.jpg"
+                            alt="Instructor Ahmad Saya"
+                            boxSize="130px"
                             borderRadius="full"
                             objectFit="cover"
                         />
                         <Stack>
-                            <Heading fontWeight={650} fontSize={25} mt={3}>Ahmad Saya</Heading>
-                            <Text fontSize={14}>
-                                Jose Marcial Portilla has a BS and MS in Mechanical Engineering from Santa Clara University and years of experience as a professional instructor and trainer for Data Science, Machine Learning and Python Programming. Currently he works as the Head of Data Science for Pierian Training and provides in-person data science and python programming training courses to employees working at top companies, including General Electric, Cigna, SalesForce, Starbucks, McKinsey and many more.
+                            <Heading fontWeight={600} fontSize={20}>Ahmad Saya</Heading>
+                            <Text fontSize="md" color="gray.600">
+                                Ahmad Saya is an experienced O’Levels instructor with a track record of successful students in Mathematics. He combines passion and expertise to create engaging learning experiences.
                             </Text>
                         </Stack>
                     </Flex>
-
                 </Box>
 
                 <Box id="schedule" py={10}>
-                    <Heading as="h1">Class Schedule</Heading>
-                    <Flex>
-                        <Schedule></Schedule>
-                        <Stack ml={8}>
-                            <Text mt={10} ml={-3}>Batch A:</Text>
-                            <Text> 3:00 - 04:30 PM Monday </Text>
-                            <Text> 5:30 - 07:00 PM  Thursday</Text>
-                        </Stack>
+                        <Heading as="h2" size="lg">Class Schedule</Heading>
+                        <Flex flexDirection={{ base: 'column', md: 'row' }}>
+                            <Schedule />
+                            <Stack ml={{ base: 0, md: 15 }} mt={{ base: 5, md: 0 }} spacing={5} width={{ base: '100%', md: '400px' }}>
+                                <Box>
+                                    <Text fontWeight="bold">Batch A</Text>
+                                    <Text>
+                                        <Text as="span" color="purple.500" whiteSpace="nowrap">Start Date: 10th August 2024</Text>
+                                    </Text>
+                                    <Text>Monday: 3:00 - 4:30 PM</Text>
+                                    <Text>Thursday: 5:30 - 7:00 PM</Text>
+                                </Box>
 
-                    </Flex>
-                    {/* Add content related to the Schedule section here */}
-                </Box>
+                                <Box mt={4}>
+                                    <Text fontWeight="bold">Batch B</Text>
+                                    <Text>
+                                        <Text as="span" color="purple.500" whiteSpace="nowrap">Start Date: 14th August 2024</Text>
+                                    </Text>
+                                    <Text>Tuesday: 3:00 - 4:30 PM</Text>
+                                    <Text>Friday: 3:00 - 4:30 PM</Text>
+                                </Box>
+                            </Stack>
+                        </Flex>
+                    </Box>
 
+
+
+                {/* Location Section */}
                 <Box id="location" py={10}>
-                    <Heading as="h1" mb={1}>Location</Heading>
-                    <Text fontSize={20} mb={8}>ASTC Bahadurabad</Text>
-                    <OSMMap></OSMMap>
-                    {/* <MapboxMap></MapboxMap> */}
-                    {/* <MapComponent></MapComponent> */}
-                    {/* <HereMap></HereMap> */}
-                    {/* Add content related to the Location section here */}
+                    <Heading as="h2" size="lg">Location</Heading>
+                    <Text fontSize="lg" mb={8}>ASTC Bahadurabad</Text>
+                    <OSMMap />
                 </Box>
 
+                {/* Fees Section */}
                 <Box id="fees" py={10}>
-                    <Heading as="h1">Fees Structure Section</Heading>
-                    <FeeTable></FeeTable>
-                    {/* Add content related to the Fees Structure section here */}
+                    <Heading as="h2" size="lg">Fees Structure</Heading>
+                    <FeeTable />
                 </Box>
 
-                <Box id="reviews" py={10} mb={10}>
-                    <Heading as="h1">Similar Courses</Heading>
-                    <CourseCarousel courses={courses}></CourseCarousel>
-                    {/* Add content related to the Reviews section here */}
+                {/* Reviews Section */}
+                <Box id="reviews" py={10}>
+                    <Heading as="h2" size="lg">Similar Courses</Heading>
+                    <CourseCarousel courses={courses} />
                 </Box>
             </Box>
-        </div>
+        </Box>
     );
 };
 
