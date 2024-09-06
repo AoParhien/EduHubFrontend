@@ -28,7 +28,7 @@ const courses = [
 const CourseDetails = () => {
     return (
         <div className='section__padding'>
-            <Box maxW="7xl" mx="auto" p={5}>
+            <Box maxW="7xl" mx="auto" p={5} backgroundColor="purple.100">
                 {/* Breadcrumb */}
                 <Breadcrumb fontSize="sm" color="black" separator=">" fontWeight="500">
                     <BreadcrumbItem>
@@ -52,8 +52,7 @@ const CourseDetails = () => {
                                 <Text fontSize="lg" fontWeight="bold">Course Details:</Text>
                                 <Stack pl={4} mt={2} spacing={1} fontSize="md" color="gray.700">
                                     <Text>• Instructor: Ahmad Saya</Text>
-                                    <Text>• Level: O Levels</Text>
-                                    <Text>• Start Date: 24th August</Text>
+                                    <Text>• Board: O Levels</Text>
                                     <Text>• Duration: [Specify duration, e.g., 3 months]</Text>
                                     <Text>• Class Format: [In-person/Online/Hybrid]</Text>
                                 </Stack>
@@ -70,10 +69,6 @@ const CourseDetails = () => {
                                 <Icon as={FaClock} boxSize={4} mr={1} />
                                 <Text>Duration: 9 months</Text>
                             </Flex>
-                            <Flex align="center" mr={5}>
-                                <Icon as={FaUser} boxSize={4} mr={1} />
-                                <Text>Branch: ASTC Gulshan & Bahadurabad</Text>
-                            </Flex>
                         </Flex>
                     </Stack>
                     {/* Fee Section */}
@@ -87,12 +82,12 @@ const CourseDetails = () => {
                             height="150px"
                             textAlign="center"
                         >
-                            <Flex>
+                            <Flex alignContent="center">
                                 <Icon as={BsCreditCard2Back} boxSize={5} mr={2} mt={3} />
                                 <Text mr={2} mt={3} fontSize={15} >Fees: </Text>
                                 <Text as="span" color="black.600" fontSize={28} fontWeight="bold">Rs.4,500</Text>
-                                <Text mt={5} ml="auto" fontSize={15} textDecoration="line-through" color="gray.400">Rs.9,000</Text>
-                                <Text ml={2} mt={5} fontSize={15} color="gray.400">50% off</Text>
+                                {/* <Text mt={5} ml="auto" fontSize={15} textDecoration="line-through" color="gray.400">Rs.9,000</Text>
+                                <Text ml={2} mt={5} fontSize={15} color="gray.400">50% off</Text> */}
                             </Flex>
                             <Divider my={4} />
                             <Button

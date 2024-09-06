@@ -23,7 +23,8 @@ body {
 
 .gradient__bg {
   flex: 1; /* Makes sure it takes the full available space */
-  background: radial-gradient(circle at 9% 12%, rgba(255, 255, 0, 1) 0%, rgba(207, 186, 245, 1) 0%, rgba(255, 253, 253, 1) 26%);
+  /* background: radial-gradient(circle at 9% 12%, rgba(255, 255, 0, 1) 0%, rgba(207, 186, 245, 1) 0%, rgba(255, 253, 253, 1) 26%); */
+  background: white;
 }
 
 .section__padding {
