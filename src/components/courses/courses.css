@@ -1,33 +1,38 @@
 .eduhub__courses {
     display: flex;
     flex-direction: column;
-    padding: 0 4rem;
+    padding: 2rem;
+    background-color: #f9f9f9; /* Subtle background */
+    min-height: 100vh;
 }
 
 .eduhub__courses-cards {
+    flex: 1;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    flex: 1;
-    margin-left: -6rem;
+    margin-left: 1rem;
+    width: 100%;
 }
 
 .eduhub__course-card {
-    flex: 0 0 calc(33.333% - 20px); /* Three cards per row, accounting for gap */
-    max-width: calc(33.333% - 20px); /* Ensure the cards don't grow beyond their allocated width */
+    flex: 0 0 calc(33.333% - 20px); /* 3 cards per row */
+    max-width: calc(33.333% - 20px);
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Optional media query to handle smaller screens */
+/* Adjust for smaller screens */
 @media screen and (max-width: 768px) {
     .eduhub__course-card {
-        flex: 0 0 calc(50% - 20px); /* Switch to two cards per row on smaller screens */
-        max-width: calc(50% - 20px);
+        flex: 0 0 calc(50% - 20px); /* 2 cards per row */
     }
 }
 
 @media screen and (max-width: 480px) {
     .eduhub__course-card {
-        flex: 0 0 100%; /* One card per row on very small screens */
-        max-width: 100%;
+        flex: 0 0 100%; /* 1 card per row */
     }
 }

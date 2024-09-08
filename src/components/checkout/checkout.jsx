@@ -53,7 +53,7 @@ const Checkout = () => {
                         overflow="hidden"
                     >
                         <VStack align="stretch" spacing={0}>
-                            <Box bg="blue.500" color="white" p={4}>
+                            <Box bg="purple.500" color="white" p={4}>
                                 <Heading as="h2" size="md">
                                     Course Details
                                 </Heading>
@@ -101,7 +101,7 @@ const Checkout = () => {
                         overflow="hidden"
                     >
                         <VStack align="stretch" spacing={0}>
-                            <Box bg="green.500" color="white" p={4}>
+                            <Box bg="purple.700" color="white" p={4}>
                                 <Heading as="h2" size="md">
                                     Order Summary
                                 </Heading>
@@ -151,7 +151,7 @@ const Checkout = () => {
                                     type="submit"
                                     size="lg"
                                     w="full"
-                                    colorScheme="blue"
+                                    bg={"purple.200"}
                                 >
                                     Confirm Purchase
                                 </Button>

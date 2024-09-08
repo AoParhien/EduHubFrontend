@@ -1,5 +1,5 @@
-import React from 'react'
-import { Card, CardBody, Image, Heading, Stack, Flex, Icon, Text, Box } from '@chakra-ui/react'
+import React from 'react';
+import { Card, CardBody, Image, Heading, Stack, Flex, Icon, Text, Box } from '@chakra-ui/react';
 import { BsCreditCard2Back } from "react-icons/bs";
 import { IoMdSchool } from "react-icons/io";
 
@@ -50,7 +50,7 @@ const CourseCard = ({ title, institute, fees, board, image }) => {
             <Text color='blue.600' fontSize='sm'>PKR {fees}/Month</Text>
             <Box
               position='relative'
-              ml='auto' // Moves the box to the end
+              ml='auto'
               bg='gray.100'
               border='1px'
               borderColor='gray.300'
@@ -64,6 +64,6 @@ const CourseCard = ({ title, institute, fees, board, image }) => {
       </CardBody>
     </Card>
   );
-}
+};
 
 export default CourseCard;
