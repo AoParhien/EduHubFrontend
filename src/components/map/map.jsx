@@ -16,16 +16,15 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-const OSMMap = () => {
-    const position = [24.8833, 67.066073]; // Coordinates for Karachi, Pakistan
+const OSMMap = (location) => {
 
     return (
-        <MapContainer center={position} zoom={13} style={{ height: '500px', width: '80%' }}>
+        <MapContainer center={location.location} zoom={13} style={{ height: '500px', width: '80%' }}>
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            <Marker position={position}>
+            <Marker position={location.location}>
                 <Popup>
                     Maniyas
                 </Popup>

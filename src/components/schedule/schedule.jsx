@@ -1,34 +1,46 @@
 import React, { useRef, useEffect } from 'react';
 import { Box, Grid, GridItem, Text, Flex, HStack } from '@chakra-ui/react';
 
-
 const dayHeight = 70;
-const Schedule = () => {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+
+const Schedule = ({ batches, schedules }) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const hours = ['12-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10', '10-11', '11-12'];
-    const batches = [
-        { day: 'Wednesday', startHour: '3-4', duration: 2, name: 'Batch A', location: 'ASTC Bahadurabad', color: 'yellow.200' },
-        { day: 'Tuesday', startHour: '6-7', duration: 1.5, name: 'Batch B', location: 'ASTC Gulshan', color: 'blue.400' },
-        { day: 'Thursday', startHour: '7-8', duration: 2, name: 'Batch A', location: 'ASTC Bahadurabad', color: 'yellow.200' },
-        { day: 'Sunday', startHour: '8-9', duration: 2, name: 'Batch B', location: 'ASTC Gulshan', color: 'blue.400' },
-    ];
+
+    const mergeBatchesAndSchedules = (batches, schedules) => {
+        return batches.map(batch => {
+            // Find the schedules related to this batch
+            const relatedSchedules = schedules.filter(schedule => schedule.batch_id === batch._id);
+
+            // Convert schedules to desired format, extracting details
+            return relatedSchedules.map(schedule => ({
+                day: schedule.day,
+                startHour: schedule.startHour,
+                duration: schedule.duration,
+                name: batch.batchName,  // Mapping batch name to your previous `name` field
+                location: '', // Set your location as needed
+                color: 'yellow.200' // Assign a default color if not specified
+            }));
+        }).flat(); // Flatten the array if necessary
+    };
+
+    const convertedBatches = mergeBatchesAndSchedules(batches, schedules);
 
     const scrollRef = useRef(null);
-    // const [scrollLeft, setScrollLeft] = useState(0);
 
     const getBatchForCell = (day, hour) => {
-        return batches.find(batch => {
+        return convertedBatches.find(batch => {
             const startIndex = hours.indexOf(batch.startHour);
-            const endIndex = startIndex + batch.duration;
+            const durationDecimal = parseFloat(batch.duration);
+            const endIndex = startIndex + durationDecimal;
             return batch.day === day && hours.indexOf(hour) >= startIndex && hours.indexOf(hour) < endIndex;
         });
     };
 
     useEffect(() => {
         const handleScroll = () => {
-            // if (scrollRef.current) {
-            //     setScrollLeft(scrollRef.current.scrollLeft);
-            // }
+            // Handling scroll for future use
         };
 
         const scrollContainer = scrollRef.current;
@@ -76,6 +88,11 @@ const Schedule = () => {
                                                 borderRadius="md"
                                                 width={`${batch.duration * 100 - 16}px`}
                                                 color={batch.color === 'blue.400' ? 'white' : 'black'}
+                                                display="flex"                  // Add flex display
+                                                flexDirection="column"          // Stack items vertically
+                                                alignItems="center"             // Center items horizontally
+                                                justifyContent="center"         // Center items vertically
+                                                textAlign="center"              // Center the text inside the items
                                             >
                                                 <Text fontWeight="bold">{batch.name}</Text>
                                                 <Text fontSize="xs">{batch.location}</Text>
