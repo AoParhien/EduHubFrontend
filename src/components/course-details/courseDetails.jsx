@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { Box, Text, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Heading, Stack, Flex, Icon, Button, Divider } from '@chakra-ui/react';
 import { BsCreditCard2Back, BsArrowRight } from 'react-icons/bs';
 import { FaUser, FaClock } from 'react-icons/fa';
@@ -24,16 +25,16 @@ const CourseDetails = () => {
     // const isMobile = useBreakpointValue({ base: true, md: false });
     const [course, setCourse] = useState(null);
     const [loading, setLoading] = useState(true); // Loading state
+    const { courseId } = useParams();
 
     const getCourse = async () => {
         try {
-            const response = await fetch(`https://localhost:3001/api/courses/getCourseDetails/66d1bc20ac4f5cd6f5d031aa`, {
+            const response = await fetch(`https://localhost:3001/api/courses/getCourseDetails/${courseId}`, {
                 method: 'GET',
                 credentials: 'include',
             });
             const data = await response.json();
             setCourse(data)
-            console.log(course)
         }
         catch (error) {
             console.error('Error fetching course data:', error);
@@ -116,14 +117,16 @@ const CourseDetails = () => {
                                 <Text ml={2} mt={5} fontSize={15} color="gray.400">50% off</Text> */}
                         </Flex>
                         <Divider my={4} />
-                        <Button
-                            color="white"
-                            background="purple.300"
-                            width="full"
-                            rightIcon={<Icon as={BsArrowRight} boxSize={6} strokeWidth={0.3} mt={0.97} />}
-                        >
-                            Enroll Now
-                        </Button>
+                        <Link to="/checkout" state={{ course: course }}>
+                            <Button
+                                color="white"
+                                background="purple.300"
+                                width="full"
+                                rightIcon={<Icon as={BsArrowRight} boxSize={6} strokeWidth={0.3} mt={0.97} />}
+                            >
+                                Enroll Now
+                            </Button>
+                        </Link>
                     </Box>
                 </Flex >
             </Flex >
@@ -181,7 +184,7 @@ const CourseDetails = () => {
                 {/* Fees Section */}
                 <Box id="feesstructure" py={10}>
                     <Heading as="h2" size="lg">Fees Structure</Heading>
-                    <FeeTable />
+                    <FeeTable registrationFees={course.institute.registrationFees} courseFees={course.fees} />
                 </Box>
 
                 {/* Reviews Section */}

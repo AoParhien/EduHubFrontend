@@ -4,6 +4,7 @@ import FilterSidebar from '../filter-sidebar/filterSidebar';
 import { Box } from '@chakra-ui/react';
 import CourseCard from '../course-card/courseCard';
 import './courses.css';
+import debounce from 'lodash.debounce';
 
 const Courses = () => {
     const { subcategory } = useParams();
@@ -30,23 +31,26 @@ const Courses = () => {
         return new URLSearchParams(params).toString();
     };
 
-    const getCourses = useCallback(async (filters) => {
-        try {
-            const query = buildQueryParams(filters);
-            const response = await fetch(`https://localhost:3001/api/courses/getCourseListing?${query}`, {
-                method: 'GET',
-                credentials: 'include',
-            });
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const data = await response.json();
-            setCourses(data);
-        } catch (error) {
-            console.error('Error fetching courses:', error);
-        }
-    }, []);
+    const getCourses = useCallback(
+        debounce(async (filters) => {
+            try {
+                const query = buildQueryParams(filters);
+                const response = await fetch(`https://localhost:3001/api/courses/getCourseListing?${query}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                });
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                setCourses(data);
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+            }
+        }, 300),
+        []
+    );
 
     useEffect(() => {
-        setFilters(prevFilters => ({
+        setFilters((prevFilters) => ({
             ...prevFilters,
             board: subcategory || 'Any',
         }));
@@ -57,7 +61,7 @@ const Courses = () => {
     }, [filters, getCourses]);
 
     const handleFilterChange = (newFilters) => {
-        setFilters(prevFilters => ({
+        setFilters((prevFilters) => ({
             ...prevFilters,
             ...newFilters,
         }));
@@ -76,6 +80,7 @@ const Courses = () => {
                             institute={course.instituteName}
                             board={course.board}
                             image={`data:image/png;base64,${course.image}`}
+                            id={course.courseId}
                         />
                     ))}
                 </div>

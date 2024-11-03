@@ -1,35 +1,28 @@
 import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
-// Fix for default marker icon
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+const mapContainerStyle = {
+    height: "500px",
+    width: "100%"
+};
 
-let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-});
-
-L.Marker.prototype.options.icon = DefaultIcon;
-
-const OSMMap = (location) => {
+const OSMMap = ({ location }) => {
+    // Convert [latitude, longitude] array to { lat, lng } object
+    const mapCenter = {
+        lat: location[0],
+        lng: location[1]
+    };
 
     return (
-        <MapContainer center={location.location} zoom={13} style={{ height: '500px', width: '80%' }}>
-            <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            <Marker position={location.location}>
-                <Popup>
-                    Maniyas
-                </Popup>
-            </Marker>
-        </MapContainer>
+        <LoadScript googleMapsApiKey="AIzaSyBELPFJULi_B_gOij60Tfe_Yd3utXQljKE">
+            <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={mapCenter}
+                zoom={13}
+            >
+                <Marker position={mapCenter} />
+            </GoogleMap>
+        </LoadScript>
     );
 };
 

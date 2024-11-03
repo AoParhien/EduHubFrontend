@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { List, ListItem, ListIcon } from '@chakra-ui/react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { CheckCircleIcon } from '@chakra-ui/icons';
 import {
     Box,
@@ -9,22 +10,57 @@ import {
     FormLabel,
     Heading,
     Select,
-    Stack,
     Text,
     Image,
     VStack,
     HStack,
     Divider,
 } from "@chakra-ui/react";
+import CenteredSpinner from '../centered-spinner/centeredSpinner';
 import harvard from '../../assets/harvard.svg';
 import Schedule from '../schedule/schedule';
 
+const BatchSelector = ({ batches, selectedBatch, handleBatchChange }) => {
+    return (
+        <FormControl>
+            <FormLabel htmlFor="batch">Select Batch</FormLabel>
+            <Select id="batch" value={selectedBatch} onChange={handleBatchChange}>
+                {batches.map((batch, index) => (
+                    <option key={index} value={batch.batchName}>
+                        {batch.batchName}
+                    </option>
+                ))}
+            </Select>
+        </FormControl>
+    );
+};
+
 const Checkout = () => {
     const [selectedBatch, setSelectedBatch] = useState("batch1");
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [course, setCourse] = useState(null);
+
+    useEffect(() => {
+        if (location.state && location.state.course) {
+            setCourse(location.state.course);
+        } else {
+            // Redirect to the courses page if no course data is available
+            navigate('/courses', { replace: true });
+        }
+    }, [location, navigate]);
+
+    // Show a spinner while course data is loading
+    if (!course) {
+        return <CenteredSpinner />;
+    }
 
     const handleBatchChange = (e) => {
         setSelectedBatch(e.target.value);
     };
+
+    // Calculate total fees
+    const totalFees = course.institute.registrationFees + course.fees;
 
     return (
         <Box minHeight="100vh" bg="gray.50" py={8}>
@@ -66,25 +102,21 @@ const Checkout = () => {
                                         boxSize="40px"
                                     />
                                     <Text fontSize="md" fontWeight="medium">
-                                        O-level Mathematics By Sir Ahmed Saya
+                                        {course.title}
                                     </Text>
                                 </HStack>
 
-                                <FormControl>
-                                    <FormLabel htmlFor="batch">Select Batch</FormLabel>
-                                    <Select id="batch" value={selectedBatch} onChange={handleBatchChange}>
-                                        <option value="batch1">Batch 1 (Jan-Mar)</option>
-                                        <option value="batch2">Batch 2 (Apr-Jun)</option>
-                                        <option value="batch3">Batch 3 (Jul-Sep)</option>
-                                        <option value="batch4">Batch 4 (Oct-Dec)</option>
-                                    </Select>
-                                </FormControl>
+                                <BatchSelector 
+                                    batches={course.batches} // Pass batches directly
+                                    selectedBatch={selectedBatch} 
+                                    handleBatchChange={handleBatchChange} 
+                                />
 
                                 <Box>
                                     <Heading as="h3" size="sm" mb={2}>
                                         Class Schedule
                                     </Heading>
-                                    <Schedule />
+                                    <Schedule batches={course.batches} schedules={course.schedules} />
                                 </Box>
                             </VStack>
                         </VStack>
@@ -107,22 +139,22 @@ const Checkout = () => {
                                 </Heading>
                             </Box>
                             <VStack align="stretch" spacing={4} p={4}>
-                                <Text fontWeight="bold">Course: O-level Mathematics</Text>
-                                <Text>Instructor: Sir Ahmed Saya</Text>
-                                <Text>Duration: 3 months</Text>
+                                <Text fontWeight="bold">Course: {course.title}</Text>
+                                <Text>Instructor: Sir {course.teacher.name}</Text>
+                                <Text>Duration: {course.durationMonths} months</Text>
                                 <Divider />
                                 <VStack align="stretch" spacing={2}>
                                     <Flex justify="space-between">
-                                        <Text>Registration Fee:</Text>
-                                        <Text fontWeight="bold">Rs 500</Text>
+                                        <Text>Tuition Fee:</Text>
+                                        <Text fontWeight="bold">Rs {course.fees}</Text>
                                     </Flex>
                                     <Flex justify="space-between">
-                                        <Text>Tuition Fee:</Text>
-                                        <Text fontWeight="bold">Rs 4000</Text>
+                                        <Text>Registration Fee:</Text>
+                                        <Text fontWeight="bold">Rs {course.institute.registrationFees}</Text>
                                     </Flex>
                                     <Flex justify="space-between" fontWeight="bold" fontSize="lg">
                                         <Text>Total:</Text>
-                                        <Text>Rs 4500</Text>
+                                        <Text>Rs {totalFees}</Text>
                                     </Flex>
                                 </VStack>
                                 <Divider />
@@ -162,8 +194,6 @@ const Checkout = () => {
                         </VStack>
                     </Box>
                 </Flex>
-
-
             </VStack>
         </Box>
     );

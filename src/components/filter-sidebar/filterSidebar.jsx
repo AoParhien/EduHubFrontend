@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Text, Input, VStack, Checkbox, Stack, Divider, Button, Select } from '@chakra-ui/react';
 
-const institutes = ['Any', 'Harvard', 'MIT','Example Institute'];
-const subjects = ['Any', 'Mathematics', 'Physics', 'Chemistry','English'];
 const locations = Array.from({ length: 200 }, (_, i) => `Location ${i + 1}`);
 const boards = ['O Levels', 'A Levels', 'SAT'];
 
 const FilterSidebar = ({ onFilterChange, initialFilters }) => {
     const [localFilters, setLocalFilters] = useState(initialFilters);
     const [searchQuery, setSearchQuery] = useState('');
+    const [institutes, setInstitutes] = useState([{ name: 'Any' }]);
+    const [subjects, setSubjects] = useState(['Any']);
 
     useEffect(() => {
         setLocalFilters(initialFilters);
@@ -30,7 +30,7 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
 
     const handleBoardChange = (board) => {
         const updatedBoards = localFilters.board.includes(board)
-            ? localFilters.board.filter(b => b !== board)
+            ? localFilters.board.filter((b) => b !== board)
             : [...localFilters.board, board];
         handleChange('board', updatedBoards);
     };
@@ -38,6 +38,43 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
     const filteredLocations = locations.filter(location =>
         location.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    const getSubjects = async () => {
+        try {
+            const response = await fetch('https://localhost:3001/api/courses/getSubjects', {
+                method: 'GET',
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setSubjects((prevSubjects) => [...prevSubjects, ...data]);
+        } catch (error) {
+            console.error('Error fetching subjects:', error);
+        }
+    };
+
+    const getInstitutes = async () => {
+        try {
+            const response = await fetch('https://localhost:3001/api/institutes/getInstituteNames', {
+                method: 'GET',
+                credentials: 'include',
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setInstitutes((prevInstitutes) => [...prevInstitutes, ...data]);
+        } catch (error) {
+            console.error('Error fetching institutes:', error);
+        }
+    };
+
+    useEffect(() => {
+        getSubjects();
+        getInstitutes();
+    }, []);
 
     return (
         <Box width="100%" maxWidth="250px" p="2" bg="white" boxShadow="md" borderRadius="sm" overflowY="auto">
@@ -48,13 +85,13 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
                     <VStack align="start" spacing={1}>
                         {institutes.map((institute) => (
                             <Button
-                                key={institute}
+                                key={institute.name} // Ensure key is unique, use a unique property
                                 variant="ghost"
                                 size="xs"
-                                onClick={() => handleChange('institute', institute)}
-                                fontWeight={institute === localFilters.institute ? 'bold' : 'normal'}
+                                onClick={() => handleChange('institute', institute.name)}
+                                fontWeight={institute.name === localFilters.institute ? 'bold' : 'normal'}
                             >
-                                {institute}
+                                {institute.name}
                             </Button>
                         ))}
                     </VStack>
@@ -66,9 +103,9 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
                 <Box>
                     <Text fontWeight="600" fontSize="0.9rem" mb="1">Subject</Text>
                     <VStack align="start" spacing={1}>
-                        {subjects.map((subject) => (
+                        {subjects.map((subject, index) => (
                             <Button
-                                key={subject}
+                                key={subject || index} // Use subject or index as key
                                 variant="ghost"
                                 size="xs"
                                 onClick={() => handleChange('subject', subject)}
