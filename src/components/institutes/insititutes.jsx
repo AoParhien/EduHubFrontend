@@ -22,7 +22,7 @@ const Institutes = () => {
                 <TabBar tabs={tabs} onSelect={handleTabSelect} selectedTab={selectedTab} />
             </div>
             <div className='eduhub__institutes-cards'>
-                {[...Array(5)].map((_, index) => (
+                {[...Array(10)].map((_, index) => (
                     <InstituteCard key={index} />
                 ))}
             </div>

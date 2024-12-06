@@ -15,8 +15,6 @@ const Home = () => {
       <CourseSection />
       <InstructorSection />
    
-      
-      <p>Other content</p>
     </div>
   );
 };

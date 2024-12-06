@@ -8,6 +8,7 @@ const Footer = () => (
             <div className="eduhub__footer-links_div">
                 <h4>Quick Links</h4>
                 <p>About Us</p>
+                <p>Institutes On-Board</p>
                 <p>Blog</p>
                 <p>FAQs</p>
                 <p>Contact Us</p>
@@ -22,15 +23,15 @@ const Footer = () => (
                 <h4>Contact Us</h4>
                 <p>1234 Elm Street, Suite 567</p>
                 <p>+1 (234) 567-890</p>
-                <p>support@eduhub.com</p>
+                <p>support@AoParhein.com</p>
             </div>
             <div className="eduhub__footer-links_logo">
-                <img src={eduhubLogo} alt="eduhub_logo" />
-                <p>1234 Elm Street, Suite 567, <br /> All Rights Reserved</p>
+                <img src="Dblue.png" alt="eduhub_logo" />
+                <p>Ao Parhein<br /> Platform which make education accessible</p>
             </div>
         </div>
         <div className="eduhub__footer-copyright">
-            <p>&copy; {new Date().getFullYear()} EduHub. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} AoParhein. All rights reserved.</p>
         </div>
     </div>
 );

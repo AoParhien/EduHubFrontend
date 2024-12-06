@@ -7,6 +7,7 @@
     border-radius: 8px;
     position: relative; /* Ensure correct positioning of scroll buttons */
     width: 100%;
+    
 }
 
 .tabbar-scroll {
@@ -14,7 +15,7 @@
     overflow-x: auto;
     scrollbar-width: none; /* Hide scrollbar for Firefox */
     -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
-    color: #1E1769;
+    color: #00308F;
     font-size: 17px;
     white-space: nowrap; /* Prevent wrapping */
     flex: 1;
@@ -36,7 +37,10 @@
 
 .tabbar-tab.selected {
     font-weight: bold;
-    border: 2px solid #1E1769; /* Add border to the selected button */
+   /* border: 6px solid #00308F; /* Add border to the selected button */
+   background-color: #00308F;
+   color:white;
+   
 }
 
 .tabbar-button {
@@ -44,7 +48,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: #1E1769;
+    color: #00308F;
     font-size: 24px; /* Adjust size for better visibility */
 }
 
