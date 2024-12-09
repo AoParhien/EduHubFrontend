@@ -47,8 +47,9 @@ const CourseSection = () => {
                     <TabBar width='40%' tabs={tabs} onSelect={handleTabSelect} />
                 </div>
                 <div className='eduhub__course-cards'>
-                    {courses.map((course) => (
+                    {courses.map((course, index) => (
                         <CourseCard
+                            key={index}
                             title={course.title}
                             fees={course.fees}
                             institute={course.instituteName}

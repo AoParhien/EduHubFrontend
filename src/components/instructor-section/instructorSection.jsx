@@ -40,9 +40,9 @@ const InstructorSection = () => {
                 <p>At the Academy, we strive to bring together the best<br /> professors for the best courses</p>
             </div>
             <div className='eduhub__instructor-section-instructors'>
-                {topTeachers.map((teacher) => (
+                {topTeachers.map((teacher, index) => (
                     <InstructorCard
-                        key={teacher.name} // Add a unique key, e.g., teacher ID if available
+                        key={index} // Add a unique key, e.g., teacher ID if available
                         teacherName={teacher.name}
                         board={teacher.boards.length > 0 ? teacher.boards[0] : 'N/A'} // Safely access the first board or show 'N/A' if not available
                         image={`data:image/jpeg;base64,${teacher.picture}`} // Correctly format Base64 image data
