@@ -4,8 +4,9 @@ import { BsCreditCard2Back } from "react-icons/bs";
 import { IoMdSchool } from "react-icons/io";
 import { Link } from 'react-router-dom';
 
-const CourseCard = ({ title, institute, fees, board, image, id }) => {
+const CourseCard = ({ title, institute, fees, board, imageUrl, id }) => {
   const handleClick = () => {
+    console.log("Image url: "+imageUrl)
   };
 
   return (
@@ -31,7 +32,7 @@ const CourseCard = ({ title, institute, fees, board, image, id }) => {
       >
         <CardBody p={1}>
           <Image
-            src={image}
+            src={imageUrl}
             alt={title}
             borderRadius='md'
             width='100%'

@@ -46,7 +46,7 @@ const CourseDetails = () => {
 
     useEffect(() => {
         getCourse();
-    }, [])
+    }, [course])
 
     if (loading) {
         return <CenteredSpinner />

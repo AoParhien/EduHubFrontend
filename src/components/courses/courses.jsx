@@ -79,7 +79,7 @@ const Courses = () => {
                             fees={course.fees}
                             institute={course.instituteName}
                             board={course.board}
-                            image={`data:image/png;base64,${course.image}`}
+                            imageUrl={course.imageUrl}
                             id={course.courseId}
                         />
                     ))}
