@@ -6,25 +6,27 @@ import './header.css';
 const Header = () => (
     <div className="eduhub__header section__padding" id="home">
         <div className="eduhub__header-content">
-            <h1 className="gradient__text">
-                Your <span className="highlighted-text !important">Classroom</span><br /> Awaits
+            <h1>
+            Streamlining your <span class="registration-text">registration</span>, making education accessible.
             </h1>
 
-            <p>Yet bed any for travelling assistance indulgence unpleasing. Not thoughts all exercise blessing. Indulgence way everything joy alteration boisterous the attachment. Party we years to order allow asked of.</p>
+            <p>Discover a seamless way to access top-notch online tuition, tailored to your goals. With expert tutors, flexible scheduling, and personalized support, we’re here to make your learning journey effortless and effective.</p>
 
             <div className="eduhub__header-content__input">
             <Button
-                bg="purple.600"
+                bg="#00308F"
                 color="white"
                 width="25%"
-                height="40px"
+                height="50px"
                 fontFamily="var(--font-family)"
                 fontWeight="400"
-                fontSize="16px"
+                fontSize="25px"
                 lineHeight="26px"
                 borderColor="transparent"
                 borderRadius="39px"
                 marginRight="2rem"
+                padding="25px"
+            
                 _focus={{ outline: 'none' }} // Removes the default outline on focus
                 cursor="pointer"
                 className='eduhub__header-register-button'
@@ -41,7 +43,7 @@ const Header = () => (
         </div>
 
         <div className="eduhub__header-image">
-            <img src={ai} alt='ai' />
+            <img src="landing.png" alt='ai' />
         </div>
     </div>
 );

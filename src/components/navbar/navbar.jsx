@@ -36,8 +36,13 @@ const Navbar = () => {
                 </div>
                 <div className="eduhub__navbar-left">
                     <div className="eduhub__navbar-links_logo">
-                        <Link to='/'><h1>LOGO</h1>
-                        </Link>
+                    <Link to="/">
+                        <img 
+                        src="Dblue.png" 
+                        alt="EduHub Logo" 
+                    
+                        />
+                    </Link>
                     </div>
                     <div className="eduhub__search-container">
                         <div className='eduhub__search-icon-wrapper'>
@@ -70,7 +75,7 @@ const Navbar = () => {
                             </div>
                         )}
                     </div>
-                    <p>Become an Institute</p>
+                    <p >Become an Institute</p>
                     <div className='eduhub__navbar-login'>
                         <button type='button'>Log In</button>
                     </div>
