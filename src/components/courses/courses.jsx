@@ -39,9 +39,11 @@ const Courses = () => {
                     method: 'GET',
                     credentials: 'include',
                 });
+                
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
                 setCourses(data);
+                console.log(data);
             } catch (error) {
                 console.error('Error fetching courses:', error);
             }
