@@ -63,7 +63,7 @@ const Checkout = () => {
     const totalFees = course.institute.registrationFees + course.fees;
 
     return (
-        <Box minHeight="100vh" bg="gray.50" py={8}>
+        <Box minHeight="100vh" py={8}>
             <VStack spacing={6} align="stretch" maxWidth="1200px" margin="auto" px={4}>
                 <Heading as="h1" size="xl" textAlign="center">
                     Complete Your Enrollment
@@ -89,7 +89,7 @@ const Checkout = () => {
                         overflow="hidden"
                     >
                         <VStack align="stretch" spacing={0}>
-                            <Box bg="purple.500" color="white" p={4}>
+                            <Box bg="#00308F" color="white" p={4}>
                                 <Heading as="h2" size="md">
                                     Course Details
                                 </Heading>
@@ -133,7 +133,7 @@ const Checkout = () => {
                         overflow="hidden"
                     >
                         <VStack align="stretch" spacing={0}>
-                            <Box bg="purple.700" color="white" p={4}>
+                            <Box bg="#00308F" color="white" p={4}>
                                 <Heading as="h2" size="md">
                                     Order Summary
                                 </Heading>
@@ -183,7 +183,7 @@ const Checkout = () => {
                                     type="submit"
                                     size="lg"
                                     w="full"
-                                    bg={"purple.200"}
+                                    bg={"#F6D33C"}
                                 >
                                     Confirm Purchase
                                 </Button>

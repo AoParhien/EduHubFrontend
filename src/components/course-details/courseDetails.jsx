@@ -73,7 +73,7 @@ const CourseDetails = () => {
             <Flex flexDirection={{ base: 'column', md: 'row' }} mt={5}>
                 <Stack flex="1" spacing={5}>
                     {/* Course Title Section */}
-                    <Heading color="purple.700" size="lg">{course.title}</Heading>
+                    <Heading color="#00308F" size="lg">{course.title}</Heading>
                     <Box>
                         <Text fontSize="lg" fontWeight="bold">Course Details:</Text>
                         <Stack pl={4} mt={2} spacing={1} fontSize="md" color="gray.700">
@@ -120,7 +120,7 @@ const CourseDetails = () => {
                         <Link to="/checkout" state={{ course: course }}>
                             <Button
                                 color="white"
-                                background="purple.300"
+                                background="#00308F"
                                 width="full"
                                 rightIcon={<Icon as={BsArrowRight} boxSize={6} strokeWidth={0.3} mt={0.97} />}
                             >
@@ -134,7 +134,7 @@ const CourseDetails = () => {
 
             {/* Tab Navigation */}
             <Tabs variant="unstyled" mt={5}>
-                <TabList justifyContent="flex-start" bg="purple.600" pl={10} py={3}>
+                <TabList justifyContent="flex-start" bg="#00308F" pl={10} py={3}>
                     {['About', 'Schedule', 'Location', 'Fees Structure', 'Reviews'].map((tab) => (
                         <Tab key={tab} _selected={{ fontWeight: selectedFontWeight, color: 'white' }} _hover={{ color: 'whiteAlpha.800' }} color={'white'}>
                             <ScrollLink to={tab.toLowerCase().replace(' ', '')} smooth={true} duration={500}>{tab}</ScrollLink>
