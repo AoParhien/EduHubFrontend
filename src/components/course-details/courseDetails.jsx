@@ -149,7 +149,7 @@ const CourseDetails = () => {
                     <Heading as="h2" size="lg">About Instructor</Heading>
                     <Flex pt={5} gap={6} pr={150}>
                         <Image
-                            src={`data:image/png;base64,${course.teacher.picture}`}
+                            src={course.teacher.picture}
                             alt="Instructor Ahmad Saya"
                             boxSize="130px"
                             borderRadius="full"
