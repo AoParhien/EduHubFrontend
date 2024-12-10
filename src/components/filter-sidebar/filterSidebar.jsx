@@ -77,17 +77,17 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
     }, []);
 
     return (
-        <Box width="100%" maxWidth="250px" p="2" bg="white" boxShadow="md" borderRadius="sm" overflowY="auto">
+        <Box width="100%" maxWidth="250px" p="2" bg="white" boshadow="md" borderRadius="sm" overflowY="auto">
             <VStack align="start" spacing={3}>
                 {/* Institute Filter */}
                 <Box>
-                    <Text fontWeight="600" fontSize="0.9rem" mb="1">Institute</Text>
+                    <Text fontWeight="600" fontSize="1.2rem" mb="1">Institute</Text>
                     <VStack align="start" spacing={1}>
                         {institutes.map((institute) => (
                             <Button
                                 key={institute.name} // Ensure key is unique, use a unique property
                                 variant="ghost"
-                                size="xs"
+                                size="s"
                                 onClick={() => handleChange('institute', institute.name)}
                                 fontWeight={institute.name === localFilters.institute ? 'bold' : 'normal'}
                             >
@@ -101,13 +101,13 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
 
                 {/* Subject Filter */}
                 <Box>
-                    <Text fontWeight="600" fontSize="0.9rem" mb="1">Subject</Text>
+                    <Text fontWeight="600" fontSize="1.2rem" mb="1">Subject</Text>
                     <VStack align="start" spacing={1}>
                         {subjects.map((subject, index) => (
                             <Button
                                 key={subject || index} // Use subject or index as key
                                 variant="ghost"
-                                size="xs"
+                                size="s"
                                 onClick={() => handleChange('subject', subject)}
                                 fontWeight={subject === localFilters.subject ? 'bold' : 'normal'}
                             >
@@ -121,17 +121,18 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
 
                 {/* Location Filter */}
                 <Box>
-                    <Text fontWeight="600" fontSize="0.9rem" mb="1">Location</Text>
-                    <Input
+                    <Text fontWeight="600" fontSize="1.2rem" mb="1">Location</Text>
+                    {/* <Input
                         placeholder="Search locations"
-                        size="xs"
+                        size="s"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                    />
+                    /> */}
                     <Select
                         placeholder="Select location"
-                        size="xs"
+                        size="s"
                         mt="2"
+                        width="10rem"
                         value={localFilters.location}
                         onChange={(e) => handleChange('location', e.target.value)}
                     >
@@ -147,7 +148,7 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
 
                 {/* Fees Filter */}
                 <Box>
-                    <Text fontWeight="600" fontSize="0.9rem" mb="1">Fees</Text>
+                    <Text fontWeight="600" fontSize="1.2rem" mb="1">Fees</Text>
                     <Stack direction="row" spacing={2}>
                         <Input
                             placeholder="Min"
@@ -155,7 +156,7 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
                             value={localFilters.fees.min}
                             onChange={handleFeeChange}
                             name="min"
-                            size="xs"
+                            size="s"
                             width="60px"
                         />
                         <Input
@@ -164,7 +165,7 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
                             value={localFilters.fees.max}
                             onChange={handleFeeChange}
                             name="max"
-                            size="xs"
+                            size="s"
                             width="60px"
                         />
                     </Stack>
@@ -174,7 +175,7 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
 
                 {/* Board Filter */}
                 <Box>
-                    <Text fontWeight="600" fontSize="0.9rem" mb="1">Board</Text>
+                    <Text fontWeight="600" fontSize="1.2rem" mb="1">Board</Text>
                     <VStack align="start" spacing={1}>
                         {boards.map((board) => (
                             <Checkbox

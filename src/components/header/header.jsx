@@ -1,5 +1,4 @@
 import React from 'react';
-import ai from '../../assets/ai.png';
 import { Button } from '@chakra-ui/react';
 import './header.css';
 
