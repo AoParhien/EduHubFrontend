@@ -54,7 +54,7 @@ const CourseSection = () => {
                             fees={course.fees}
                             institute={course.instituteName}
                             board={course.board}
-                            image={`data:image/png;base64,${course.image}`} // Passing image as prop
+                            imageUrl={course.imageUrl} // Passing image as prop
                         />
                     )
                     )}

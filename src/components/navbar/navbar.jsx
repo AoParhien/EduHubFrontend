@@ -3,7 +3,7 @@ import { React, useState } from 'react';
 import './navbar.css';
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
-
+import Dblue from '../../assets/Dblue.png';
 
 const Navbar = () => {
 
@@ -38,7 +38,7 @@ const Navbar = () => {
                     <div className="eduhub__navbar-links_logo">
                     <Link to="/">
                         <img 
-                        src="Dblue.png" 
+                        src={Dblue}
                         alt="EduHub Logo" 
                     
                         />
