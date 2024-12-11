@@ -61,7 +61,7 @@ const CourseCarousel = ({ courses }) => {
           aria-label="Previous course"
           icon={<ChevronLeftIcon />}
           onClick={goToPrev}
-          colorScheme="purple"
+          style={{ backgroundColor: "#00308F", color: "white" }}
           rounded="full"
           position="absolute"
           left={2}
@@ -70,7 +70,7 @@ const CourseCarousel = ({ courses }) => {
           aria-label="Next course"
           icon={<ChevronRightIcon />}
           onClick={goToNext}
-          colorScheme="purple"
+          style={{ backgroundColor: "#00308F", color: "white" }}
           rounded="full"
           position="absolute"
           right={2}
