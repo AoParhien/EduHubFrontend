@@ -1,76 +1,239 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import {
+    Box,
+    Button,
+    FormControl,
+    FormErrorMessage,
+    FormLabel,
+    HStack,
+    Input,
+    InputGroup,
+    InputLeftAddon,
+    Text,
+    VStack,
+    Link,
+    Image,
+    useToast,
+} from '@chakra-ui/react';
+import axios from 'axios';
 
-const Login = () => {
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
-    const [message, setMessage] = useState('');
+const FloatingLabelInput = ({ label, register, name, errors, type = "text", leftAddon, rules, ...rest }) => (
+    <FormControl isInvalid={errors[name]} position="relative">
+        <InputGroup size="lg">
+            {leftAddon && (
+                <InputLeftAddon 
+                    children={leftAddon}
+                    height="3.5rem"
+                    alignItems="center"
+                    minW="4.5rem"
+                    px={3}
+                />
+            )}
+            <Input
+                placeholder=" "
+                {...register(name, rules)}
+                type={type}
+                id={name}
+                height="3.5rem"
+                pt="1.75rem"
+                pb="0.75rem"
+                pl={leftAddon ? "0.75rem" : "1rem"}
+                {...rest}
+            />
+            <FormLabel
+                htmlFor={name}
+                position="absolute"
+                top="0"
+                left={leftAddon ? "4.5rem" : "1rem"}
+                zIndex="2"
+                px="0.5rem"
+                fontSize="sm"
+                fontWeight="medium"
+                bg="white"
+                marginInlineStart="0"
+                transition="all 0.2s"
+                transform="translateY(0.75rem)"
+                pointerEvents="none"
+                _focus={{
+                    fontSize: "xs",
+                    fontWeight: "bold",
+                    transform: "translateY(0.25rem)",
+                }}
+                sx={{
+                    'input:not(:placeholder-shown) + &': {
+                        fontSize: "xs",
+                        fontWeight: "bold",
+                        transform: "translateY(0.25rem)",
+                    },
+                }}
+            >
+                {label}
+            </FormLabel>
+        </InputGroup>
+        <FormErrorMessage>
+            {errors[name]?.message}
+        </FormErrorMessage>
+    </FormControl>
+);
 
-    const getProfile = async () => {
+const LoginForm = () => {
+    const { 
+        register, 
+        handleSubmit, 
+        formState: { errors, isSubmitting },
+        reset 
+    } = useForm({
+        mode: 'onTouched',
+    });
+
+    const toast = useToast();
+
+    const onSubmit = async (data) => {
         try {
-            const response = await fetch('http://localhost:3000/api/institutes/profile', {
-                method: 'GET',
-                credentials: 'include', // Ensure credentials are included
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            console.log(data);
-        } catch (error) {
-            console.error('Error fetching profile:', error);
-        }
-    };
-
-    const handleSubmit = async () => {
-        try {
-            const response = await fetch('http://localhost:3000/api/institutes/login', {
-                method: 'POST',
+            const response = await axios.post('http://localhost:5000/api/auth/login', {
+                email: data.email,
+                password: data.password,
+            }, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    email: email,
-                    password: password,
-                }),
-                credentials: 'include', // Ensure credentials are included
+                withCredentials: true
             });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+    
+            if (response.data) {
+                toast({
+                    title: "Login successful!",
+                    description: "Welcome back!",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                });
+                reset(); // Reset the form after successful login
             }
-
-            const data = await response.json();
-            console.log('Success:', data);
-            setMessage('Login successful!');
         } catch (error) {
-            console.error('Error:', error.message);
-            setMessage('Login failed: ' + (error.response ? error.response.data.message : error.message));
+            console.error('Error:', error);
+    
+            if (error.response) {
+                const { status, data } = error.response;
+    
+                switch (status) {
+                    case 400:
+                        if (data.message) {
+                            toast({
+                                title: "Validation Error",
+                                description: data.message,
+                                status: "error",
+                                duration: 5000,
+                                isClosable: true,
+                            });
+                        }
+                        break;
+                    
+                    case 401:
+                        toast({
+                            title: "Invalid Credentials",
+                            description: "Invalid email or password.",
+                            status: "error",
+                            duration: 5000,
+                            isClosable: true,
+                        });
+                        break;
+                    
+                    case 500:
+                        toast({
+                            title: "Server Error",
+                            description: "Unable to login. Please try again later.",
+                            status: "error",
+                            duration: 5000,
+                            isClosable: true,
+                        });
+                        break;
+                    
+                    default:
+                        toast({
+                            title: "Error",
+                            description: "An unexpected error occurred. Please try again.",
+                            status: "error",
+                            duration: 5000,
+                            isClosable: true,
+                        });
+                }
+            } else if (error.request) {
+                toast({
+                    title: "Connection Error",
+                    description: "Unable to connect to the server. Please check your internet connection.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            } else {
+                toast({
+                    title: "Error",
+                    description: "An unexpected error occurred. Please try again.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            }
         }
     };
 
     return (
-        <div>
-            <h1>Login Page</h1>
-            <input
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Email"
-            />
-            <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-            />
-            <button type="button" onClick={handleSubmit}>Enter</button>
-            {message && <p>{message}</p>}
-
-            <button type="button" onClick={getProfile}>Profile</button>
-        </div>
+        <HStack spacing={8} align="stretch" h="100vh">
+            <Box flex={1}>
+                <Image
+                    src="https://as1.ftcdn.net/v2/jpg/01/75/84/48/1000_F_175844887_q9693JpeyWzJikA7xSKdMLwKgzdGHaEx.jpg"
+                    alt="Login Image"
+                    objectFit="cover"
+                    w="100%"
+                    h="100%"
+                />
+            </Box>
+            <Box flex={1} p={8}>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <VStack spacing={4} align="stretch">
+                        <Text fontSize="3xl" fontWeight="bold" mb={3} mt={-5}>
+                            Login
+                        </Text>
+                        <FloatingLabelInput
+                            label="Email"
+                            register={register}
+                            name="email"
+                            errors={errors}
+                            type="email"
+                            rules={{
+                                required: 'Email is required',
+                            }}
+                        />
+                        <FloatingLabelInput
+                            label="Password"
+                            register={register}
+                            name="password"
+                            errors={errors}
+                            type="password"
+                            rules={{ 
+                                required: 'Password is required' 
+                            }}
+                        />
+                        <Button 
+                            type="submit" 
+                            colorScheme="purple" 
+                            width="full" 
+                            height="3.5rem"
+                            isLoading={isSubmitting}
+                            loadingText="Logging in..."
+                        >
+                            Login
+                        </Button>
+                        <Text textAlign="center">
+                            Don’t have an account? <Link color="blue.500">Sign Up</Link>
+                        </Text>
+                    </VStack>
+                </form>
+            </Box>
+        </HStack>
     );
 };
 
-export default Login;
+export default LoginForm;

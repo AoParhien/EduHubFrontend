@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { 
   Box, 
   Text, 
-  Input, 
   VStack, 
   Checkbox, 
-  Stack, 
   Button, 
   Select, 
   Accordion,
@@ -19,7 +17,6 @@ import {
   SliderThumb,
   Tooltip
 } from '@chakra-ui/react';
-import { ChevronDownIcon } from '@chakra-ui/icons';
 
 const locations = Array.from({ length: 200 }, (_, i) => `Location ${i + 1}`);
 const boards = ['O Levels', 'A Levels', 'SAT'];

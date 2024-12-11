@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';  // Import Link from react-router-dom
-import eduhubLogo from '../../logo.svg';
 import './footer.css';
 
 const Footer = () => (

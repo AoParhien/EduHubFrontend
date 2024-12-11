@@ -8,6 +8,7 @@ import Insititutes from './components/institutes/insititutes';
 import CourseDetails from './components/course-details/courseDetails';
 import Checkout from './components/checkout/checkout';
 import SignUpForm from './components/signup-form/signupForm';
+import LoginForm from './components/login/login';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 
@@ -26,6 +27,8 @@ function App() {
             <Route path='/course-details/:courseId' element={<CourseDetails/>}/>
             <Route path='/checkout' element={<Checkout/>}/>
             <Route path='/signup' element={<SignUpForm />}/>
+            <Route path='/login' element={<LoginForm />} />
+
           </Routes>
           <Footer />
         </div>
