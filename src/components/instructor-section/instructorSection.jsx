@@ -45,7 +45,7 @@ const InstructorSection = () => {
                         key={index} // Add a unique key, e.g., teacher ID if available
                         teacherName={teacher?.name}
                         board={teacher?.boards.length > 0 ? teacher?.boards[0] : 'N/A'} // Safely access the first board or show 'N/A' if not available
-                        image={`data:image/jpeg;base64,${teacher?.picture}`} // Correctly format Base64 image data
+                        image={teacher?.picture} // Correctly format Base64 image data
                     />
 
                 ))}
