@@ -10,6 +10,7 @@ import Checkout from './components/checkout/checkout';
 import SignUpForm from './components/signup-form/signupForm';
 import LoginForm from './components/login/login';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import UserProfile from './components/UserProfile';
 
 
 function App() {
@@ -28,7 +29,7 @@ function App() {
             <Route path='/checkout' element={<Checkout/>}/>
             <Route path='/signup' element={<SignUpForm />}/>
             <Route path='/login' element={<LoginForm />} />
-
+            <Route path='/profile' element={<UserProfile />} />
           </Routes>
           <Footer />
         </div>

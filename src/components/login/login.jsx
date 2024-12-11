@@ -17,6 +17,8 @@ import {
     useToast,
 } from '@chakra-ui/react';
 import axios from 'axios';
+import useUserStore from '../../store/useUserStore';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const FloatingLabelInput = ({ label, register, name, errors, type = "text", leftAddon, rules, ...rest }) => (
     <FormControl isInvalid={errors[name]} position="relative">
@@ -86,8 +88,9 @@ const LoginForm = () => {
     } = useForm({
         mode: 'onTouched',
     });
-
+    const { fetchUser } = useUserStore();
     const toast = useToast();
+    const navigate = useNavigate(); // Initialize useNavigate
 
     const onSubmit = async (data) => {
         try {
@@ -109,7 +112,9 @@ const LoginForm = () => {
                     duration: 5000,
                     isClosable: true,
                 });
-                reset(); // Reset the form after successful login
+                reset();
+                fetchUser();
+                navigate("/");
             }
         } catch (error) {
             console.error('Error:', error);
