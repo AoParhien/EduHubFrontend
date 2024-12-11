@@ -4,12 +4,13 @@ import './navbar.css';
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
 import { Link } from 'react-router-dom';
 import Dblue from '../../assets/Dblue.png';
+import useUserStore from '../../store/useUserStore'; // Import your zustand store to get the user
 
 const Navbar = () => {
 
     const [showCategories, setShowCategories] = useState(false);
     const [toggleMenu, setToggleMenu] = useState(false);
-
+    const user = useUserStore(state => state.user);
     const handleMouseEnter = () => {
         setShowCategories(true);
     };
@@ -75,13 +76,19 @@ const Navbar = () => {
                             </div>
                         )}
                     </div>
-                    <p >Become an Institute</p>
-                    <div className='eduhub__navbar-login'>
-                        <button type='button'>Log In</button>
-                    </div>
-                    <div className='eduhub__navbar-signup'>
-                        <button type='button'>Sign up</button>
-                    </div>
+                    {user ? (
+                        <p className='eduhub__welcome-message'>Welcome, {user.student.firstName}</p>
+                    ) : (
+                        <>
+                            <p >Become an Institute</p>
+                            <div className='eduhub__navbar-login'>
+                                <button type='button'>Log In</button>
+                            </div>
+                            <div className='eduhub__navbar-signup'>
+                                <button type='button'>Sign up</button>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

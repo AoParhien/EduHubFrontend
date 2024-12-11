@@ -274,6 +274,12 @@
     display: none;
 }
 
+.eduhub__navbar-right .eduhub__welcome-message {
+    margin-right: 2rem;  /* Reduced from 20rem to be more reasonable */
+    font-weight: 500;    /* Make it slightly bold */
+    padding: 0.5rem 1rem;
+    margin-left: 15rem;
+}
 @media screen and (max-width: 768px) {
     .eduhub__navbar-right {
         display: none;
