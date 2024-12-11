@@ -39,7 +39,7 @@ const CourseBatches = ({ batches, schedules }) => {
     <>
       {batches.map((batch, index) => {
         // Filter schedules that belong to the current batch
-        const batchSchedules = schedules.filter(schedule => schedule.batch_id === batch._id);
+        const batchSchedules = schedules.filter(schedule => schedule.batchId === batch._id);
 
         return (
           <Box key={batch._id} mt={index > 0 ? 4 : 0}>

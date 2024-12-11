@@ -11,7 +11,7 @@ const Schedule = ({ batches, schedules }) => {
     const mergeBatchesAndSchedules = (batches, schedules) => {
         return batches.map(batch => {
             // Find the schedules related to this batch
-            const relatedSchedules = schedules.filter(schedule => schedule.batch_id === batch._id);
+            const relatedSchedules = schedules.filter(schedule => schedule.batchId === batch._id);
 
             // Convert schedules to desired format, extracting details
             return relatedSchedules.map(schedule => ({
