@@ -35,6 +35,7 @@ const CourseSection = () => {
             }
 
             const data = await response.json();
+            console.log(data);
             setCourses(data); // Store all fetched data
         } catch (error) {
             console.error('Error fetching courses:', error);
@@ -70,12 +71,13 @@ const CourseSection = () => {
                 <div className='eduhub__course-cards'>
                     {filteredCourses.map((course, index) => (
                         <CourseCard
-                            key={index}
-                            title={course.title}
-                            fees={course.fees}
-                            institute={course.instituteName}
-                            board={course.board}
-                            imageUrl={course.imageUrl}
+                        key={index}
+                        title={course.title}
+                        fees={course.fees}
+                        institute={course.instituteName}
+                        board={course.board}
+                        imageUrl={course.imageUrl}
+                        id={course.courseId}  
                         />
                     ))}
                 </div>
