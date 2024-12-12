@@ -57,18 +57,18 @@ const CourseDetails = () => {
 
     return (
         <Box className='section__padding' maxW="7xl" mx="auto" p={5} bg="white" boxShadow="md" borderRadius="lg">
-            {/* Breadcrumb */}
-            <Breadcrumb fontSize="sm" color="gray.500" separator=">">
+          <Breadcrumb fontSize="sm" color="gray.500" separator=">">
                 <BreadcrumbItem>
-                    <BreadcrumbLink href="#">Home</BreadcrumbLink>
+                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbItem>
-                    <BreadcrumbLink href="#">Courses</BreadcrumbLink>
+                    <BreadcrumbLink href="/courses">Courses</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbItem isCurrentPage>
-                    <BreadcrumbLink href="#">O'Levels Mathematics By Ahmad Saya</BreadcrumbLink>
+                    <BreadcrumbLink href={`/course-details/${courseId}`}>{course.title}</BreadcrumbLink>
                 </BreadcrumbItem>
             </Breadcrumb>
+
 
             <Flex flexDirection={{ base: 'column', md: 'row' }} mt={5}>
                 <Stack flex="1" spacing={5}>
