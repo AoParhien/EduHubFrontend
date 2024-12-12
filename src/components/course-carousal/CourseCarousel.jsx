@@ -1,25 +1,21 @@
 import React from 'react';
-import { Box, Flex, IconButton } from '@chakra-ui/react';
+import { Box, IconButton } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import Slider from 'react-slick';
+import Slider from 'react-slick'; // Importing react-slick for the carousel functionality
 import CourseCard from '../course-card/courseCard';
+import 'slick-carousel/slick/slick.css'; 
+import 'slick-carousel/slick/slick-theme.css'; 
 
 const CourseCarousel = ({ courses }) => {
-  const sliderRef = React.useRef(null);
-
   const settings = {
-    dots: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 4, 
-    slidesToScroll: 1,
+    dots: true, // Enables dots for navigation
+    infinite: true, // Infinite looping
+    speed: 500, // Animation speed
+    slidesToShow: 3, // Number of slides visible at a time
+    slidesToScroll: 1, // Number of slides to scroll on arrow click
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
     responsive: [
-      {
-        breakpoint: 1200, // Added breakpoint for larger screens
-        settings: {
-          slidesToShow: 4, 
-        },
-      },
       {
         breakpoint: 1024,
         settings: {
@@ -41,67 +37,63 @@ const CourseCarousel = ({ courses }) => {
     ],
   };
 
-  const handlePrevClick = () => {
-    if (sliderRef.current) {
-      sliderRef.current.slickPrev();
-    }
-  };
-
-  const handleNextClick = () => {
-    if (sliderRef.current) {
-      sliderRef.current.slickNext();
-    }
-  };
-
   return (
-    <Box position="relative" px={100}>
-      <Slider ref={sliderRef} {...settings}>
+    <Box maxW="1400px" mx="auto" py={8} px={4}>
+      <Slider {...settings}>
         {courses.map((course) => (
-          <Box key={course.courseId} px={1} py={2}> 
+          <Box key={course.courseId}>
             <CourseCard 
-              title={course.title}
-              institute={course.institute}
-              fees={course.fees}
-              board={course.board}
-              imageUrl={course.imageUrl}
-              id={course.courseId}
+              title={course.title} 
+              institute={course.institute} 
+              fees={course.fees} 
+              board={course.board} 
+              imageUrl={course.imageUrl} 
+              id={course.courseId} 
             />
           </Box>
         ))}
       </Slider>
-      <Flex
-        justify="space-between"
-        position="absolute"
-        top="50%"
-        left={0}
-        right={0}
-        transform="translateY(-50%)"
-        px={4}
-      >
-        <IconButton
-          aria-label="Previous course"
-          icon={<ChevronLeftIcon />}
-          onClick={handlePrevClick}
-          bg="blue.800"
-          color="white"
-          rounded="full"
-          _hover={{ bg: "blue.900" }}
-          position="absolute"
-          left={2}
-        />
-        <IconButton
-          aria-label="Next course"
-          icon={<ChevronRightIcon />}
-          onClick={handleNextClick}
-          bg="blue.800"
-          color="white"
-          rounded="full"
-          _hover={{ bg: "blue.900" }}
-          position="absolute"
-          right={2}
-        />
-      </Flex>
     </Box>
+  );
+};
+
+const PrevArrow = ({ onClick }) => {
+  return (
+    <IconButton 
+      aria-label="Previous course" 
+      icon={<ChevronLeftIcon />} 
+      onClick={onClick} 
+      bg="blue.800" 
+      color="white" 
+      rounded="full" 
+      _hover={{ bg: 'blue.900' }} 
+      position="absolute" 
+      left={-10} 
+      top="50%" 
+      transform="translateY(-50%)" 
+      zIndex={2} 
+      size="lg" 
+    />
+  );
+};
+
+const NextArrow = ({ onClick }) => {
+  return (
+    <IconButton 
+      aria-label="Next course" 
+      icon={<ChevronRightIcon />} 
+      onClick={onClick} 
+      bg="blue.800" 
+      color="white" 
+      rounded="full" 
+      _hover={{ bg: 'blue.900' }} 
+      position="absolute" 
+      right={-10} 
+      top="50%" 
+      transform="translateY(-50%)" 
+      zIndex={2} 
+      size="lg" 
+    />
   );
 };
 

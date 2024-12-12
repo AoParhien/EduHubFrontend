@@ -12,51 +12,66 @@ const CourseCard = ({ title, institute, fees, board, imageUrl, id }) => {
   return (
     <Link to={`/course-details/${id}`}>
       <Card
-        width='20vw'
-        maxW='500px'
+        width="320px"  // Fixed width instead of viewport units
+        height="360px" // Fixed height to ensure consistency
         borderRadius="lg"
         boxShadow="md"
-        p={1}
+        p={2}
         cursor="pointer"
         _hover={{
           boxShadow: 'lg',
           transform: 'scale(1.02)',
-          transition: '0.3s'
+          transition: 'all 0.3s ease'
         }}
         _active={{
           boxShadow: 'md',
           transform: 'scale(0.98)',
-          transition: '0.2s'
+          transition: 'all 0.2s ease'
         }}
         onClick={handleClick}
       >
-        <CardBody p={1}>
-          <Image
-            src={imageUrl}
-            alt={title}
-            borderRadius='md'
-            width='100%'
-            maxWidth='20vw'
-            maxH='200px'
-            objectFit='cover'
-          />
-          <Stack mt='2' spacing='1'>
-            <Heading size='sm'>{title}</Heading>
-            <Flex align='center' mt='2'>
-              <Icon as={IoMdSchool} boxSize='20px' mr='2' />
-              <Text fontSize='sm'>{institute}</Text>
+        <CardBody p={2} display="flex" flexDirection="column">
+          <Box height="200px" width="100%"> {/* Fixed container for image */}
+            <Image
+              src={imageUrl}
+              alt={title}
+              borderRadius='md'
+              width="100%"
+              height="100%"
+              objectFit='cover'
+            />
+          </Box>
+          <Stack spacing={2} flex={1} mt={3}>
+            <Heading 
+              size='sm' 
+              noOfLines={2} // Limit to 2 lines
+              height="40px" // Fixed height for title
+            >
+              {title}
+            </Heading>
+            <Flex align='center'>
+              <Icon as={IoMdSchool} boxSize={5} mr={2} />
+              <Text fontSize='sm' noOfLines={1}>{institute}</Text>
             </Flex>
-            <Flex align='center' mt='2'>
-              <Icon as={BsCreditCard2Back} boxSize='20px' mr='2' />
-              <Text color='blue.600' fontSize='sm'>PKR {fees}/Month</Text>
+            <Flex 
+              align='center' 
+              justify="space-between"
+              mt="auto" // Push to bottom
+              pt={2}
+            >
+              <Flex align='center'>
+                <Icon as={BsCreditCard2Back} boxSize={5} mr={2} />
+                <Text color='blue.600' fontSize='sm'>
+                  PKR {fees}/Month
+                </Text>
+              </Flex>
               <Box
-                position='relative'
-                ml='auto'
                 bg='gray.100'
                 border='1px'
                 borderColor='gray.300'
                 borderRadius='md'
-                p='1'
+                px={2}
+                py={1}
               >
                 <Text fontSize='sm' color='teal'>{board}</Text>
               </Box>
