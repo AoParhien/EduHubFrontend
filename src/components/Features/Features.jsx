@@ -87,12 +87,12 @@ const LearnMoreButton = styled.a`
 `;
 
 const SectionHeading = styled.h2`
+   font-family: var(--font-family);
+  font-weight: 500;
   font-size: 55px;
-  font-weight: 800;
-  text-align: center;
-  margin-bottom: 40px;
-  color: black;
-font-family: var(--font-family);
+  line-height: 83px;
+    text-align: center;
+  letter-spacing: -0.04em;
 `;
 
 const Features = () => {
