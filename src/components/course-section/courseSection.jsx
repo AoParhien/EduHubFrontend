@@ -9,10 +9,18 @@ const CourseSection = () => {
 
     const handleTabSelect = (tab) => {
         setSelectedTab(tab);
-        console.log(selectedTab)
     };
 
-    const [courses, setCourses] = useState([]); // State to store courses
+    const [courses, setCourses] = useState([]); // State to store all courses
+    const [filteredCourses, setFilteredCourses] = useState([]); // State to store filtered courses
+
+    // Function to normalize board names for comparison
+    const normalizeBoardName = (boardName) => {
+        return boardName
+            .replace(/'/g, '') // Remove apostrophes
+            .replace(/\s/g, '') // Remove spaces
+            .toLowerCase(); // Convert to lowercase
+    };
 
     // Function to fetch courses
     const getCourses = async () => {
@@ -27,16 +35,29 @@ const CourseSection = () => {
             }
 
             const data = await response.json();
-            setCourses(data); // Store fetched data in state
+            setCourses(data); // Store all fetched data
         } catch (error) {
             console.error('Error fetching courses:', error);
         }
     };
 
+    // Effect to filter courses when selectedTab or courses change
+    useEffect(() => {
+        // Normalize the selected tab name
+        const normalizedSelectedTab = normalizeBoardName(selectedTab);
+
+        // Filter courses based on the normalized board name
+        const filtered = courses.filter(course => 
+            normalizeBoardName(course.board) === normalizedSelectedTab
+        );
+        setFilteredCourses(filtered);
+    }, [selectedTab, courses]);
+
     // Fetch courses when the component mounts
     useEffect(() => {
         getCourses();
     }, []);
+
     return (
         <>
             <div className='eduhub__course-section section__padding'>
@@ -47,17 +68,16 @@ const CourseSection = () => {
                     <TabBar width='40%' tabs={tabs} onSelect={handleTabSelect} />
                 </div>
                 <div className='eduhub__course-cards'>
-                    {courses.map((course, index) => (
+                    {filteredCourses.map((course, index) => (
                         <CourseCard
                             key={index}
                             title={course.title}
                             fees={course.fees}
                             institute={course.instituteName}
                             board={course.board}
-                            imageUrl={course.imageUrl} // Passing image as prop
+                            imageUrl={course.imageUrl}
                         />
-                    )
-                    )}
+                    ))}
                 </div>
             </div>
         </>

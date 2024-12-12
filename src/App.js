@@ -30,6 +30,7 @@ function App() {
             <Route path='/signup' element={<SignUpForm />}/>
             <Route path='/login' element={<LoginForm />} />
             <Route path='/profile' element={<UserProfile />} />
+         
           </Routes>
           <Footer />
         </div>

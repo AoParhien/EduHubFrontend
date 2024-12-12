@@ -1,6 +1,10 @@
 .eduhub__instructor-section {
     display: flex;
     flex-direction: row;
+    margin-bottom: 180px;
+    margin-right: 50px;
+    margin-top:180px;
+   
 }
 
 .eduhub__instructor-section-content{
@@ -10,12 +14,13 @@
     align-items: flex-start;
     flex-direction: column;
     margin-top: -1rem;
+    padding: 90px;
 }
 
 .eduhub__instructor-section-content h1{
     font-family: var(--font-family);
     font-weight: 500;
-    font-size: 40px;
+    font-size: 55px;
     line-height: 83px;
     letter-spacing: -0.04em;
 }
@@ -23,8 +28,8 @@
 .eduhub__instructor-section-content p {
     font-family: var(--font-family);
     font-weight: 400;
-    font-size: 15px;
-    line-height: 18px;
+    font-size: 19px;
+    line-height: 24px;
     color: black;
     padding-left: 0.1rem;
 }

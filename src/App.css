@@ -10,10 +10,14 @@ html, body {
   width: 100%;
 }
 
+
+
 body {
   font-family: var(--main-font-family, sans-serif); /* Example font family variable */
   background: linear-gradient(131deg, rgba(215, 220, 245, 1) 52%, rgba(255, 255, 255, 1) 100%);
 }
+
+z
 
 .App {
   display: flex;
@@ -41,3 +45,5 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+

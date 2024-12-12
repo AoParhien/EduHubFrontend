@@ -1,6 +1,7 @@
 .eduhub__header {
     display: flex;
     flex-direction: row;
+    padding: 100px;
 }
 
 .eduhub__header-content {
