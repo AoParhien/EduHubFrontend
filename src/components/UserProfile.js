@@ -5,6 +5,18 @@ function UserProfile() {
   // Access user state, loading state, and actions from the store
   const { user, isLoading, error, fetchUser, clearUser } = useUserStore();
 
+  const logout = async () => {
+    try {
+      await fetch('http://localhost:3003/logout', { 
+        method: 'POST',
+        credentials: 'include',
+      });
+      clearUser();
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+  
   useEffect(() => {
     fetchUser(); // Fetch user data when the component mounts
   }, [fetchUser]);
@@ -18,7 +30,7 @@ function UserProfile() {
         <div>
           <p><strong>Name:</strong> {user.student.firstName}</p>
           <p><strong>Mobile:</strong> {user.student.mobileNumber}</p>
-          <button onClick={clearUser}>Logout</button>
+          <button onClick={logout}>Logout</button>
         </div>
       ) : (
         <p>No user data available.</p>

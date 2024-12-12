@@ -11,7 +11,7 @@ const Navbar = () => {
     const [toggleMenu, setToggleMenu] = useState(false);
     const [searchQuery, setSearchQuery] = useState(''); // Track search query
     const user = useUserStore(state => state.user);
-
+    console.log("User ",user)
     const handleMouseEnter = () => {
         setShowCategories(true);
     };

@@ -4,20 +4,27 @@ const useUserStore = create((set) => ({
   user: null, // Initial state for user data
   isLoading: false, // To track loading state
   error: null, // To track errors
-  fetchUser: async (userId) => {
+  fetchUser: async () => {
     set({ isLoading: true }); // Set loading to true before the request
     try {
       const response = await fetch('http://localhost:3003/api/student/profile', {
         method: 'GET',
         credentials: 'include',
-    });
-      const userData = await response.json();
-      set({ user: userData, isLoading: false, error: null }); // Update store with user data
+      });
+
+      if (response.status === 401 || response.status === 404 || response.status === 500) {
+        set({ user: null, isLoading: false, error: `Error: ${response.status}` }); // Handle error statuses
+      } else {
+        const userData = await response.json();
+        set({ user: userData, isLoading: false, error: null }); // Update store with user data
+      }
     } catch (error) {
-      set({ error: error.message, isLoading: false }); // Handle errors
+      set({ error: error.message, isLoading: false, user: null }); // Handle network errors
     }
   },
-  clearUser: () => set({ user: null }), // Clear user data on logout
+  clearUser: () => {
+    set({ user: null });
+  }, 
 }));
 
 export default useUserStore;

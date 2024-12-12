@@ -76,7 +76,7 @@ const Courses = () => {
                 <div className='eduhub__courses-cards'>
                     {courses.map((course) => (
                         <CourseCard
-                            key={course.id || course.title}
+                            key={course.courseId || course.title}
                             title={course.title}
                             fees={course.fees}
                             institute={course.instituteName}
