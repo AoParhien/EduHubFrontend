@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { Box, Flex, Text, Button, Grid, Heading } from '@chakra-ui/react';
 import { FaRegCalendarAlt, FaMapMarkerAlt, FaMoneyBillAlt, FaUserGraduate } from 'react-icons/fa';
 
 const featureCards = [
@@ -29,85 +29,47 @@ const featureCards = [
     title: 'No Extra Fees, Guaranteed Seats',
     icon: <FaMoneyBillAlt size={50} color="#F6D33C" />,
     description:
-      'Book seats without worrying about extra costs. Your seat is secured, and your learning journey is our priority..'
+      'Book seats without worrying about extra costs. Your seat is secured, and your learning journey is our priority.'
   }
 ];
-
-const FeaturesContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 60px 20px;
-`;
-
-const FeatureCard = styled.div`
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 32px;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease-in-out;
-
-  &:hover {
-    transform: translateY(-4px);
-  }
-`;
-
-const FeatureTitle = styled.h3`
-  font-size: 24px;
-  margin-bottom: 12px;
-  font-weight: 700;
-  color: #00308F;
-`;
-
-const FeatureDescription = styled.p`
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 20px;
-`;
-
-const LearnMoreButton = styled.a`
-  display: inline-block;
-  background-color: #00308F;
-  color: #fff;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-size: 18px;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
-
-  &:hover {
-    background-color: #00308F;
-  }
-`;
-
-const SectionHeading = styled.h2`
-   font-family: var(--font-family);
-  font-weight: 500;
-  font-size: 55px;
-  line-height: 83px;
-    text-align: center;
-  letter-spacing: -0.04em;
-`;
 
 const Features = () => {
   return (
     <div>
-      <SectionHeading>What we offer you?</SectionHeading>
-      <FeaturesContainer>
+      <Heading as="h2" fontSize="55px" lineHeight="83px" textAlign="center" mb={12}>
+        What we offer you?
+      </Heading>
+      <Grid
+        templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }}
+        gap={12}
+        maxW="1200px"
+        mx="auto"
+        px={6}
+        py={16}
+      >
         {featureCards.map((feature) => (
-          <FeatureCard key={feature.id}>
+          <Box
+            key={feature.id}
+            border="1px solid"
+            borderColor="gray.300"
+            borderRadius="8px"
+            p={8}
+            textAlign="center"
+            boxShadow="md"
+            transition="transform 0.3s ease-in-out"
+            _hover={{ transform: 'translateY(-4px)' }}
+          >
             {feature.icon}
-            <FeatureTitle>{feature.title}</FeatureTitle>
-            <FeatureDescription>{feature.description}</FeatureDescription>
-          </FeatureCard>
+            <Text fontSize="24px" fontWeight="700" color="#00308F" mt={4} mb={2}>
+              {feature.title}
+            </Text>
+            <Text fontSize="18px" color="gray.600" mb={4}>
+              {feature.description}
+            </Text>
+            
+          </Box>
         ))}
-      </FeaturesContainer>
+      </Grid>
     </div>
   );
 };
