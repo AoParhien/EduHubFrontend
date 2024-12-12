@@ -1,16 +1,17 @@
-import { React, useState } from 'react';
-// import logo from '../../logo-eduhub.svg';
+import React, { useState } from 'react';
 import './navbar.css';
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
+import { AiOutlineSearch } from 'react-icons/ai'; // Import the search icon
 import { Link } from 'react-router-dom';
 import Dblue from '../../assets/Dblue.png';
-import useUserStore from '../../store/useUserStore'; // Import your zustand store to get the user
+import useUserStore from '../../store/useUserStore';
 
 const Navbar = () => {
-
     const [showCategories, setShowCategories] = useState(false);
     const [toggleMenu, setToggleMenu] = useState(false);
+    const [searchQuery, setSearchQuery] = useState(''); // Track search query
     const user = useUserStore(state => state.user);
+
     const handleMouseEnter = () => {
         setShowCategories(true);
     };
@@ -19,9 +20,21 @@ const Navbar = () => {
         setShowCategories(false);
     };
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault();
+        if (searchQuery) {
+            // Handle search logic here, for example, redirect or filter data
+            console.log('Searching for:', searchQuery);
+        }
+    };
+
     return (
         <div className="eduhub__navbar">
-            <div className='eduhub__navbar-container'>
+            <div className="eduhub__navbar-container">
                 <div className="eduhub__navbar-menu">
                     {toggleMenu
                         ? <RiCloseLine color="#000" size={27} onClick={() => setToggleMenu(false)} />
@@ -37,19 +50,23 @@ const Navbar = () => {
                 </div>
                 <div className="eduhub__navbar-left">
                     <div className="eduhub__navbar-links_logo">
-                    <Link to="/">
-                        <img 
-                        src={Dblue}
-                        alt="EduHub Logo" 
-                    
-                        />
-                    </Link>
+                        <Link to="/">
+                            <img src={Dblue} alt="EduHub Logo" />
+                        </Link>
                     </div>
                     <div className="eduhub__search-container">
-                        <div className='eduhub__search-icon-wrapper'>
-                            <svg className="eduhub__search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path d="M10 2a8 8 0 015.293 13.707l5.62 5.62-1.414 1.414-5.62-5.62A8 8 0 1110 2zm0 2a6 6 0 100 12A6 6 0 0010 4z" /></svg>
-                        </div>
-                        <input type="search" placeholder="Search for anything" />
+                        <form onSubmit={handleSearchSubmit} className="eduhub__search-form">
+                            <div className="eduhub__search-icon-wrapper">
+                                {/* Replace the SVG with the React icon */}
+                                <AiOutlineSearch className="eduhub__search-icon" />
+                            </div>
+                            <input 
+                                type="search" 
+                                value={searchQuery}
+                                onChange={handleSearchChange}
+                                placeholder="Search for anything"
+                            />
+                        </form>
                     </div>
                 </div>
                 <div className="eduhub__navbar-right">
@@ -80,7 +97,7 @@ const Navbar = () => {
                         <p className='eduhub__welcome-message'>Welcome, {user.student.firstName}</p>
                     ) : (
                         <>
-                            <p >Become an Institute</p>
+                            <p>Become an Institute</p>
                             <div className='eduhub__navbar-login'>
                                 <button type='button'>Log In</button>
                             </div>

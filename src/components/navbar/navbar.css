@@ -338,6 +338,11 @@
 .eduhub__navbar-right a:hover {
     color: #F6D33C;
 }
+.eduhub__search-icon {
+    width: 20px;
+    height: 20px;
+    fill: #00308F;
+}
 
       
       

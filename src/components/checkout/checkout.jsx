@@ -69,7 +69,7 @@ const Checkout = () => {
                     Complete Your Enrollment
                 </Heading>
                 <Text fontSize="md" textAlign="center" color="gray.600">
-                    You're one step away from starting your journey in O-level Mathematics
+                    You're one step away from starting your journey in {course.title} with {course.teacher.name}
                 </Text>
                 <Box p={3} bg="yellow.100" borderRadius="md" border="1px solid" borderColor="yellow.300">
                     <Text fontSize="sm" color="yellow.800" textAlign="center">
@@ -101,7 +101,7 @@ const Checkout = () => {
                                         alt="Harvard Logo"
                                         boxSize="40px"
                                     />
-                                    <Text fontSize="md" fontWeight="medium">
+                                    <Text fontWeight="bold" fontSize="20px"> 
                                         {course.title}
                                     </Text>
                                 </HStack>
