@@ -99,10 +99,14 @@ const Navbar = () => {
                         <>
                             <p>Become an Institute</p>
                             <div className='eduhub__navbar-login'>
-                                <button type='button'>Log In</button>
+                                <Link to='/login'>
+                                    <button type='button'>Log In</button>
+                                </Link>
                             </div>
                             <div className='eduhub__navbar-signup'>
-                                <button type='button'>Sign up</button>
+                                <Link to='/signup'>
+                                    <button type='button'>Sign up</button>
+                                </Link>
                             </div>
                         </>
                     )}
