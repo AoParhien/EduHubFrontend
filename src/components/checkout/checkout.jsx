@@ -15,6 +15,7 @@ import {
     VStack,
     HStack,
     Divider,
+    useToast,
 } from "@chakra-ui/react";
 import CenteredSpinner from '../centered-spinner/centeredSpinner';
 import harvard from '../../assets/harvard.svg';
@@ -26,7 +27,7 @@ const BatchSelector = ({ batches, selectedBatch, handleBatchChange }) => {
             <FormLabel htmlFor="batch">Select Batch</FormLabel>
             <Select id="batch" value={selectedBatch} onChange={handleBatchChange}>
                 {batches.map((batch, index) => (
-                    <option key={index} value={batch.batchName}>
+                    <option key={index} value={batch.batchId}>
                         {batch.batchName}
                     </option>
                 ))}
@@ -36,21 +37,21 @@ const BatchSelector = ({ batches, selectedBatch, handleBatchChange }) => {
 };
 
 const Checkout = () => {
-    const [selectedBatch, setSelectedBatch] = useState("batch1");
+    const [selectedBatch, setSelectedBatch] = useState();
     const location = useLocation();
     const navigate = useNavigate();
     const [course, setCourse] = useState(null);
+    const toast = useToast();
 
     useEffect(() => {
         if (location.state && location.state.course) {
             setCourse(location.state.course);
+            setSelectedBatch(location.state.course.batches[0]._id)
         } else {
-            // Redirect to the courses page if no course data is available
             navigate('/courses', { replace: true });
         }
     }, [location, navigate]);
 
-    // Show a spinner while course data is loading
     if (!course) {
         return <CenteredSpinner />;
     }
@@ -59,7 +60,44 @@ const Checkout = () => {
         setSelectedBatch(e.target.value);
     };
 
-    // Calculate total fees
+    const handleCheckout = async () => {
+        const payload = {
+            batchId: selectedBatch,
+            studentId: "67593b7a20022d3ab67f8b05"
+        };
+
+        try {
+            const response = await fetch('http://localhost:3002/api/enrollment/addEnrollment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                toast({
+                    title: "Registration Successful",
+                    description: "You have been successfully enrolled.",
+                    status: "success",
+                    duration: 5000,
+                    isClosable: true,
+                });
+            } else {
+                throw new Error("Registration failed");
+            }
+        } catch (error) {
+            toast({
+                title: "Registration Failed",
+                description: "There was an error during registration. Please try again.",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });
+        }
+    };
+
     const totalFees = course.institute.registrationFees + course.fees;
 
     return (
@@ -101,13 +139,13 @@ const Checkout = () => {
                                         alt="Harvard Logo"
                                         boxSize="40px"
                                     />
-                                    <Text fontWeight="bold" fontSize="20px"> 
+                                    <Text fontWeight="bold" fontSize="20px">
                                         {course.title}
                                     </Text>
                                 </HStack>
 
                                 <BatchSelector 
-                                    batches={course.batches} // Pass batches directly
+                                    batches={course.batches} 
                                     selectedBatch={selectedBatch} 
                                     handleBatchChange={handleBatchChange} 
                                 />
@@ -184,6 +222,7 @@ const Checkout = () => {
                                     size="lg"
                                     w="full"
                                     bg={"#F6D33C"}
+                                    onClick={handleCheckout}
                                 >
                                     Confirm Purchase
                                 </Button>
