@@ -9,6 +9,7 @@ const Schedule = ({ batches, schedules }) => {
     const hours = ['12-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10', '10-11', '11-12'];
 
     const mergeBatchesAndSchedules = (batches, schedules) => {
+        console.log(batches, schedules)
         return batches.map(batch => {
             // Find the schedules related to this batch
             const relatedSchedules = schedules.filter(schedule => schedule.batchId === batch._id);

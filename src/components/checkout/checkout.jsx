@@ -20,14 +20,15 @@ import {
 import CenteredSpinner from '../centered-spinner/centeredSpinner';
 import harvard from '../../assets/harvard.svg';
 import Schedule from '../schedule/schedule';
+import useUserStore from '../../store/useUserStore';
 
 const BatchSelector = ({ batches, selectedBatch, handleBatchChange }) => {
     return (
         <FormControl>
             <FormLabel htmlFor="batch">Select Batch</FormLabel>
             <Select id="batch" value={selectedBatch} onChange={handleBatchChange}>
-                {batches.map((batch, index) => (
-                    <option key={index} value={batch.batchId}>
+                {batches.map((batch) => (
+                    <option key={batch._id} value={batch._id}>
                         {batch.batchName}
                     </option>
                 ))}
@@ -36,13 +37,14 @@ const BatchSelector = ({ batches, selectedBatch, handleBatchChange }) => {
     );
 };
 
+
 const Checkout = () => {
     const [selectedBatch, setSelectedBatch] = useState();
     const location = useLocation();
     const navigate = useNavigate();
     const [course, setCourse] = useState(null);
     const toast = useToast();
-
+    const { user } = useUserStore();
     useEffect(() => {
         if (location.state && location.state.course) {
             setCourse(location.state.course);
@@ -57,13 +59,14 @@ const Checkout = () => {
     }
 
     const handleBatchChange = (e) => {
+        console.log(e.target.value)
         setSelectedBatch(e.target.value);
     };
 
     const handleCheckout = async () => {
         const payload = {
             batchId: selectedBatch,
-            studentId: "67593b7a20022d3ab67f8b05"
+            studentId: user.student._id
         };
 
         try {

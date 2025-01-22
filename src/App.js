@@ -11,7 +11,7 @@ import SignUpForm from './components/signup-form/signupForm';
 import LoginForm from './components/login/login';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import UserProfile from './components/UserProfile';
-import Cookies from 'js-cookie'
+import StudentCourses from './components/student-courses/studentCourses';
 
 
 function App() {
@@ -31,6 +31,7 @@ function App() {
             <Route path='/signup' element={<SignUpForm />}/>
             <Route path='/login' element={<LoginForm />} />
             <Route path='/profile' element={<UserProfile />} />
+            <Route path='/student' element={<StudentCourses />} />
          
           </Routes>
           <Footer />

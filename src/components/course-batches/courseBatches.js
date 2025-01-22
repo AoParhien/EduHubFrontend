@@ -34,7 +34,8 @@ const decimalToTimeString = (decimal) => {
   return `${hours}:${minutesFormatted}`;
 };
 
-const CourseBatches = ({ batches, schedules }) => {
+const CourseBatches = ({ batches, schedules, courseName }) => {
+  console.log(batches)
   return (
     <>
       {batches.map((batch, index) => {
