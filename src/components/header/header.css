@@ -1,7 +1,10 @@
+/* General Styles */
 .eduhub__header {
     display: flex;
     flex-direction: row;
-    padding: 100px;
+    padding: 4rem; /* Reduced padding for better responsiveness */
+    align-items: center;
+    justify-content: space-between;
 }
 
 .eduhub__header-content {
@@ -10,179 +13,156 @@
     justify-content: center;
     align-items: flex-start;
     flex-direction: column;
-    padding: 10px;
-    margin-right: 5rem;
-    margin-top: 1rem;
+    padding: 1rem;
+    margin-right: 3rem; /* Adjusted margin for better spacing */
 }
 
 .eduhub__header-content h1 {
     font-family: var(--font-family);
-    font-weight: 500;
-    font-size: 70px;
-    line-height: 83px;
-    letter-spacing: -0.04em;
+    font-weight: 600;
+    font-size: 3rem; /* Changed to rem for scalability */
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: #1A202C; /* Ensure sufficient contrast */
 }
 
 .eduhub__header-content p {
     font-family: var(--font-family);
     font-weight: 400;
-    font-size: 22px;
-    line-height: 30px;
-    color: #757575;
-
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.6;
+    color: #4A5568; /* Tailwind's gray-600 equivalent */
     margin-top: 1.5rem;
 }
 
 .eduhub__header-content__input {
     width: 100%;
-    margin: 2rem 0 1rem 1rem;
+    margin: 2rem 0 1rem 0;
     display: flex;
     flex-direction: row;
-    margin-bottom: 10rem;
+    gap: 1.5rem; /* Use gap for spacing between buttons */
 }
 
-.eduhub__header-register-button{
-    width: 25%;
-    height: 40px;
-    /* flex: 0.6; */
-    font-family: var(--font-family);
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 26px;
-    color: white;
-    cursor: pointer;
-    outline: none;
-    border-color: transparent;
-    border-radius: 39px;
-    margin-right: 2rem;
-}
-
-.eduhub__header-learn-more-button{
-    width: 30%;
-    height: 40px;
-    /* flex: 0.6; */
-    font-family: var(--font-family);
-    font-weight: 400;
-    font-size: 25px;
-    line-height: 1px;
-    color: black;
-    background-color: transparent;
-    cursor: pointer;
-    outline: none;
-    border-color: black;
-    border-width: 1px;
-    border-radius: 39px;
-    padding:25px;
-               
-}
-
-
-.eduhub__header-content__people {
-    width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-direction: row;
-
-    margin-top: 2rem;
-}
-
-.eduhub__header-content__people img {
-    width: 181.79px;
-    height: 38px;
-}
-
-.eduhub__header-content__people p {
-    margin: 0 0 0 1rem;
+.eduhub__header-register-button {
+    flex: 1;
+    height: 3rem;
     font-family: var(--font-family);
     font-weight: 500;
-    font-size: 12px;
-    line-height: 38px;
-    color: #fff;
-    text-align: center;
+    font-size: 1rem;
+    color: white;
+    background-color: #00308F;
+    cursor: pointer;
+    border: none;
+    border-radius: 1.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.eduhub__header-register-button:hover {
+    background-color: #002B7A; /* Darker shade on hover */
+}
+
+.eduhub__header-learn-more-button {
+    flex: 1;
+    height: 3rem;
+    font-family: var(--font-family);
+    font-weight: 500;
+    font-size: 1rem;
+    color: #00308F;
+    background-color: transparent;
+    cursor: pointer;
+    border: 2px solid #00308F;
+    border-radius: 1.5rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.eduhub__header-learn-more-button:hover {
+    background-color: #00308F;
+    color: white;
 }
 
 .eduhub__header-image {
     flex: 1;
     display: flex;
-    justify-content: flex-start; /* Align the image to the left */
+    justify-content: center; /* Center the image */
     align-items: center;
-    width: 900%; /* Increase the width to make the image larger */
-    max-width: 4000px; /* Increase the max width for a more prominent image */
-    margin-left: -100px; /* Move the image further to the left */
-    margin-top: -59px;
+    padding: 1rem;
 }
 
 .eduhub__header-image img {
-    width: 300%; /* Make the image even bigger */
-    height: auto; /* Maintain aspect ratio */
-    object-fit: contain; /* Ensure the image is not cropped */
+    width: 100%;
+    max-width: 500px; /* Set a reasonable max width */
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
 }
 
+.eduhub__header-image img:hover {
+    transform: scale(1.05); /* Subtle zoom on hover */
+}
 
 .highlighted-text {
     color: #9E5CF2;
 }
 
-
+/* Responsive Styles */
 @media screen and (max-width: 1050px) {
     .eduhub__header {
         flex-direction: column;
+        padding: 2rem;
     }
 
     .eduhub__header-content {
-        margin: 0 0 3rem;
+        margin: 0;
+        text-align: center;
+    }
+
+    .eduhub__header-content__input {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .eduhub__header-register-button,
+    .eduhub__header-learn-more-button {
+        width: 100%;
+    }
+
+    .eduhub__header-image {
+        margin-top: 2rem;
     }
 }
 
 @media screen and (max-width: 650px) {
     .eduhub__header-content h1 {
-        font-size: 48px;
-        line-height: 60px;
+        font-size: 2.5rem;
     }
 
     .eduhub__header-content p {
-        font-size: 16px;
-        line-height: 24px;
-    }
-    
-    .eduhub__header-content__people {
-        flex-direction: column;
+        font-size: 1rem;
     }
 
-    .eduhub__header-content__people p {
-        margin: 0;
-    }
-
-    .eduhub__header-content__input input,
-    .eduhub__header-content__input button {
-        font-size: 16px;
-        line-height: 24px;
+    .eduhub__header-register-button,
+    .eduhub__header-learn-more-button {
+        font-size: 0.875rem; /* 14px */
+        padding: 0.75rem 1rem;
     }
 }
 
 @media screen and (max-width: 490px) {
     .eduhub__header-content h1 {
-        font-size: 36px;
-        line-height: 48px;
+        font-size: 2rem;
     }
 
     .eduhub__header-content p {
-        font-size: 14px;
-        line-height: 24px;
+        font-size: 0.875rem; /* 14px */
     }
 
-    .eduhub__header-content__input{
-        font-size: 12px;
-        line-height: 16px;
-    }
-    .eduhub__header-learn-more-button{
-        width: auto;
-        padding: 0 1rem;
+    .eduhub__header-content__input {
+        flex-direction: column;
     }
 
-    .registration-text {
-        color: #00308F;
+    .eduhub__header-register-button,
+    .eduhub__header-learn-more-button {
+        font-size: 0.875rem; /* 14px */
+        padding: 0.75rem 1rem;
     }
-    
 }

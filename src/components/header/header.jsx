@@ -69,7 +69,7 @@ const Header = () => {
             height="50px"
             fontFamily="var(--font-family)"
             fontWeight="400"
-            fontSize="25px"
+            fontSize="1.2rem"
             lineHeight="26px"
             borderColor="transparent"
             borderRadius="39px"
@@ -85,7 +85,7 @@ const Header = () => {
             type="button" 
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className='eduhub__header-learn-more-button border-2 border-blue-800 text-blue-800 px-6 py-3 rounded-full'
+            className='eduhub__header-learn-more-button '
           >
             Learn More
           </motion.button>

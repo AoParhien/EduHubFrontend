@@ -11,7 +11,6 @@ import SignUpForm from './components/signup-form/signupForm';
 import LoginForm from './components/login/login';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import UserProfile from './components/UserProfile';
-import Cookies from 'js-cookie'
 
 
 function App() {

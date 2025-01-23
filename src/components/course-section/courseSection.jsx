@@ -1,7 +1,7 @@
 import { useState, React, useEffect } from 'react';
 import './courseSection.css';
 import CourseCard from '../course-card/courseCard';
-import TabBar from '../TabBar/TabBar'
+import TabBar from '../TabBar/TabBar';
 
 const CourseSection = () => {
     const tabs = ['O\'Levels', 'A\'Levels', 'Edexcel', 'Matric', 'Inter', 'ECAT', 'MCAT', 'BCOM'];
@@ -9,10 +9,14 @@ const CourseSection = () => {
 
     const handleTabSelect = (tab) => {
         setSelectedTab(tab);
+        setCurrentPage(1); // Reset to the first page when the tab changes
     };
 
     const [courses, setCourses] = useState([]); // State to store all courses
     const [filteredCourses, setFilteredCourses] = useState([]); // State to store filtered courses
+
+    const [currentPage, setCurrentPage] = useState(1); // State to track the current page
+    const coursesPerPage = 4; // Number of courses per page
 
     // Function to normalize board names for comparison
     const normalizeBoardName = (boardName) => {
@@ -44,20 +48,29 @@ const CourseSection = () => {
 
     // Effect to filter courses when selectedTab or courses change
     useEffect(() => {
-        // Normalize the selected tab name
         const normalizedSelectedTab = normalizeBoardName(selectedTab);
 
-        // Filter courses based on the normalized board name
         const filtered = courses.filter(course => 
             normalizeBoardName(course.board) === normalizedSelectedTab
         );
         setFilteredCourses(filtered);
+        setCurrentPage(1); // Reset to the first page when the filtered courses change
     }, [selectedTab, courses]);
 
     // Fetch courses when the component mounts
     useEffect(() => {
         getCourses();
     }, []);
+
+    // Calculate the courses to display on the current page
+    const indexOfLastCourse = currentPage * coursesPerPage;
+    const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+    const currentCourses = filteredCourses.slice(indexOfFirstCourse, indexOfLastCourse);
+
+    // Handle page change
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
 
     return (
         <>
@@ -69,16 +82,27 @@ const CourseSection = () => {
                     <TabBar width='40%' tabs={tabs} onSelect={handleTabSelect} />
                 </div>
                 <div className='eduhub__course-cards'>
-                    {filteredCourses.map((course, index) => (
+                    {currentCourses.map((course, index) => (
                         <CourseCard
-                        key={index}
-                        title={course.title}
-                        fees={course.fees}
-                        institute={course.instituteName}
-                        board={course.board}
-                        imageUrl={course.imageUrl}
-                        id={course.courseId}  
+                            key={index}
+                            title={course.title}
+                            fees={course.fees}
+                            institute={course.instituteName}
+                            board={course.board}
+                            imageUrl={course.imageUrl}
+                            id={course.courseId}
                         />
+                    ))}
+                </div>
+                <div className='pagination'>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                            key={index}
+                            className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
+                            onClick={() => paginate(index + 1)}
+                        >
+                            {index + 1}
+                        </button>
                     ))}
                 </div>
             </div>
