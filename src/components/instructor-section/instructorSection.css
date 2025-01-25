@@ -1,49 +1,107 @@
 .eduhub__instructor-section {
     display: flex;
-    flex-direction: row;
-    margin-bottom: 180px;
-    margin-right: 50px;
-    margin-top:180px;
-   
-}
-
-.eduhub__instructor-section-content{
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
     flex-direction: column;
-    margin-top: -1rem;
-    padding: 90px;
+    margin-bottom: 180px;
+    margin-top: 180px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.eduhub__instructor-section-content h1{
+.eduhub__instructor-section-content {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 0 20px;
+}
+
+.eduhub__instructor-section-content h1 {
     font-family: var(--font-family);
-    font-weight: 500;
-    font-size: 55px;
-    line-height: 83px;
-    letter-spacing: -0.04em;
+    font-weight: 600;
+    font-size: 2.5rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    color: #333;
 }
 
 .eduhub__instructor-section-content p {
     font-family: var(--font-family);
     font-weight: 400;
-    font-size: 19px;
-    line-height: 24px;
-    color: black;
-    padding-left: 0.1rem;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: #555;
+    margin: 0 auto;
+    max-width: 700px;
 }
 
 .eduhub__instructor-section-instructors {
-    display: flex;
-    flex-wrap: wrap; /* Allows wrapping to the next line */
-    gap: 1rem; /* Space between cards */
-    justify-content: space-between; /* Distributes space between cards */
-    margin-left: 1rem;
+    width: 100%;
 }
 
-.eduhub__instructor-section-instructors > * {
-    flex: 1 1 calc(33.333% - 1rem); /* 3 cards per line, minus gap */
-    box-sizing: border-box; /* Ensures padding and borders are included in width */
-    max-width: calc(33.333% - 1rem); /* Ensures cards don't exceed the desired width */
+.slider-item {
+    padding: 15px;
+    transition: transform 0.3s ease;
+}
+
+.slider-item:hover {
+    transform: scale(1.05);
+}
+
+.instructor-card-container {
+    text-align: center;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow: hidden;
+}
+
+.instructor-image {
+    width: 100%;
+    height: auto;
+    max-width: 200px;
+    margin: 0 auto;
+    border-radius: 20%;
+    border: 2px solid #007bff;
+}
+
+.instructor-details {
+    margin-top: 15px;
+}
+
+.instructor-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.instructor-board {
+    font-size: 1rem;
+    color: #555;
+}
+
+.slick-slider {
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
+.slick-dots li button:before {
+    color: #007bff;
+    font-size: 0.9rem;
+}
+
+.slick-dots li.slick-active button:before {
+    color: #0056b3;
+    font-size: 1.1rem;
+}
+
+.highlight-title {
+    background: linear-gradient(90deg, #ff7e5f, #feb47b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-style: italic;
 }

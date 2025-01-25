@@ -3,7 +3,7 @@
     overflow: hidden;
     position: relative;
     box-shadow: 0 0 20px rgba(88, 98, 183, 0.2);
-    padding: 4rem 0rem;
+    padding: 2rem 0rem;
     background-blend-mode: overlay;
 
 }
@@ -16,7 +16,7 @@
 }
 
 .image-button {
-    height: 50px; /* Set a fixed height */
+    height: 40px; /* Set a fixed height */
     width: auto; /* Maintain aspect ratio */
     margin-right: 3rem;
     cursor: pointer;
