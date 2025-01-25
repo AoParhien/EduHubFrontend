@@ -119,6 +119,21 @@
     z-index: 1;
 }
 
+.eduhub__navbar-my-courses button{
+    box-sizing: border-box;
+    display: block;
+    position: relative;
+    color: #00308F;
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 17spx;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    z-index: 1;
+    width: 100%;
+}
+
 .eduhub__categories_dropdown {
     position: absolute;
     top: 100%;
@@ -159,6 +174,7 @@
     align-items: center;
 }
 
+
 .eduhub__navbar-signup button {
     margin-left: 1rem;
     margin-right: 1rem;
@@ -176,6 +192,7 @@
     justify-content: flex-end;
     align-items: center;
 }
+
 
 /* Media query for screens with max-width 1050px */
 @media screen and (max-width: 1050px) {
@@ -216,6 +233,7 @@
         width: 100%;
         justify-content: center;
     }
+
 
     .eduhub__categories_dropdown {
         width: 100%;
@@ -278,7 +296,8 @@
     margin-right: 2rem;  /* Reduced from 20rem to be more reasonable */
     font-weight: 500;    /* Make it slightly bold */
     padding: 0.5rem 1rem;
-    margin-left: 15rem;
+    margin-left: 10rem;
+    width: 100%;
 }
 @media screen and (max-width: 768px) {
     .eduhub__navbar-right {

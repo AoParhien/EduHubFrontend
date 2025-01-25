@@ -68,7 +68,12 @@ const StudentCourses = () => {
   }
 
   // Combine batches and schedules from all courses
-  const combinedBatches = studentCourses.flatMap(course => course.courseDetails.batches || []);
+  const combinedBatches = studentCourses.flatMap(course => 
+    (course.courseDetails.batches || []).map(batch => ({
+      ...batch,
+      courseTitle: course.courseDetails.title // Add course title to each batch
+    }))
+  );
   const combinedSchedules = studentCourses.flatMap(course => course.courseDetails.schedules || []);
 
   return (

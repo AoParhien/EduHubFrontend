@@ -94,7 +94,14 @@ const Navbar = () => {
                         )}
                     </div>
                     {user ? (
-                        <p className='eduhub__welcome-message'>Welcome, {user.student.firstName}</p>
+                        <>
+                            <div className='eduhub__navbar-my-courses'>
+                                <Link to='/student'>
+                                    <button type='button'>Enrollments</button>
+                                </Link>
+                            </div>  
+                            <p className='eduhub__welcome-message'>Welcome, {user.student.firstName}</p>
+                        </>                     
                     ) : (
                         <>
                             <p>Become an Institute</p>
