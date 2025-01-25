@@ -53,7 +53,7 @@ const CourseDetails = () => {
 
     const getCourse = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/api/courses/getCourseDetails/${courseId}`, {
+            const response = await fetch(`https://localhost:3001/api/courses/getCourseDetails/${courseId}`, {
                 method: 'GET',
                 credentials: 'include',
             });
