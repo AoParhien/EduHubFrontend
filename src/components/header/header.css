@@ -169,4 +169,7 @@
         font-size: 0.875rem; /* 14px */
         padding: 0.75rem 1rem;
     }
+    .eduhub__header-image {
+        display: none;
+    }
 }

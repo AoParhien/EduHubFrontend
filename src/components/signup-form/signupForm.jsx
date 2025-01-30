@@ -16,6 +16,8 @@ import {
     Link,
     Image,
     useToast,
+    Flex,
+    useBreakpointValue,
 } from '@chakra-ui/react';
 import axios from 'axios';
 
@@ -196,130 +198,155 @@ const SignUpForm = () => {
         }
     };
 
+    // Determine layout direction based on screen size
+    const flexDirection = useBreakpointValue({ base: 'column', md: 'row' });
+    const imageDisplay = useBreakpointValue({ base: 'none', md: 'block' });
+
     return (
-        <HStack spacing={8} align="stretch" h="100vh">
-            <Box flex={1}>
+        <Flex 
+            direction={flexDirection} 
+            minH="100vh"
+        >
+            <Box 
+                flex={1} 
+                display={imageDisplay}
+            >
                 <Image
                     src="https://as1.ftcdn.net/v2/jpg/01/75/84/48/1000_F_175844887_q9693JpeyWzJikA7xSKdMLwKgzdGHaEx.jpg"
                     alt="Sign Up Image"
                     objectFit="cover"
-                    w="100%"
-                    h="100%"
+                    width="100%"
+                    height="100%"
                 />
             </Box>
-            <Box flex={1} p={8}>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <VStack spacing={4} align="stretch">
-                        <Text fontSize="3xl" fontWeight="bold" mb={3} mt={-5}>
-                            Sign Up
-                        </Text>
-                        <HStack spacing={4}>
-                            <FloatingLabelInput
-                                label="First Name"
-                                register={register}
-                                name="firstName"
-                                errors={errors}
-                                rules={{ 
-                                    required: 'First name is required',
-                                    minLength: { value: 2, message: 'Minimum 2 characters' }
-                                }}
-                            />
-                            <FloatingLabelInput
-                                label="Last Name"
-                                register={register}
-                                name="lastName"
-                                errors={errors}
-                                rules={{ 
-                                    required: 'Last name is required',
-                                    minLength: { value: 2, message: 'Minimum 2 characters' }
-                                }}
-                            />
-                        </HStack>
-                        <FloatingLabelInput
-                            label="Email"
-                            register={register}
-                            name="email"
-                            errors={errors}
-                            type="email"
-                            rules={{
-                                required: 'Email is required',
-                                pattern: {
-                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: 'Invalid email address',
-                                },
-                            }}
-                        />
-                        <FloatingLabelInput
-                            label="Mobile Number"
-                            register={register}
-                            name="mobileNumber"
-                            errors={errors}
-                            type="tel"
-                            leftAddon="+92"
-                            rules={{
-                                required: 'Mobile number is required',
-                                pattern: {
-                                    value: /^[0-9]{10}$/,
-                                    message: 'Please enter a valid 10-digit number'
-                                }
-                            }}
-                        />
-                        <FloatingLabelInput
-                            label="Password"
-                            register={register}
-                            name="password"
-                            errors={errors}
-                            type="password"
-                            rules={{ 
-                                required: 'Password is required', 
-                                minLength: { value: 8, message: 'Password must be at least 8 characters' },
-                                pattern: {
-                                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                                    message: 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character'
-                                }
-                            }}
-                        />
-                        <FloatingLabelInput
-                            label="Confirm Password"
-                            register={register}
-                            name="confirmPassword"
-                            errors={errors}
-                            type="password"
-                            rules={{
-                                required: 'Please confirm your password',
-                                validate: (val) => watch('password') === val || "Passwords do not match"
-                            }}
-                        />
-                        <FormControl isInvalid={errors.termsAccepted}>
-                            <Checkbox
-                                {...register('termsAccepted', {
-                                    required: 'You must accept the terms and conditions'
-                                })}
+            <Box 
+                flex={1} 
+                p={{ base: 4, md: 8 }} 
+                display="flex" 
+                alignItems="center" 
+                justifyContent="center"
+            >
+                <Box width={{ base: "100%", md: "80%", lg: "60%" }}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <VStack spacing={4} align="stretch">
+                            <Text 
+                                fontSize={{ base: "2xl", md: "3xl" }} 
+                                fontWeight="bold" 
+                                mb={3}
+                                textAlign={{ base: "center", md: "left" }}
                             >
-                                By signing up you accept the <Link color="blue.500">Terms of Service</Link> and{" "}
-                                <Link color="blue.500">Privacy Policy</Link>
-                            </Checkbox>
-                            <FormErrorMessage>
-                                {errors.termsAccepted?.message}
-                            </FormErrorMessage>
-                        </FormControl>
-                        <Button 
-                            type="submit" 
-                            colorScheme="purple" 
-                            width="full" 
-                            height="3.5rem"
-                            isLoading={isSubmitting}
-                            loadingText="Signing up..."
-                        >
-                            Sign Up
-                        </Button>
-                        <Text textAlign="center">
-                            Already have an account? <Link color="blue.500">Login</Link>
-                        </Text>
-                    </VStack>
-                </form>
+                                Sign Up
+                            </Text>
+                            <HStack spacing={4} flexWrap="wrap">
+                                <FloatingLabelInput
+                                    label="First Name"
+                                    register={register}
+                                    name="firstName"
+                                    errors={errors}
+                                    rules={{ 
+                                        required: 'First name is required',
+                                        minLength: { value: 2, message: 'Minimum 2 characters' }
+                                    }}
+                                    flex={{ base: "100%", md: "48%" }}
+                                />
+                                <FloatingLabelInput
+                                    label="Last Name"
+                                    register={register}
+                                    name="lastName"
+                                    errors={errors}
+                                    rules={{ 
+                                        required: 'Last name is required',
+                                        minLength: { value: 2, message: 'Minimum 2 characters' }
+                                    }}
+                                    flex={{ base: "100%", md: "48%" }}
+                                />
+                            </HStack>
+                            <FloatingLabelInput
+                                label="Email"
+                                register={register}
+                                name="email"
+                                errors={errors}
+                                type="email"
+                                rules={{
+                                    required: 'Email is required',
+                                    pattern: {
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                        message: 'Invalid email address',
+                                    },
+                                }}
+                            />
+                            <FloatingLabelInput
+                                label="Mobile Number"
+                                register={register}
+                                name="mobileNumber"
+                                errors={errors}
+                                type="tel"
+                                leftAddon="+92"
+                                rules={{
+                                    required: 'Mobile number is required',
+                                    pattern: {
+                                        value: /^[0-9]{10}$/,
+                                        message: 'Please enter a valid 10-digit number'
+                                    }
+                                }}
+                            />
+                            <FloatingLabelInput
+                                label="Password"
+                                register={register}
+                                name="password"
+                                errors={errors}
+                                type="password"
+                                rules={{ 
+                                    required: 'Password is required', 
+                                    minLength: { value: 8, message: 'Password must be at least 8 characters' },
+                                    pattern: {
+                                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                                        message: 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character'
+                                    }
+                                }}
+                            />
+                            <FloatingLabelInput
+                                label="Confirm Password"
+                                register={register}
+                                name="confirmPassword"
+                                errors={errors}
+                                type="password"
+                                rules={{
+                                    required: 'Please confirm your password',
+                                    validate: (val) => watch('password') === val || "Passwords do not match"
+                                }}
+                            />
+                            <FormControl isInvalid={errors.termsAccepted}>
+                                <Checkbox
+                                    {...register('termsAccepted', {
+                                        required: 'You must accept the terms and conditions'
+                                    })}
+                                >
+                                    By signing up you accept the <Link color="blue.500">Terms of Service</Link> and{" "}
+                                    <Link color="blue.500">Privacy Policy</Link>
+                                </Checkbox>
+                                <FormErrorMessage>
+                                    {errors.termsAccepted?.message}
+                                </FormErrorMessage>
+                            </FormControl>
+                            <Button 
+                                type="submit" 
+                                colorScheme="purple" 
+                                width="full" 
+                                height="3.5rem"
+                                isLoading={isSubmitting}
+                                loadingText="Signing up..."
+                            >
+                                Sign Up
+                            </Button>
+                            <Text textAlign="center">
+                                Already have an account? <Link color="blue.500">Login</Link>
+                            </Text>
+                        </VStack>
+                    </form>
+                </Box>
             </Box>
-        </HStack>
+        </Flex>
     );
 };
 

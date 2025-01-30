@@ -57,3 +57,13 @@
     border-color: #0056b3;
     font-weight: bold;
 }
+
+@media screen and (max-width: 490px) {
+    .eduhub__course-section-content h1{
+        font-family: var(--font-family);
+        font-weight: 500;
+        font-size: 2rem;
+        line-height: 3.5rem;
+        letter-spacing: -0.04em;
+    }
+}

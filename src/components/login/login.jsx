@@ -15,6 +15,8 @@ import {
     Link,
     Image,
     useToast,
+    Flex,
+    useBreakpointValue,
 } from '@chakra-ui/react';
 import axios from 'axios';
 import useUserStore from '../../store/useUserStore';
@@ -184,60 +186,83 @@ const LoginForm = () => {
         }
     };
 
+    // Determine layout direction based on screen size
+    const flexDirection = useBreakpointValue({ base: 'column', md: 'row' });
+    const imageDisplay = useBreakpointValue({ base: 'none', md: 'block' });
+
     return (
-        <HStack spacing={8} align="stretch" h="100vh">
-            <Box flex={1}>
+        <Flex 
+            direction={flexDirection} 
+            minH="80vh"
+        >
+            <Box 
+                flex={1} 
+                display={imageDisplay}
+            >
                 <Image
                     src="https://as1.ftcdn.net/v2/jpg/01/75/84/48/1000_F_175844887_q9693JpeyWzJikA7xSKdMLwKgzdGHaEx.jpg"
                     alt="Login Image"
                     objectFit="cover"
-                    w="100%"
-                    h="100%"
+                    width="100%"
+                    height="100%"
                 />
             </Box>
-            <Box flex={1} p={8}>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <VStack spacing={4} align="stretch">
-                        <Text fontSize="3xl" fontWeight="bold" mb={3} mt={-5}>
-                            Login
-                        </Text>
-                        <FloatingLabelInput
-                            label="Email"
-                            register={register}
-                            name="email"
-                            errors={errors}
-                            type="email"
-                            rules={{
-                                required: 'Email is required',
-                            }}
-                        />
-                        <FloatingLabelInput
-                            label="Password"
-                            register={register}
-                            name="password"
-                            errors={errors}
-                            type="password"
-                            rules={{ 
-                                required: 'Password is required' 
-                            }}
-                        />
-                        <Button 
-                            type="submit" 
-                            colorScheme="purple" 
-                            width="full" 
-                            height="3.5rem"
-                            isLoading={isSubmitting}
-                            loadingText="Logging in..."
-                        >
-                            Login
-                        </Button>
-                        <Text textAlign="center">
-                            Don’t have an account? <Link color="blue.500">Sign Up</Link>
-                        </Text>
-                    </VStack>
-                </form>
+            <Box 
+                flex={1} 
+                p={{ base: 4, md: 8 }} 
+                display="flex" 
+                alignItems="center" 
+                justifyContent="center"
+            >
+                <Box width={{ base: "100%", md: "80%", lg: "60%" }}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <VStack spacing={4} align="stretch">
+                            <Text 
+                                fontSize={{ base: "2xl", md: "3xl" }} 
+                                fontWeight="bold" 
+                                mb={3}
+                                textAlign={{ base: "center", md: "left" }}
+                            >
+                                Login
+                            </Text>
+                            <FloatingLabelInput
+                                label="Email"
+                                register={register}
+                                name="email"
+                                errors={errors}
+                                type="email"
+                                rules={{
+                                    required: 'Email is required',
+                                }}
+                            />
+                            <FloatingLabelInput
+                                label="Password"
+                                register={register}
+                                name="password"
+                                errors={errors}
+                                type="password"
+                                rules={{ 
+                                    required: 'Password is required' 
+                                }}
+                            />
+                            <Button 
+                                type="submit" 
+                                colorScheme="purple" 
+                                width="full" 
+                                height="3.5rem"
+                                isLoading={isSubmitting}
+                                loadingText="Logging in..."
+                            >
+                                Login
+                            </Button>
+                            <Text textAlign="center">
+                                Don’t have an account? <Link color="blue.500">Sign Up</Link>
+                            </Text>
+                        </VStack>
+                    </form>
+                </Box>
             </Box>
-        </HStack>
+        </Flex>
     );
 };
 
