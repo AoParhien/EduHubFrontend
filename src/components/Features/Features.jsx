@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Flex, Text, Button, Grid, Heading } from '@chakra-ui/react';
+import { Box, Text, Grid, Heading } from '@chakra-ui/react';
 import { FaRegCalendarAlt, FaMapMarkerAlt, FaMoneyBillAlt, FaUserGraduate } from 'react-icons/fa';
 
 const featureCards = [
@@ -36,9 +36,16 @@ const featureCards = [
 const Features = () => {
   return (
     <div>
-      <Heading as="h2" fontSize="55px" lineHeight="83px" textAlign="center" mb={12}>
+      <Heading
+        as="h2"
+        fontSize={{ base: "32px", md: "55px" }} 
+        lineHeight={{ base: "48px", md: "83px" }}
+        textAlign="center"
+        mb={0}
+      >
         What we offer you?
       </Heading>
+
       <Grid
         templateColumns={{ base: '1fr', md: 'repeat(2, 1fr)' }}
         gap={12}

@@ -22,9 +22,7 @@ const Home = () => {
       <CourseSection />
       <InstructorSection />
       <Features/>
-      <CrashCourseSection/>
-      
-   
+      {/* <CrashCourseSection/> */}   
     </div>
   );
 };

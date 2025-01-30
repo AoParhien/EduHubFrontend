@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './instructorSection.css';
 import InstructorCard from '../instructor-card/instructorCard';
-import Slider from 'react-slick'; // Import react-slick slider
-import "slick-carousel/slick/slick.css"; // Import slick styles
-import "slick-carousel/slick/slick-theme.css";
 
 const InstructorSection = () => {
     const [topTeachers, setTopTeachers] = useState([]);
@@ -36,57 +33,25 @@ const InstructorSection = () => {
         getCourses();
     }, []);
 
-    // Slider settings for responsiveness
-    const sliderSettings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        autoplay: true,
-        autoplaySpeed: 3000,
-        responsive: [
-            {
-                breakpoint: 1024,
-                settings: {
-                    slidesToShow: 2,
-                },
-            },
-            {
-                breakpoint: 600,
-                settings: {
-                    slidesToShow: 1,
-                },
-            },
-        ],
-    };
-
     return (
         <div className="eduhub__instructor-section section__padding">
             <div className="eduhub__instructor-section-content">
-                <h1 className="highlight-title">Meet Our Best Instructors</h1>
-                <p className="subtitle">
-                    At AoParhein, we bring together top-notch educators to deliver exceptional learning experiences.
+                <h1>Best Instructors Onboard</h1>
+                <p>
+                    At AoParhein, we strive to bring together the best
+                    <br />
+                    professors for the best courses
                 </p>
             </div>
             <div className="eduhub__instructor-section-instructors">
-                <Slider {...sliderSettings}>
-                    {topTeachers.map((teacher, index) => (
-                        <div key={teacher?.id || index} className="slider-item"> {/* Wrap each card in a slider item */}
-                            <div className="instructor-card-container">
-                                <img
-                                    src={teacher?.picture || 'defaultImagePath'}
-                                    alt={teacher?.name || 'Instructor Picture'}
-                                    className="instructor-image"
-                                />
-                                <div className="instructor-details">
-                                    <h3 className="instructor-name">{teacher?.name || 'Unknown Instructor'}</h3>
-                                    <p className="instructor-board">{teacher?.boards?.[0] || 'N/A'}</p>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </Slider>
+                {topTeachers.map((teacher, index) => (
+                    <InstructorCard
+                        key={teacher?.id || index} // Use teacher ID if available, fallback to index
+                        teacherName={teacher?.name || 'Unknown Instructor'}
+                        board={teacher?.boards?.[0] || 'N/A'} // Safely access boards or fallback to 'N/A'
+                        image={teacher?.picture || 'defaultImagePath'} // Provide a default image if not available
+                    />
+                ))}
             </div>
         </div>
     );
