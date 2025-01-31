@@ -64,6 +64,17 @@ const Checkout = () => {
     };
 
     const handleCheckout = async () => {
+
+        if(!user){
+            toast({
+                title: "Invalid User",
+                description: "Please login to enroll",
+                status: "error",
+                duration: 5000,
+                isClosable: true,
+            });            
+            return
+        }
         const payload = {
             batchId: selectedBatch,
             studentId: user.student._id
