@@ -299,70 +299,194 @@
     margin-left: 10rem;
     width: 100%;
 }
+
+/* Keep all existing styles and add/update mobile-specific styles */
+
+/* Mobile Menu Styles - Updated */
 @media screen and (max-width: 768px) {
-    .eduhub__navbar-right {
-        display: none;
+    .eduhub__navbar {
+        padding: 0.5rem 0;
     }
 
+    .eduhub__navbar-container {
+        padding: 0.5rem 1rem;
+        border-radius: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .eduhub__navbar-menu {
+        display: flex;
+        align-items: left;
+        margin-left: 0;
+    }
+
+    .eduhub__navbar-menu svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .eduhub__navbar-menu_container {
+        position: fixed;
+        top: 65px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        padding: 1.5rem;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+
+    .mobile-search {
+        margin-bottom: 1.5rem;
+    }
+
+    .search-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-wrapper input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border: 1px solid #00308F;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 0.75rem;
+        color: #00308F;
+        width: 20px;
+        height: 20px;
+    }
+
+    .mobile-nav-section {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+    }
+
+    .mobile-nav-section:last-child {
+        border-bottom: none;
+    }
+
+    .mobile-nav-section h3 {
+        color: #666;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 1rem;
+    }
+
+    .mobile-nav-links {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: left;
+    }
+
+    .mobile-nav-links a {
+        color: #333;
+        text-decoration: none;
+        font-size: 1rem;
+        padding: 0.5rem 0;
+    }
+
+    .mobile-enrollment {
+        display: block;
+        color: #00308F;
+        text-decoration: none;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+
+    .mobile-welcome {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .mobile-institute {
+        display: block;
+        color: #333;
+        text-decoration: none;
+        margin-bottom: 1.5rem;
+    }
+
+    .mobile-auth {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .mobile-login {
+        color: #00308F;
+        text-decoration: none;
+        font-weight: 500;
+        text-align: left;
+        padding: 0.75rem;
+    }
+
+    .mobile-signup {
+        background: #00308F;
+        color: white;
+        text-decoration: none;
+        text-align: center;
+        padding: 0.75rem;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+    .eduhub__navbar-right,
     .eduhub__search-container {
         display: none;
     }
 
     .eduhub__navbar-links_logo {
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 1rem;
+        margin: 0 auto;
     }
 
+    .eduhub__navbar-links_logo img {
+        width: 120px;
+        height: auto;
+    }
+
+    /* Animation for slide-in menu */
+    .slide-in {
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Prevent body scroll when menu is open */
+    body.menu-open {
+        overflow: hidden;
+    }
+}
+
+/* Tablet Responsive Styles */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
     .eduhub__navbar-container {
-        padding: 0rem 0rem;
-        border-radius: 0;
+        padding: 0.8rem 1.5rem;
     }
 
-    .eduhub__navbar {
-        padding: 0 0;
+    .eduhub__search-container {
+        width: 35vw;
     }
 
-    .eduhub__navbar-menu {
-        display: flex; /* Ensure the menu is visible */
+    .eduhub__navbar-right > * {
+        margin-left: 1rem;
     }
-
-    .eduhub__navbar-menu_container {
-        display: flex; /* Ensure the menu container is visible */
-        top: 20px; /* Adjust top position if necessary */
-    }
-
-    .eduhub__navbar-menu_container-links-sign {
-        display: block;
-    }
-
-    .eduhub__categories_dropdown p:hover,
-.eduhub__categories_dropdown a:hover {
-    color: #F6D33C;
-}
-
-/* Hover effect for the navbar login and signup buttons */
-.eduhub__navbar-login button:hover,
-.eduhub__navbar-signup button:hover {
-    color: #F6D33C; /* Text color change */
-    background-color: transparent; /* Optional: keeps the background transparent */
-}
-
-/* Hover effect for the 'Courses' button */
-.eduhub__categories_button:hover {
-    color: #F6D33C; /* Text color change */
-}
-
-/* Hover effect for links inside the navbar (if any) */
-.eduhub__navbar-right a:hover {
-    color: #F6D33C;
-}
-.eduhub__search-icon {
-    width: 20px;
-    height: 20px;
-    fill: #00308F;
-}
-
-      
-      
 }

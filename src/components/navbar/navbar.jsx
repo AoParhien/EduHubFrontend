@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './navbar.css';
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
-import { AiOutlineSearch } from 'react-icons/ai'; // Import the search icon
+import { BiMenuAltLeft } from "react-icons/bi";
+import { AiOutlineSearch } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import Dblue from '../../assets/Dblue.png';
 import useUserStore from '../../store/useUserStore';
@@ -9,45 +10,101 @@ import useUserStore from '../../store/useUserStore';
 const Navbar = () => {
     const [showCategories, setShowCategories] = useState(false);
     const [toggleMenu, setToggleMenu] = useState(false);
-    const [searchQuery, setSearchQuery] = useState(''); // Track search query
+    const [searchQuery, setSearchQuery] = useState('');
     const user = useUserStore(state => state.user);
-    console.log("User ",user)
-    const handleMouseEnter = () => {
-        setShowCategories(true);
-    };
+    const menuRef = useRef(null);
 
-    const handleMouseLeave = () => {
-        setShowCategories(false);
-    };
+    useEffect(() => {
+        // Close menu when clicking outside
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setToggleMenu(false);
+            }
+        };
 
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         if (searchQuery) {
-            // Handle search logic here, for example, redirect or filter data
             console.log('Searching for:', searchQuery);
         }
+    };
+
+    const closeMenu = () => {
+        setToggleMenu(false);
     };
 
     return (
         <div className="eduhub__navbar">
             <div className="eduhub__navbar-container">
-                <div className="eduhub__navbar-menu">
+                <div className="eduhub__navbar-menu" ref={menuRef}>
                     {toggleMenu
                         ? <RiCloseLine color="#000" size={27} onClick={() => setToggleMenu(false)} />
-                        : <RiMenu3Line color="#000" size={27} onClick={() => setToggleMenu(true)} />}
+                        : <BiMenuAltLeft color="#000" size={27} onClick={() => setToggleMenu(true)} />}
                     {toggleMenu && (
-                        <div className="eduhub__navbar-menu_container scale-up-center">
-                            <div className="eduhub__navbar-menu_container-links-sign">
-                                <p>Sign in</p>
-                                <p>Sign up</p>
+                        <div className="eduhub__navbar-menu_container slide-in">
+                            <div className="mobile-search">
+                                <form onSubmit={handleSearchSubmit}>
+                                    <div className="search-wrapper">
+                                        <AiOutlineSearch className="search-icon" />
+                                        <input 
+                                            type="search" 
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            placeholder="Search for anything"
+                                        />
+                                    </div>
+                                </form>
                             </div>
+                            
+                            <div className="mobile-nav-section">
+                                <h3>Courses</h3>
+                                <div className="mobile-nav-links">
+                                    <Link to="/courses/Olevels" onClick={closeMenu}>
+                                        O Levels
+                                    </Link>
+                                    <Link to="/courses/Alevels" onClick={closeMenu}>
+                                        A Levels
+                                    </Link>
+                                    <Link to="/courses/Matric" onClick={closeMenu}>
+                                        Matric
+                                    </Link>
+                                    <Link to="/courses/Intermediate" onClick={closeMenu}>
+                                        Intermediate
+                                    </Link>
+                                </div>
+                            </div>
+
+                            {user ? (
+                                <div className="mobile-nav-section">
+                                    <Link to="/student" onClick={closeMenu} className="mobile-enrollment">
+                                        My Enrollments
+                                    </Link>
+                                    <p className="mobile-welcome">Welcome, {user.student.firstName}</p>
+                                </div>
+                            ) : (
+                                <div className="mobile-nav-section">
+                                    <Link to="/institutes" onClick={closeMenu} className="mobile-institute">
+                                        Become an Institute
+                                    </Link>
+                                    <div className="mobile-auth">
+                                        <Link to="/login" onClick={closeMenu} className="mobile-login">
+                                            Log In
+                                        </Link>
+                                        <Link to="/signup" onClick={closeMenu} className="mobile-signup">
+                                            Sign up
+                                        </Link>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
+
+                {/* Existing desktop navbar content remains unchanged */}
                 <div className="eduhub__navbar-left">
                     <div className="eduhub__navbar-links_logo">
                         <Link to="/">
@@ -57,13 +114,12 @@ const Navbar = () => {
                     <div className="eduhub__search-container">
                         <form onSubmit={handleSearchSubmit} className="eduhub__search-form">
                             <div className="eduhub__search-icon-wrapper">
-                                {/* Replace the SVG with the React icon */}
                                 <AiOutlineSearch className="eduhub__search-icon" />
                             </div>
                             <input 
                                 type="search" 
                                 value={searchQuery}
-                                onChange={handleSearchChange}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search for anything"
                             />
                         </form>
@@ -72,8 +128,8 @@ const Navbar = () => {
                 <div className="eduhub__navbar-right">
                     <div
                         className="eduhub__categories_button_container"
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
+                        onMouseEnter={() => setShowCategories(true)}
+                        onMouseLeave={() => setShowCategories(false)}
                     >
                         <button className="eduhub__categories_button">Courses</button>
                         {showCategories && (
