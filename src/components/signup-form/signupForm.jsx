@@ -331,11 +331,14 @@ const SignUpForm = () => {
                             </FormControl>
                             <Button 
                                 type="submit" 
-                                colorScheme="purple" 
+                                bg="#00308F" 
+                                color="white" 
+                                _hover={{ bg: "colors.brand.600" }} 
+                                _active={{ bg: "brand.700" }}
                                 width="full" 
                                 height="3.5rem"
                                 isLoading={isSubmitting}
-                                loadingText="Signing up..."
+                                loadingText="Logging in..."
                             >
                                 Sign Up
                             </Button>

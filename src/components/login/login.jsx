@@ -247,7 +247,10 @@ const LoginForm = () => {
                             />
                             <Button 
                                 type="submit" 
-                                colorScheme="purple" 
+                                bg="#00308F" 
+                                color="white" 
+                                _hover={{ bg: "colors.brand.600" }} 
+                                _active={{ bg: "brand.700" }}
                                 width="full" 
                                 height="3.5rem"
                                 isLoading={isSubmitting}
@@ -255,6 +258,7 @@ const LoginForm = () => {
                             >
                                 Login
                             </Button>
+
                             <Text textAlign="center">
                                 Don’t have an account? <Link color="blue.500">Sign Up</Link>
                             </Text>

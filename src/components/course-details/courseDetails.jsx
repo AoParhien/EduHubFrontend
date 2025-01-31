@@ -29,16 +29,15 @@ import { Image } from '@chakra-ui/react';
 import Schedule from '../schedule/schedule';
 import OSMMap from '../map/map';
 import FeeTable from '../fee-table/FeeTable';
-import CourseCarousel from '../course-carousal/CourseCarousel';
 import CenteredSpinner from '../centered-spinner/centeredSpinner';
 import CourseBatches from '../course-batches/courseBatches';
 
 const selectedFontWeight = 650;
-const courses = [
-    { id: 1, title: 'Course 1' },
-    { id: 2, title: 'Course 2' },
-    { id: 3, title: 'Course 3' },
-];
+// const courses = [
+//     { id: 1, title: 'Course 1' },
+//     { id: 2, title: 'Course 2' },
+//     { id: 3, title: 'Course 3' },
+// ];
 
 const CourseDetails = () => {
     const [course, setCourse] = useState(null);
@@ -377,7 +376,7 @@ const CourseDetails = () => {
                 </Box>
 
                 {/* Fees Structure Section */}
-                <Box id="feesstructure" py={10} mt={isMobile ? 60 : 0}>
+                <Box id="feesstructure" py={10} mt={isMobile ? 60 : 20}>
                     <Heading 
                         as="h2" 
                         size={responsiveHeadingSize} 
@@ -408,7 +407,7 @@ const CourseDetails = () => {
                     </Box>
                 </Box>
                 {/* Reviews Section */}
-                <Box id="reviews" py={10}>
+                {/* <Box id="reviews" py={10}>
                     <Heading 
                         as="h2" 
                         size={responsiveHeadingSize} 
@@ -417,7 +416,7 @@ const CourseDetails = () => {
                         Similar Courses
                     </Heading>
                     <CourseCarousel courses={courses} />
-                </Box>
+                </Box> */}
             </Box>
         </Box>
     );
