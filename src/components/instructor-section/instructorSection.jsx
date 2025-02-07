@@ -8,7 +8,7 @@ const InstructorSection = () => {
     // Fetch top teachers from the API
     const getCourses = async () => {
         try {
-            const response = await fetch('https://localhost:3001/api/teachers/getTopTeachers', {
+            const response = await fetch('http://localhost:3001/api/teachers/getTopTeachers', {
                 method: 'GET',
                 credentials: 'include', // Include credentials if required
             });

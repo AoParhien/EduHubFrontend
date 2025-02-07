@@ -35,11 +35,11 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const subjectsResponse = await fetch('https://localhost:3001/api/courses/getSubjects', {
+        const subjectsResponse = await fetch('http://localhost:3001/api/courses/getSubjects', {
           method: 'GET',
           credentials: 'include',
         });
-        const institutesResponse = await fetch('https://localhost:3001/api/institutes/getInstituteNames', {
+        const institutesResponse = await fetch('http://localhost:3001/api/institutes/getInstituteNames', {
           method: 'GET',
           credentials: 'include',
         });

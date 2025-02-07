@@ -38,7 +38,7 @@ const Courses = () => {
         debounce(async (filters) => {
             try {
                 const query = buildQueryParams(filters);
-                const response = await fetch(`https://localhost:3001/api/courses/getCourseListing?${query}`, {
+                const response = await fetch(`http://localhost:3001/api/courses/getCourseListing?${query}`, {
                     method: 'GET',
                     credentials: 'include',
                 });

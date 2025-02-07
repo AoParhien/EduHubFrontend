@@ -36,14 +36,14 @@
 }
 
 .eduhub__footer-links_div h4 {
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 700;
     color: #333;
     margin-bottom: 1rem;
 }
 
 .eduhub__footer-links_div p {
-    font-size: 21px;
+    font-size: 16px;
     color: #666;
     margin: 0.5rem 0;
     cursor: pointer;
@@ -61,13 +61,13 @@
 }
 
 .eduhub__footer-links_logo img {
-    width: 320px;
+    width: 280px;
     height: auto;
     margin-bottom: 1rem;
 }
 
 .eduhub__footer-links_logo p {
-    font-size: 12px;
+    font-size: 14px;
     color: #666;
     text-align: center;
 }
