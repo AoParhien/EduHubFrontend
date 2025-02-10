@@ -25,7 +25,8 @@ const StudentCourses = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch(`http://localhost:3002/api/enrollment/studentEnrollments/67593b7a20022d3ab67f8b05`, {
+        const apiUrl = process.env.REACT_APP_REGISTRATION_SERVICE_URL;
+        const response = await fetch(`${apiUrl}/api/enrollment/studentEnrollments/67593b7a20022d3ab67f8b05`, {
           credentials: 'include'
         });
         

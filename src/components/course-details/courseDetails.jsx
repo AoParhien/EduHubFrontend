@@ -52,7 +52,8 @@ const CourseDetails = () => {
 
     const getCourse = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/api/courses/getCourseDetails/${courseId}`, {
+            const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+            const response = await fetch(`${apiUrl}/api/courses/getCourseDetails/${courseId}`, {
                 method: 'GET',
                 credentials: 'include',
             });

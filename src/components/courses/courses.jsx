@@ -38,7 +38,8 @@ const Courses = () => {
         debounce(async (filters) => {
             try {
                 const query = buildQueryParams(filters);
-                const response = await fetch(`http://localhost:3001/api/courses/getCourseListing?${query}`, {
+            const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+            const response = await fetch(`${apiUrl}/api/courses/getCourseListing?${query}`, {
                     method: 'GET',
                     credentials: 'include',
                 });

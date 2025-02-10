@@ -7,7 +7,8 @@ function UserProfile() {
 
   const logout = async () => {
     try {
-      await fetch('http://localhost:3003/logout', { 
+      const apiUrl = process.env.REACT_APP_STUDENT_SERVICE_URL;
+      await fetch(`${apiUrl}/logout`, { 
         method: 'POST',
         credentials: 'include',
       });

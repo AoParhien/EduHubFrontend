@@ -93,10 +93,11 @@ const LoginForm = () => {
     const { fetchUser } = useUserStore();
     const toast = useToast();
     const navigate = useNavigate(); // Initialize useNavigate
-
+    const authUrl = process.env.REACT_APP_AUTH_SERVICE_URL;
+    console.log(authUrl)
     const onSubmit = async (data) => {
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', {
+            const response = await axios.post(`${authUrl}/api/auth/login`, {
                 email: data.email,
                 password: data.password,
             }, {

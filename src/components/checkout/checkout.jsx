@@ -81,7 +81,8 @@ const Checkout = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:3002/api/enrollment/addEnrollment', {
+            const apiUrl = process.env.REACT_APP_REGISTRATION_SERVICE_URL;
+            const response = await fetch(`${apiUrl}/api/enrollment/addEnrollment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

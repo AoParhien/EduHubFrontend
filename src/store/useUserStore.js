@@ -11,7 +11,8 @@ const useUserStore = create(
       fetchUser: async () => {
         set({ isLoading: true }); // Set loading to true before the request
         try {
-          const response = await fetch('http://localhost:3003/api/student/profile', {
+          const apiUrl = process.env.REACT_APP_STUDENT_SERVICE_URL;
+          const response = await fetch(`${apiUrl}/api/student/profile`, {
             method: 'GET',
             credentials: 'include',
           });

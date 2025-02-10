@@ -35,11 +35,12 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const subjectsResponse = await fetch('http://localhost:3001/api/courses/getSubjects', {
+        const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+        const subjectsResponse = await fetch(`${apiUrl}/api/courses/getSubjects`, {
           method: 'GET',
           credentials: 'include',
         });
-        const institutesResponse = await fetch('http://localhost:3001/api/institutes/getInstituteNames', {
+        const institutesResponse = await fetch(`${apiUrl}/api/institutes/getInstituteNames`, {
           method: 'GET',
           credentials: 'include',
         });
