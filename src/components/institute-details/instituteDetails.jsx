@@ -35,7 +35,7 @@ const InstituteDetails = () => {
     const fetchInstituteDetails = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:3001/api/institutes/getInstitute/${id}`);
+        const response = await fetch(`http://localhost:3001/api/institutes/${id}`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch institute details');
