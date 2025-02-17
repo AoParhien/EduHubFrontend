@@ -12,6 +12,7 @@ import LoginForm from './components/login/login';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import UserProfile from './components/UserProfile';
 import StudentCourses from './components/student-courses/studentCourses';
+import InstituteDetails from './components/institute-details/instituteDetails';
 
 
 function App() {
@@ -32,7 +33,7 @@ function App() {
             <Route path='/login' element={<LoginForm />} />
             <Route path='/profile' element={<UserProfile />} />
             <Route path='/student' element={<StudentCourses />} />
-         
+            <Route path="/institute/:id" element={<InstituteDetails />} />
           </Routes>
           <Footer />
         </div>

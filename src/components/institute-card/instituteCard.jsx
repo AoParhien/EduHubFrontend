@@ -1,119 +1,127 @@
+// InstituteCard.jsx
 import React from 'react';
-import { Card, CardBody, Image, Stack, Flex, Icon, Text, Box } from '@chakra-ui/react';
-import harvard from '../../assets/harvard.svg';
-import { TiLocation } from "react-icons/ti";
+import { useNavigate } from 'react-router-dom';
+import { Card, CardBody, Image, Heading, Stack, Flex, Text, Box, Badge, HStack, Icon } from '@chakra-ui/react';
+import { MapPin, Users, Clock } from 'lucide-react';
 
-const InstituteCard = ({
-    maxWidth = '600px',
-    title = 'ASTC',
-    level = 'Olevels'
+const InstituteCard = ({ 
+  _id, 
+  name, 
+  registrationFees, 
+  pictureUrl, 
+  logoUrl, 
+  location,
+  studentCount,
+  categories = [],
+  rating
 }) => {
-    const handleClick = () => {
-        alert('Card clicked');
-    };
+    const navigate = useNavigate();
 
-    // Custom colors
-    const colors = {
-        yellow: '#F6D33C',
-        blue: '#00308F',
-        softGray: '#F5F5F5'
+    const handleClick = () => {
+        navigate(`/institute/${_id}`);
     };
 
     return (
         <Card
             width="100%"
-            maxW={maxWidth}
-            borderRadius="15px"
+            borderRadius="lg"
             boxShadow="md"
-            overflow="hidden"
+            p={1}
             cursor="pointer"
-            border="1px solid"
-            borderColor={colors.blue}
-            bg={colors.softGray}
             _hover={{
                 boxShadow: 'lg',
-                transform: 'translateY(-5px)',
-                transition: '0.3s ease-in-out'
+                transform: 'scale(1.02)',
+                transition: 'all 0.3s ease'
             }}
             _active={{
                 boxShadow: 'md',
                 transform: 'scale(0.98)',
-                transition: '0.2s'
+                transition: 'all 0.2s ease'
             }}
             onClick={handleClick}
+            overflow="hidden"
+            bg="white"
         >
             <CardBody p={0}>
-                <Image
-                    src='https://png.pngtree.com/thumb_back/fh260/background/20230713/pngtree-3d-rendering-of-a-classroom-with-an-empty-blackboard-image_3868172.jpg'
-                    alt='Institute classroom'
-                    width='100%'
-                    height='180px'
-                    objectFit='cover'
-                />
+                <Box position="relative">
+                    <Image
+                        src={pictureUrl || '/api/placeholder/400/200'}
+                        alt={name}
+                        borderRadius='lg'
+                        objectFit='cover'
+                        height="200px"
+                        width="100%"
+                    />
+                    {rating && (
+                        <Badge
+                            position="absolute"
+                            top={2}
+                            right={2}
+                            colorScheme={rating >= 4 ? "green" : "orange"}
+                            px={2}
+                            py={1}
+                            borderRadius="md"
+                        >
+                            ★ {rating.toFixed(1)}
+                        </Badge>
+                    )}
+                </Box>
 
-                <Stack p="1rem" spacing="1rem">
-                    <Flex alignItems="center">
+                <Stack mt='4' spacing='3' p={4}>
+                    <Flex align='center' justify='space-between'>
+                        <Box>
+                            <Heading size='md' mb={1}>{name}</Heading>
+                            <HStack spacing={2} color="gray.600" fontSize="sm">
+                                <Icon as={MapPin} size={16} />
+                                <Text>
+                                    {location?.address || 
+                                     `${location?.coordinates[0].toFixed(6)}, ${location?.coordinates[1].toFixed(6)}`}
+                                </Text>
+                            </HStack>
+                        </Box>
                         <Image
-                            src={harvard}
-                            alt="Institute Logo"
-                            width="50px"
-                            height="50px"
-                            borderRadius="full"
-                            mr="1rem"
-                            border="2px solid"
-                            borderColor={colors.blue}
+                            src={logoUrl || '/api/placeholder/50/50'}
+                            alt={`${name} logo`}
+                            borderRadius='full'
+                            boxSize='50px'
+                            objectFit='cover'
+                            border="2px"
+                            borderColor="gray.200"
                         />
-                        <Stack spacing='0'>
-                            <Text 
-                                fontSize="18px" 
-                                fontWeight="bold" 
-                                color={colors.blue}
-                            >
-                                {title}
-                            </Text>
-                            <Text 
-                                fontSize="14px" 
-                                color="gray.600"
-                            >
-                                {level} & Matriculation
-                            </Text>
-                        </Stack>
                     </Flex>
 
-                    <Flex 
-                        align='center' 
-                        mt='0.5rem' 
-                        p='0.5rem' 
-                       // bg={`${colors.yellow}20`} // Soft yellow background with opacity
-                        borderRadius="10px"
-                    >
-                        <Icon 
-                            as={TiLocation} 
-                            boxSize='20px' 
-                            mr='0.5rem' 
-                            color={colors.blue} 
-                        />
-                        <Text 
-                            color={colors.blue} 
-                            fontSize='14px' 
-                            fontWeight='600'
-                        >
-                            DHA, Karachi
+                    <Flex gap={4} mt={2}>
+                        <HStack spacing={1} fontSize="sm" color="gray.600">
+                            <Icon as={Users} size={16} />
+                            <Text>{studentCount || '1000+'} Students</Text>
+                        </HStack>
+                        <HStack spacing={1} fontSize="sm" color="gray.600">
+                            <Icon as={Clock} size={16} />
+                            <Text>Flexible Timing</Text>
+                        </HStack>
+                    </Flex>
+
+                    <Box>
+                        <Flex gap={2} flexWrap="wrap">
+                            {categories.map((category, index) => (
+                                <Badge
+                                    key={index}
+                                    colorScheme="blue"
+                                    variant="subtle"
+                                    px={2}
+                                    py={1}
+                                    borderRadius="md"
+                                >
+                                    {category}
+                                </Badge>
+                            ))}
+                        </Flex>
+                    </Box>
+
+                    <Flex justify="space-between" align="center" mt={2}>
+                        <Text fontWeight="bold" color="blue.600">
+                            Registration Fee: Rs. {registrationFees.toLocaleString()}
                         </Text>
-                        <Box ml='auto'>
-                            <Text 
-                                fontSize='12px' 
-                                fontWeight='600' 
-                                bg={`${colors.yellow}`} 
-                                color={colors.blue}
-                               //opacity={}
-                                borderRadius="10px"
-                     
-                                p='0.4rem' 
-                            >
-                                104 teachers
-                            </Text>
-                        </Box>
                     </Flex>
                 </Stack>
             </CardBody>
