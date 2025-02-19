@@ -103,11 +103,13 @@ const LoginForm = () => {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                withCredentials: true
+                }
             });
     
-            if (response.data) {
+            if (response.data && response.data.token) {
+                // Store token in session storage
+                sessionStorage.setItem("authToken", response.data.token);
+    
                 toast({
                     title: "Login successful!",
                     description: "Welcome back!",
@@ -115,11 +117,12 @@ const LoginForm = () => {
                     duration: 5000,
                     isClosable: true,
                 });
+    
                 reset();
                 fetchUser();
                 navigate("/");
             }
-        } catch (error) {
+        }catch (error) {
             console.error('Error:', error);
     
             if (error.response) {

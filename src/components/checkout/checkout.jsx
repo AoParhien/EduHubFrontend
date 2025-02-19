@@ -82,13 +82,15 @@ const Checkout = () => {
 
         try {
             const apiUrl = process.env.REACT_APP_REGISTRATION_SERVICE_URL;
+            const authToken = sessionStorage.getItem("authToken");
+
             const response = await fetch(`${apiUrl}/api/enrollment/addEnrollment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
                 },
-                body: JSON.stringify(payload),
-                credentials: 'include',
+                body: JSON.stringify(payload)
             });
 
             if (response.ok) {

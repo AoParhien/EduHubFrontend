@@ -11,25 +11,35 @@ import {
   Flex,
   Icon,
   Divider,
-  useToast
+  useToast,
+  VStack,
+  Spinner
 } from '@chakra-ui/react';
 import { FaUser, FaClock, FaCalendar } from 'react-icons/fa';
 import Schedule from '../schedule/schedule';
 import CourseBatches from '../course-batches/courseBatches';
+import useUserStore from '../../store/useUserStore';
 
 const StudentCourses = () => {
   const [studentCourses, setStudentCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
+  const user = useUserStore(state => state.user);
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const apiUrl = process.env.REACT_APP_REGISTRATION_SERVICE_URL;
-        const response = await fetch(`${apiUrl}/api/enrollment/studentEnrollments/67593b7a20022d3ab67f8b05`, {
-          credentials: 'include'
+        const authToken = sessionStorage.getItem("authToken");
+
+        const response = await fetch(`${apiUrl}/api/enrollment/studentEnrollments/${user.student._id}`, {
+          method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+            }
         });
-        
+
         if (!response.ok) {
           throw new Error('Failed to fetch courses');
         }
@@ -55,11 +65,14 @@ const StudentCourses = () => {
   if (loading) {
     return (
       <Flex justify="center" align="center" h="50vh">
-        <Text>Loading courses...</Text>
+        <VStack spacing={4}>
+          <Spinner size="xl" thickness="4px" speed="0.65s" color="purple.500" />
+          <Text fontSize="lg" color="gray.600">Loading courses...</Text>
+        </VStack>
       </Flex>
     );
   }
-
+  
   if (studentCourses.length === 0) {
     return (
       <Flex justify="center" align="center" h="50vh">

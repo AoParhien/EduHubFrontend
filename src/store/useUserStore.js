@@ -12,11 +12,16 @@ const useUserStore = create(
         set({ isLoading: true }); // Set loading to true before the request
         try {
           const apiUrl = process.env.REACT_APP_STUDENT_SERVICE_URL;
-          const response = await fetch(`${apiUrl}/api/student/profile`, {
-            method: 'GET',
-            credentials: 'include',
-          });
+          const authToken = sessionStorage.getItem("authToken");
 
+          const response = await fetch(`${apiUrl}/api/student/profile`, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${authToken}`
+              }
+          });
+          
           if (response.status === 401 || response.status === 404 || response.status === 500) {
             set({ user: null, isLoading: false, error: `Error: ${response.status}` }); // Handle error statuses
           } else {
