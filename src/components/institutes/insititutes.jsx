@@ -16,7 +16,8 @@ const Institutes = () => {
             setError(null); // Reset error state on new fetch
 
             try {
-                const response = await fetch(`http://localhost:3001/api/institutes/getInstitutes?category=${selectedTab}`, {
+            const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+            const response = await fetch(`${apiUrl}/api/institutes/getInstitutes?category=${selectedTab}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
