@@ -35,8 +35,9 @@ const InstituteDetails = () => {
     const fetchInstituteDetails = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:3001/api/institutes/${id}`);
-        
+        const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+        const response = await fetch(`${apiUrl}/api/institutes/${id}`);
+                  
         if (!response.ok) {
           throw new Error('Failed to fetch institute details');
         }
