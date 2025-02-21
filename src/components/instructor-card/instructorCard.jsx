@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardBody, Image, Heading, Stack, Flex, Text, Box } from '@chakra-ui/react';
 
-const InstructorCard = ({ teacherName, board, image }) => {
+const InstructorCard = ({ teacherName, board, image, widthCard ="100px",heightCardBody ="100px", widthImage="200px"}) => {
     const handleClick = () => {
         // Handle card click here, e.g., navigate to a detailed view
         alert('Card clicked');
@@ -9,7 +9,7 @@ const InstructorCard = ({ teacherName, board, image }) => {
 
     return (
         <Card
-            width="100px"
+            width= {widthCard}
             borderRadius="lg"
             boxShadow="md"
             p={1}
@@ -27,25 +27,23 @@ const InstructorCard = ({ teacherName, board, image }) => {
             onClick={handleClick}
             overflow="hidden" // Ensure the image doesn't overflow the card
         >
-            <CardBody p={0} m={0} height="100px">
+            <CardBody p={0} m={0} height={heightCardBody}>
                 <Image
                     src={image}
                     alt={teacherName}
                     borderRadius='lg'
                     objectFit='cover'
                     height="auto"
-                    width="200px"
+                    width= {widthImage}
                 />
                 <Stack mt='2' spacing='1' p={1}>
                     <Flex align='center' mt='2'>
                         <Heading size='sm'>{teacherName}</Heading>
-                        <Box
-                            position='relative'
-                            ml='auto'
-                            p='1'
-                        >
-                            <Text fontSize='sm' color='teal'>{board}</Text>
-                        </Box>
+                        {board && board !== "N/A" && (
+                            <Box position='relative' ml='auto' p='1'>
+                                <Text fontSize='sm' color='teal'>{board}</Text>
+                            </Box>
+                        )}
                     </Flex>
                 </Stack>
             </CardBody>

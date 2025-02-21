@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './instructorSection.css';
 import InstructorCard from '../instructor-card/instructorCard';
+import { px } from 'framer-motion';
 
 const InstructorSection = () => {
     const [topTeachers, setTopTeachers] = useState([]);
