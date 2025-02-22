@@ -96,10 +96,11 @@ const SignUpForm = () => {
     });
 
     const toast = useToast();
+    const authUrl = process.env.REACT_APP_AUTH_SERVICE_URL;
 
     const onSubmit = async (data) => {
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/register', {
+            const response = await axios.post(`${authUrl}/api/auth/register`, {
                 email: data.email,
                 password: data.password,
                 role: data.role,
