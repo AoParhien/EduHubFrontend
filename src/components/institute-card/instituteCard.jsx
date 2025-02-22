@@ -68,16 +68,16 @@ const InstituteCard = ({
                 </Box>
 
                 <Stack mt='4' spacing='3' p={4}>
-                    {/* <Flex align='center' justify='space-between'>
+                    <Flex align='center' justify='space-between'>
                         <Box>
                             <Heading size='md' mb={1}>{name}</Heading>
-                            <HStack spacing={2} color="gray.600" fontSize="sm">
+                            {/* <HStack spacing={2} color="gray.600" fontSize="sm">
                                 <Icon as={MapPin} size={16} />
                                 <Text>
                                     {location?.address || 
                                      `${location?.coordinates[0].toFixed(6)}, ${location?.coordinates[1].toFixed(6)}`}
                                 </Text>
-                            </HStack>
+                            </HStack> */}
                         </Box>
                         <Image
                             src={logoUrl || '/api/placeholder/50/50'}
@@ -88,7 +88,7 @@ const InstituteCard = ({
                             border="2px"
                             borderColor="gray.200"
                         />
-                    </Flex> */}
+                    </Flex>
 
                     <Flex gap={4} mt={2}>
                         <HStack spacing={1} fontSize="sm" color="gray.600">

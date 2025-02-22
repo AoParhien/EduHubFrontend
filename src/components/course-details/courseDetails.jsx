@@ -27,7 +27,7 @@ import { Tabs, TabList, Tab } from "@chakra-ui/react";
 import { Link as ScrollLink } from "react-scroll";
 import { Image } from '@chakra-ui/react';
 import Schedule from '../schedule/schedule';
-import OSMMap from '../map/map';
+import MapWithPlusCode from '../map/map';
 import FeeTable from '../fee-table/FeeTable';
 import CenteredSpinner from '../centered-spinner/centeredSpinner';
 import CourseBatches from '../course-batches/courseBatches';
@@ -372,7 +372,7 @@ const CourseDetails = () => {
                         ASTC Bahadurabad
                     </Text>
                     <Box width="100%" height={isMobile ? '250px' : '400px'}>
-                        <OSMMap location={course.institute.location} />
+                        <MapWithPlusCode plusCode={course.institute.plusCode} coordinates={course.institute.location} />
                     </Box>
                 </Box>
 

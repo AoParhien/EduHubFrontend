@@ -19,7 +19,15 @@ import {
 } from '@chakra-ui/react';
 
 const locations = Array.from({ length: 200 }, (_, i) => `Location ${i + 1}`);
-const boards = ['O Levels', 'A Levels', 'SAT'];
+const boardMapping = {
+  "O Levels": "olevels",
+  "A Levels": "alevels",
+  "Intermediate": "intermediate",
+  "Matric": "matric",
+  "SAT": "sat"
+};
+
+const boards = Object.keys(boardMapping);
 
 const FilterSidebar = ({ onFilterChange, initialFilters }) => {
   const [localFilters, setLocalFilters] = useState(initialFilters);
@@ -27,7 +35,6 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
   const [subjects, setSubjects] = useState(['Any']);
   const [feeTooltip, setFeeTooltip] = useState(false);
 
-  // Fetch subjects and institutes from API
   useEffect(() => {
     setLocalFilters(initialFilters);
   }, [initialFilters]);
@@ -58,14 +65,27 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
     fetchData();
   }, []);
 
-  // Handle changes in filters
   const handleChange = (name, value) => {
     const updatedFilters = { ...localFilters, [name]: value };
     setLocalFilters(updatedFilters);
     onFilterChange(updatedFilters);
   };
 
-  // Handle fee filter change
+  const handleBoardChange = (board) => {
+    const mappedValue = boardMapping[board];
+    let updatedBoards;
+    
+    if (Array.isArray(localFilters.board)) {
+      updatedBoards = localFilters.board.includes(mappedValue)
+        ? localFilters.board.filter((b) => b !== mappedValue)
+        : [...localFilters.board, mappedValue];
+    } else {
+      updatedBoards = [mappedValue];
+    }
+
+    handleChange("board", updatedBoards);
+  };
+
   const handleFeeChange = (value) => {
     const updatedFees = { 
       ...localFilters.fees, 
@@ -74,14 +94,6 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
     const updatedFilters = { ...localFilters, fees: updatedFees };
     setLocalFilters(updatedFilters);
     onFilterChange(updatedFilters);
-  };
-
-  // Handle board checkbox change
-  const handleBoardChange = (board) => {
-    const updatedBoards = localFilters.board.includes(board)
-      ? localFilters.board.filter((b) => b !== board)
-      : [...localFilters.board, board];
-    handleChange('board', updatedBoards);
   };
 
   return (
@@ -254,19 +266,9 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
           </AccordionPanel>
         </AccordionItem>
 
-        {/* Board Filter */}
         <AccordionItem borderTop="none" borderBottom="none">
-          <AccordionButton 
-            _hover={{ bg: "gray.50" }} 
-            px={0} 
-            py={3}
-          >
-            <Text 
-              flex="1" 
-              textAlign="left" 
-              fontWeight="bold" 
-              color="gray.700"
-            >
+          <AccordionButton _hover={{ bg: "gray.50" }} px={0} py={3}>
+            <Text flex="1" textAlign="left" fontWeight="bold" color="gray.700">
               Board
             </Text>
             <AccordionIcon />
@@ -276,7 +278,7 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
               {boards.map((board) => (
                 <Checkbox
                   key={board}
-                  isChecked={localFilters.board.includes(board)}
+                  isChecked={Array.isArray(localFilters.board) && localFilters.board.includes(boardMapping[board])}
                   onChange={() => handleBoardChange(board)}
                   colorScheme="blue"
                   size="md"
