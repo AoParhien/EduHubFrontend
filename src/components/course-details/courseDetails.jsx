@@ -88,7 +88,7 @@ const CourseDetails = () => {
                 <DrawerHeader>Course Sections</DrawerHeader>
                 <DrawerBody>
                     <VStack spacing={4} align="stretch">
-                        {['About', 'Schedule', 'Location', 'Fees Structure', 'Reviews'].map((tab) => (
+                        {['About', 'Schedule', 'Location', 'Fees Structure'].map((tab) => (
                             <ScrollLink 
                                 key={tab} 
                                 to={tab.toLowerCase().replace(' ', '')} 
@@ -116,6 +116,7 @@ const CourseDetails = () => {
             bg="white" 
             boxShadow={isMobile ? "none" : "md"} 
             borderRadius="lg"
+            mb={10}
         >
             {/* Breadcrumb with mobile adjustment */}
             <Breadcrumb 
@@ -365,11 +366,15 @@ const CourseDetails = () => {
                         Location
                     </Heading>
                     <Text 
+                        as={Link} 
+                        to={`/institute/${course.institute.id}`} // Adjust URL as needed
                         fontSize={isMobile ? 'md' : 'lg'} 
                         mb={8} 
-                        textAlign={isMobile ? 'center' : 'left'}
+                        textAlign={isMobile ? 'center' : 'left'} 
+                        color="blue.500" // Optional: Change link color
+                        _hover={{ textDecoration: 'underline', color: 'blue.700' }} // Optional: Hover effect
                     >
-                        ASTC Bahadurabad
+                        {course.institute.name}
                     </Text>
                     <Box width="100%" height={isMobile ? '250px' : '400px'}>
                         <MapWithPlusCode plusCode={course.institute.plusCode} coordinates={course.institute.location} />
