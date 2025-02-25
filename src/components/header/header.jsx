@@ -2,9 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@chakra-ui/react';
 import './header.css';
-
+import { useNavigate } from 'react-router-dom';
 const Header = () => {
   // Variants for content animation
+  const navigate = useNavigate();
+
   const contentVariants = {
     hidden: { opacity: 0, x: -50 },
     visible: { 
@@ -76,8 +78,9 @@ const Header = () => {
             _focus={{ outline: 'none' }}
             cursor="pointer"
             className='eduhub__header-register-button'
+            onClick={() => navigate('/courses')}
           >
-            Register
+            Browse
           </Button>
           
           <motion.button 

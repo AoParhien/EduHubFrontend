@@ -120,14 +120,7 @@ const Courses = () => {
                     >
                         <button 
                             onClick={toggleFilterSidebar}
-                            style={{
-                                padding: '10px 20px',
-                                backgroundColor: '#4A90E2',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '5px',
-                                cursor: 'pointer'
-                            }}
+                            className='eduhub__mobile-filter-button'
                         >
                             {isFilterOpen ? 'Close Filters' : 'Open Filters'}
                         </button>

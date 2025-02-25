@@ -193,6 +193,122 @@
     align-items: center;
 }
 
+/* Keep all your existing CSS, but modify the search-dropdown section */
+
+/* Update your search dropdown styling in navbar.css */
+
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    margin-top: 8px;
+    padding: 8px 0;
+    display: none;
+    transition: all 0.3s ease;
+}
+
+.search-dropdown.visible {
+    display: block;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.search-result-item {
+    display: block;
+    padding: 12px 16px;
+    color: #333;
+    text-decoration: none;
+    font-size: 15px;
+    font-family: var(--font-family);
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.search-result-item:hover {
+    background-color: #f5f8ff;
+    border-left: 3px solid #00308F;
+    color: #00308F;
+}
+
+.loading, .no-results {
+    padding: 14px 16px;
+    color: #666;
+    font-size: 15px;
+    text-align: center;
+    font-family: var(--font-family);
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.loading:after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #00308F;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Add responsive styling for the dropdown */
+@media screen and (max-width: 768px) {
+    .search-dropdown {
+        position: fixed;
+        top: 110px;
+        left: 10px;
+        right: 10px;
+        max-height: 60vh;
+        z-index: 1001;
+    }
+}
+
+/* Improved scrollbar styling */
+.search-dropdown::-webkit-scrollbar {
+    width: 6px;
+}
+
+.search-dropdown::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.search-dropdown::-webkit-scrollbar-thumb {
+    background: #00308F;
+    border-radius: 3px;
+    opacity: 0.7;
+}
+
+.search-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #002066;
+}
 
 /* Media query for screens with max-width 1050px */
 @media screen and (max-width: 1050px) {
@@ -406,7 +522,7 @@
 
     .mobile-welcome {
         color: #666;
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
 
     .mobile-institute {
@@ -560,5 +676,86 @@
 
     .eduhub__navbar-right > * {
         margin-left: 1rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    /* Mobile search dropdown positioning */
+    .mobile-search .search-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        max-height: 50vh;
+        z-index: 1050;
+        margin-top: 5px;
+        border-radius: 8px;
+        align-items: start;
+    }
+    
+    /* Style for mobile search container */
+    .mobile-search {
+        position: relative;
+        margin-bottom: 1.5rem;
+        width: 100%;
+    }
+    
+    /* Style the mobile search icon */
+    .mobile-search .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #00308F;
+        width: 18px;
+        height: 18px;
+    }
+    
+    /* Style the mobile search input */
+    .mobile-search .search-wrapper input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border: 1px solid #00308F;
+        border-radius: 20px;
+        font-size: 16px;
+        color: #333;
+    }
+    
+    .mobile-search .search-wrapper input:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(0, 48, 143, 0.2);
+    }
+    
+    /* Mobile-specific results styling */
+    .mobile-search .search-result-item {
+        border-left: none;
+        border-bottom: 1px solid #f0f0f0;
+        padding: 14px 16px;
+        text-align: start;
+    }
+    
+    .mobile-search .search-result-item:last-child {
+        border-bottom: none;
+    }
+    
+    .mobile-search .search-result-item:hover,
+    .mobile-search .search-result-item:active {
+        background-color: #f5f8ff;
+    }
+    
+    /* Mobile search dropdown overlay */
+    .mobile-search-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1040;
+        display: none;
+    }
+    
+    .mobile-search-overlay.visible {
+        display: block;
     }
 }

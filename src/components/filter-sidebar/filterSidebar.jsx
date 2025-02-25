@@ -108,6 +108,7 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
       _hover={{
         boxShadow: "2xl"
       }}
+      mb={5}
     >
       <Accordion 
         defaultIndex={[0]} 
