@@ -29,7 +29,7 @@ const boardMapping = {
 
 const boards = Object.keys(boardMapping);
 
-const FilterSidebar = ({ onFilterChange, initialFilters }) => {
+const FilterSidebar = ({ onFilterChange, initialFilters, isMobile, onClose }) => {
   const [localFilters, setLocalFilters] = useState(initialFilters);
   const [institutes, setInstitutes] = useState([{ name: 'Any' }]);
   const [subjects, setSubjects] = useState(['Any']);
@@ -96,22 +96,58 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
     onFilterChange(updatedFilters);
   };
 
+  const handleApplyFilters = () => {
+    onFilterChange(localFilters);
+    if (isMobile && onClose) {
+      onClose();
+    }
+  };
+
+  const handleResetFilters = () => {
+    const resetFilters = {
+      institute: 'Any',
+      subject: 'Any',
+      fees: { min: 0, max: 15000 },
+      board: [],
+    };
+    setLocalFilters(resetFilters);
+    onFilterChange(resetFilters);
+  };
+
   return (
     <Box 
-      width="300px" 
+      width={isMobile ? "100%" : "300px"} 
       bg="white" 
-      borderRadius="lg" 
-      boxShadow="xl" 
+      borderRadius={isMobile ? "0" : "lg"} 
+      boxShadow={isMobile ? "none" : "xl"} 
       p={4} 
       overflow="hidden"
       transition="all 0.3s ease"
       _hover={{
-        boxShadow: "2xl"
+        boxShadow: isMobile ? "none" : "2xl"
       }}
       mb={5}
+      className="eduhub__filter-sidebar"
     >
+      {isMobile && (
+        <Box 
+          display="flex" 
+          justifyContent="space-between" 
+          alignItems="center" 
+          mb={4} 
+          pb={2} 
+          borderBottom="1px solid" 
+          borderColor="gray.200"
+        >
+          <Text fontWeight="bold" fontSize="lg">Filter Courses</Text>
+          <Button size="sm" variant="ghost" onClick={onClose}>
+            ✕
+          </Button>
+        </Box>
+      )}
+
       <Accordion 
-        defaultIndex={[0]} 
+        defaultIndex={isMobile ? [] : [0]} 
         allowMultiple 
         borderColor="transparent"
       >
@@ -133,7 +169,7 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel px={0} pb={4}>
-            <VStack align="start" spacing={2}>
+            <VStack align="start" spacing={2} maxH={isMobile ? "150px" : "auto"} overflowY="auto">
               {institutes.map((institute) => (
                 <Button
                   key={institute.name}
@@ -169,7 +205,7 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel px={0} pb={4}>
-            <VStack align="start" spacing={2}>
+            <VStack align="start" spacing={2} maxH={isMobile ? "150px" : "auto"} overflowY="auto">
               {subjects.map((subject, index) => (
                 <Button
                   key={subject || index}
@@ -184,39 +220,6 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
                 </Button>
               ))}
             </VStack>
-          </AccordionPanel>
-        </AccordionItem>
-
-        {/* Location Filter */}
-        <AccordionItem borderTop="none" borderBottom="1px solid" borderColor="gray.100">
-          <AccordionButton 
-            _hover={{ bg: "gray.50" }} 
-            px={0} 
-            py={3}
-          >
-            <Text 
-              flex="1" 
-              textAlign="left" 
-              fontWeight="bold" 
-              color="gray.700"
-            >
-              Location
-            </Text>
-            <AccordionIcon />
-          </AccordionButton>
-          <AccordionPanel px={0} pb={4}>
-            <Select
-              placeholder="Select location"
-              size="sm"
-              value={localFilters.location}
-              onChange={(e) => handleChange('location', e.target.value)}
-            >
-              {locations.map((location) => (
-                <option key={location} value={location}>
-                  {location}
-                </option>
-              ))}
-            </Select>
           </AccordionPanel>
         </AccordionItem>
 
@@ -291,6 +294,39 @@ const FilterSidebar = ({ onFilterChange, initialFilters }) => {
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
+
+      {isMobile && (
+        <Box 
+          display="flex" 
+          justifyContent="space-between" 
+          mt={6} 
+          pt={3} 
+          borderTop="1px solid" 
+          borderColor="gray.200"
+          position="sticky"
+          bottom={0}
+          bg="white"
+          pb={2}
+        >
+          <Button 
+            variant="outline" 
+            colorScheme="gray" 
+            size="md" 
+            width="48%"
+            onClick={handleResetFilters}
+          >
+            Reset
+          </Button>
+          <Button 
+            colorScheme="blue" 
+            size="md" 
+            width="48%"
+            onClick={handleApplyFilters}
+          >
+            Apply Filters
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 };

@@ -54,18 +54,37 @@
         padding: 0.75rem;
     }
     
+    .eduhub__mobile-filter-button-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
     .eduhub__mobile-filter-button {
-        padding: 10px 20px;
-        background-color: #00308F;
-        color: white;
-        border: none;
-        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 12px 20px;
+        background-color: #f5f7fa;
+        color: #333;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-weight: 600;
         cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
     
     .eduhub__mobile-filter-button:hover,
     .eduhub__mobile-filter-button:active {
-        transform: scale(1.05);
+        background-color: #edf2f7;
+    }
+    
+    .filter-icon {
+        margin-right: 8px;
+        font-size: 16px;
     }
     
     .eduhub__mobile-filter-overlay {
@@ -76,36 +95,41 @@
         bottom: 0;
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 90;
+        animation: fadeIn 0.3s ease;
     }
     
     .eduhub__mobile-filter-panel {
         position: fixed;
-        bottom: 0;
-        left: 0;
+        top: 0;
         right: 0;
+        bottom: 0;
+        width: 85%;
+        max-width: 350px;
         background-color: white;
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
-        padding: 1rem;
         z-index: 95;
-        max-height: 85vh;
         overflow-y: auto;
-        box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
-        transform: translateY(0);
+        box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+        transform: translateX(0);
         transition: transform 0.3s ease;
+        animation: slideIn 0.3s ease;
     }
     
     .eduhub__mobile-filter-panel.hidden {
-        transform: translateY(100%);
+        transform: translateX(100%);
     }
     
-    .eduhub__mobile-filter-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 0.75rem;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid #eaeaea;
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes slideIn {
+        from { transform: translateX(100%); }
+        to { transform: translateX(0); }
+    }
+    
+    .filter-open {
+        overflow: hidden;
     }
 }
 
@@ -128,14 +152,6 @@
         border-radius: 12px;
     }
     
-    /* When filters are open, slightly blur and scale down the cards */
-    .eduhub__filter-open .eduhub__courses-cards {
-        filter: blur(2px);
-        transform: scale(0.98);
-        transition: all 0.3s ease;
-        pointer-events: none;
-    }
-    
     /* Center loading spinner and no results message */
     .eduhub__courses-empty-state {
         width: 100%;
@@ -148,5 +164,10 @@
         color: #666;
         font-size: 1rem;
         padding: 2rem 1rem;
+    }
+    
+    /* Filter sidebar specific styles for mobile */
+    .eduhub__filter-sidebar {
+        padding: 16px;
     }
 }

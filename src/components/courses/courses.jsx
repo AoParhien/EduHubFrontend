@@ -16,7 +16,6 @@ const Courses = () => {
     const [filters, setFilters] = useState({
         institute: 'Any',
         subject: 'Any',
-        location: 'Any',
         fees: { min: 0, max: 15000 },
         board: [],
     });
@@ -31,8 +30,6 @@ const Courses = () => {
             params.instituteName = filters.institute;
         if (filters.subject && filters.subject !== 'Any') 
             params.subject = trimAndLowercase(filters.subject);
-        if (filters.location && filters.location !== 'Any') 
-            params.location = trimAndLowercase(filters.location);
         if (filters.fees.min) 
             params.minFees = filters.fees.min;
         if (filters.fees.max) 
@@ -90,50 +87,38 @@ const Courses = () => {
             ...prevFilters,
             ...newFilters,
         }));
-
-        if (isMobile) {
-            setIsFilterOpen(false);
-        }
     };
 
     const toggleFilterSidebar = () => {
         setIsFilterOpen(!isFilterOpen);
+        if (!isFilterOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    };
+
+    const closeFilterSidebar = () => {
+        setIsFilterOpen(false);
+        document.body.style.overflow = 'auto';
     };
 
     return (
-        <div className='eduhub__courses section__padding'>
+        <div className={`eduhub__courses section__padding ${isFilterOpen && isMobile ? 'filter-open' : ''}`}>
             <Box 
                 display="flex" 
                 flexDirection={isMobile ? 'column' : 'row'}
                 alignItems="flex-start"
                 position="relative"
             >
-                {isMobile && (
-                    <Box 
-                        width="100%" 
-                        textAlign="center" 
-                        mb={4} 
-                        position="sticky" 
-                        top="0" 
-                        zIndex="10" 
-                        bg="white"
-                    >
-                        <button 
-                            onClick={toggleFilterSidebar}
-                            className='eduhub__mobile-filter-button'
-                        >
-                            {isFilterOpen ? 'Close Filters' : 'Open Filters'}
-                        </button>
-                    </Box>
-                )}
-
-                {(!isMobile || isFilterOpen) && (
+                {!isMobile && (
                     <FilterSidebar 
                         onFilterChange={handleFilterChange} 
                         initialFilters={filters}
-                        width={isMobile ? '100%' : '300px'}
-                        position={isMobile ? 'static' : 'sticky'}
-                        top={isMobile ? 'auto' : '20px'}
+                        width="300px"
+                        position="sticky"
+                        top="20px"
+                        isMobile={false}
                     />
                 )}
 
@@ -144,6 +129,28 @@ const Courses = () => {
                         marginLeft: isMobile ? 0 : '20px' 
                     }}
                 >
+                    {isMobile && (
+                        <Box 
+                            className="eduhub__mobile-filter-button-container"
+                            position="sticky"
+                            top="0"
+                            zIndex="10"
+                            bg="white"
+                            py={2}
+                            px={1}
+                            mb={3}
+                            borderBottom="1px solid"
+                            borderColor="gray.100"
+                        >
+                            <button 
+                                onClick={toggleFilterSidebar}
+                                className='eduhub__mobile-filter-button'
+                            >
+                                <span className="filter-icon">⚙️</span> Filter Courses
+                            </button>
+                        </Box>
+                    )}
+
                     {isLoading ? (
                         <Box 
                             width="100%" 
@@ -151,11 +158,18 @@ const Courses = () => {
                             mt={10} 
                             display="flex" 
                             justifyContent="center"
+                            className="eduhub__courses-empty-state"
                         >
                             <Spinner size="xl" color="blue.500" />
                         </Box>
                     ) : courses.length === 0 && !isLoading ? (
-                        <Box width="100%" textAlign="center" color="gray.500" mt={10}>
+                        <Box 
+                            width="100%" 
+                            textAlign="center" 
+                            color="gray.500" 
+                            mt={10}
+                            className="eduhub__courses-empty-state"
+                        >
                             No courses found. Try adjusting your filters.
                         </Box>
                     ) : (
@@ -173,6 +187,20 @@ const Courses = () => {
                     )}
                 </div>
             </Box>
+
+            {isMobile && isFilterOpen && (
+                <>
+                    <div className="eduhub__mobile-filter-overlay" onClick={closeFilterSidebar}></div>
+                    <div className={`eduhub__mobile-filter-panel ${!isFilterOpen ? 'hidden' : ''}`}>
+                        <FilterSidebar 
+                            onFilterChange={handleFilterChange} 
+                            initialFilters={filters}
+                            isMobile={true}
+                            onClose={closeFilterSidebar}
+                        />
+                    </div>
+                </>
+            )}
         </div>
     );
 };
