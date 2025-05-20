@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import FilterSidebar from '../filter-sidebar/filterSidebar';
-import { Box, useBreakpointValue, Spinner } from '@chakra-ui/react';
+import { Box, useBreakpointValue, Spinner, Button, Flex, Text } from '@chakra-ui/react';
 import CourseCard from '../course-card/courseCard';
 import './courses.css';
 import debounce from 'lodash.debounce';
@@ -12,6 +12,14 @@ const Courses = () => {
     const [isLoading, setIsLoading] = useState(false);
     const isMobile = useBreakpointValue({ base: true, md: false });
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        totalPages: 1,
+        totalCourses: 0,
+        hasNextPage: false,
+        hasPrevPage: false,
+        limit: 8
+    });
 
     const [filters, setFilters] = useState({
         institute: 'Any',
@@ -20,8 +28,11 @@ const Courses = () => {
         board: [],
     });
 
-    const buildQueryParams = (filters) => {
-        const params = {};
+    const buildQueryParams = (filters, page = 1) => {
+        const params = {
+            page,
+            limit: pagination.limit
+        };
         
         const trimAndLowercase = (value) => 
             typeof value === 'string' ? value.trim().toLowerCase() : value;
@@ -47,10 +58,10 @@ const Courses = () => {
     };
 
     const getCourses = useCallback(
-        debounce(async (filters) => {
+        debounce(async (filters, page = 1) => {
             setIsLoading(true);
             try {
-                const query = buildQueryParams(filters);
+                const query = buildQueryParams(filters, page);
                 const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
                 const response = await fetch(`${apiUrl}/api/courses/getCourseListing?${query}`, {
                     method: 'GET',
@@ -59,7 +70,8 @@ const Courses = () => {
 
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
-                setCourses(data);
+                setCourses(data.courses);
+                setPagination(data.pagination);
             } catch (error) {
                 console.error('Error fetching courses:', error);
             } finally {
@@ -79,14 +91,19 @@ const Courses = () => {
     }, []);
 
     useEffect(() => {
-        getCourses(filters);
-    }, [filters, getCourses]);
+        getCourses(filters, pagination.currentPage);
+    }, [filters, pagination.currentPage, getCourses]);
 
     const handleFilterChange = (newFilters) => {
         setFilters((prevFilters) => ({
             ...prevFilters,
             ...newFilters,
         }));
+        setPagination(prev => ({ ...prev, currentPage: 1 })); // Reset to first page on filter change
+    };
+
+    const handlePageChange = (newPage) => {
+        setPagination(prev => ({ ...prev, currentPage: newPage }));
     };
 
     const toggleFilterSidebar = () => {
@@ -173,17 +190,51 @@ const Courses = () => {
                             No courses found. Try adjusting your filters.
                         </Box>
                     ) : (
-                        courses.map((course) => (
-                            <CourseCard
-                                key={course.courseId || course.title}
-                                title={course.title}
-                                fees={course.fees}
-                                institute={course.instituteName}
-                                board={course.board}
-                                imageUrl={course.imageUrl}
-                                id={course.courseId}
-                            />
-                        ))
+                        <>
+                            {courses.map((course) => (
+                                <CourseCard
+                                    key={course.courseId || course.title}
+                                    title={course.title}
+                                    fees={course.fees}
+                                    institute={course.instituteName}
+                                    board={course.board}
+                                    imageUrl={course.imageUrl}
+                                    id={course.courseId}
+                                />
+                            ))}
+                            
+                            {/* Pagination Controls */}
+                            <Flex 
+                                justify="center" 
+                                align="center" 
+                                mt={6} 
+                                mb={4} 
+                                gap={4}
+                                width="100%"
+                            >
+                                <Button
+                                    onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                    isDisabled={!pagination.hasPrevPage}
+                                    colorScheme="blue"
+                                    variant="outline"
+                                >
+                                    Previous
+                                </Button>
+                                
+                                <Text>
+                                    Page {pagination.currentPage} of {pagination.totalPages}
+                                </Text>
+                                
+                                <Button
+                                    onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                    isDisabled={!pagination.hasNextPage}
+                                    colorScheme="blue"
+                                    variant="outline"
+                                >
+                                    Next
+                                </Button>
+                            </Flex>
+                        </>
                     )}
                 </div>
             </Box>

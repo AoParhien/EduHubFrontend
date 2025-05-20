@@ -10,7 +10,7 @@ const CourseSection = () => {
     const [selectedTab, setSelectedTab] = useState(tabs[0]);
     const [courses, setCourses] = useState([]);
     const [filteredCourses, setFilteredCourses] = useState([]);
-    const coursesPerPage = 4;
+    const coursesPerPage = 8;
 
     const handleTabSelect = (tab) => {
         setSelectedTab(tab);
@@ -38,9 +38,10 @@ const CourseSection = () => {
             }
 
             const data = await response.json();
-            setCourses(data);
+            setCourses(data.courses || []); // Access the courses array from the response
         } catch (error) {
             console.error('Error fetching courses:', error);
+            setCourses([]); // Set empty array in case of error
         }
     };
 
