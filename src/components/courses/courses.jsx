@@ -12,6 +12,8 @@ const Courses = () => {
     const [isLoading, setIsLoading] = useState(false);
     const isMobile = useBreakpointValue({ base: true, md: false });
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    
+    // Ensure pagination is always properly initialized
     const [pagination, setPagination] = useState({
         currentPage: 1,
         totalPages: 1,
@@ -70,10 +72,31 @@ const Courses = () => {
 
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
-                setCourses(data.courses);
-                setPagination(data.pagination);
+                
+                // Set courses with fallback
+                setCourses(data.courses || []);
+                
+                // Set pagination with fallback to ensure it's always valid
+                setPagination(data.pagination || {
+                    currentPage: 1,
+                    totalPages: 1,
+                    totalCourses: 0,
+                    hasNextPage: false,
+                    hasPrevPage: false,
+                    limit: 8
+                });
             } catch (error) {
                 console.error('Error fetching courses:', error);
+                // Reset to empty state on error
+                setCourses([]);
+                setPagination({
+                    currentPage: 1,
+                    totalPages: 1,
+                    totalCourses: 0,
+                    hasNextPage: false,
+                    hasPrevPage: false,
+                    limit: 8
+                });
             } finally {
                 setIsLoading(false);
             }
@@ -91,8 +114,9 @@ const Courses = () => {
     }, []);
 
     useEffect(() => {
-        getCourses(filters, pagination.currentPage);
-    }, [filters, pagination.currentPage, getCourses]);
+        // Use optional chaining with fallback
+        getCourses(filters, pagination?.currentPage || 1);
+    }, [filters, pagination?.currentPage, getCourses]);
 
     const handleFilterChange = (newFilters) => {
         setFilters((prevFilters) => ({
@@ -203,7 +227,7 @@ const Courses = () => {
                                 />
                             ))}
                             
-                            {/* Pagination Controls */}
+                            {/* Pagination Controls with safe property access */}
                             {pagination && (
                                 <Flex 
                                     justify="center" 
