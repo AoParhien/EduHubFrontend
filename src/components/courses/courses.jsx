@@ -204,36 +204,38 @@ const Courses = () => {
                             ))}
                             
                             {/* Pagination Controls */}
-                            <Flex 
-                                justify="center" 
-                                align="center" 
-                                mt={6} 
-                                mb={4} 
-                                gap={4}
-                                width="100%"
-                            >
-                                <Button
-                                    onClick={() => handlePageChange(pagination.currentPage - 1)}
-                                    isDisabled={!pagination.hasPrevPage}
-                                    colorScheme="blue"
-                                    variant="outline"
+                            {pagination && (
+                                <Flex 
+                                    justify="center" 
+                                    align="center" 
+                                    mt={6} 
+                                    mb={4} 
+                                    gap={4}
+                                    width="100%"
                                 >
-                                    Previous
-                                </Button>
-                                
-                                <Text>
-                                    Page {pagination.currentPage} of {pagination.totalPages}
-                                </Text>
-                                
-                                <Button
-                                    onClick={() => handlePageChange(pagination.currentPage + 1)}
-                                    isDisabled={!pagination.hasNextPage}
-                                    colorScheme="blue"
-                                    variant="outline"
-                                >
-                                    Next
-                                </Button>
-                            </Flex>
+                                    <Button
+                                        onClick={() => handlePageChange((pagination?.currentPage || 1) - 1)}
+                                        isDisabled={!pagination?.hasPrevPage}
+                                        colorScheme="blue"
+                                        variant="outline"
+                                    >
+                                        Previous
+                                    </Button>
+                                    
+                                    <Text>
+                                        Page {pagination?.currentPage || 1} of {pagination?.totalPages || 1}
+                                    </Text>
+                                    
+                                    <Button
+                                        onClick={() => handlePageChange((pagination?.currentPage || 1) + 1)}
+                                        isDisabled={!pagination?.hasNextPage}
+                                        colorScheme="blue"
+                                        variant="outline"
+                                    >
+                                        Next
+                                    </Button>
+                                </Flex>
+                            )}
                         </>
                     )}
                 </div>
