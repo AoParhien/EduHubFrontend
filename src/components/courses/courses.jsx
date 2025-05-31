@@ -13,7 +13,6 @@ const Courses = () => {
     const isMobile = useBreakpointValue({ base: true, md: false });
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     
-    // Ensure pagination is always properly initialized
     const [pagination, setPagination] = useState({
         currentPage: 1,
         totalPages: 1,
@@ -30,10 +29,17 @@ const Courses = () => {
         board: [],
     });
 
-    const buildQueryParams = (filters, page = 1) => {
+    // Debug effect to monitor state changes
+    useEffect(() => {
+        console.log('🔍 COURSES STATE:', courses);
+        console.log('🔍 COURSES LENGTH:', courses.length);
+        console.log('🔍 IS LOADING:', isLoading);
+    }, [courses, isLoading]);
+
+    const buildQueryParams = useCallback((filters, page = 1, limit = 8) => {
         const params = {
             page,
-            limit: pagination.limit
+            limit
         };
         
         const trimAndLowercase = (value) => 
@@ -57,77 +63,121 @@ const Courses = () => {
                     : [[key, value]]
             )
         ).toString();
-    };
+    }, []);
 
-    const getCourses = useCallback(
-        debounce(async (filters, page = 1) => {
-            setIsLoading(true);
-            try {
-                const query = buildQueryParams(filters, page);
-                const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
-                const response = await fetch(`${apiUrl}/api/courses/getCourseListing?${query}`, {
-                    method: 'GET',
-                    credentials: 'include',
-                });
-
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const data = await response.json();
-                
-                // Set courses with fallback
-                setCourses(data.courses || []);
-                
-                // Set pagination with fallback to ensure it's always valid
-                setPagination(data.pagination || {
-                    currentPage: 1,
-                    totalPages: 1,
-                    totalCourses: 0,
-                    hasNextPage: false,
-                    hasPrevPage: false,
-                    limit: 8
-                });
-            } catch (error) {
-                console.error('Error fetching courses:', error);
-                // Reset to empty state on error
-                setCourses([]);
-                setPagination({
-                    currentPage: 1,
-                    totalPages: 1,
-                    totalCourses: 0,
-                    hasNextPage: false,
-                    hasPrevPage: false,
-                    limit: 8
-                });
-            } finally {
-                setIsLoading(false);
+    const getCourses = useCallback(async (filters, page = 1) => {
+        setIsLoading(true);
+        console.log('🚀 API CALL STARTED - Page:', page, 'Filters:', filters);
+        
+        try {
+            const query = buildQueryParams(filters, page, 8);
+            const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+            
+            console.log('📡 API URL:', apiUrl);
+            console.log('📡 Query:', query);
+            
+            if (!apiUrl) {
+                throw new Error('API URL not configured');
             }
+            
+            const fullUrl = `${apiUrl}/api/courses/getCourseListing?${query}`;
+            console.log('📡 FULL URL:', fullUrl);
+            
+            const response = await fetch(fullUrl, {
+                method: 'GET',
+                credentials: 'include',
+            });
+            
+            console.log('📡 Response Status:', response.status);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('📡 RAW API RESPONSE:', data);
+            console.log('📡 data.courses exists?', !!data.courses);
+            console.log('📡 data.courses type:', typeof data.courses);
+            console.log('📡 data.courses length:', data.courses?.length);
+            
+            // Ensure courses is always an array
+            const coursesArray = Array.isArray(data.courses) ? data.courses : [];
+            console.log('📡 Setting courses to:', coursesArray);
+            
+            setCourses(coursesArray);
+            
+            // Set pagination with fallback
+            const paginationData = data.pagination || {
+                currentPage: page,
+                totalPages: 1,
+                totalCourses: coursesArray.length,
+                hasNextPage: false,
+                hasPrevPage: false,
+                limit: 8
+            };
+            
+            console.log('📡 Setting pagination to:', paginationData);
+            setPagination(paginationData);
+            
+        } catch (error) {
+            console.error('❌ API ERROR:', error);
+            setCourses([]);
+            setPagination({
+                currentPage: page,
+                totalPages: 1,
+                totalCourses: 0,
+                hasNextPage: false,
+                hasPrevPage: false,
+                limit: 8
+            });
+        } finally {
+            setIsLoading(false);
+            console.log('🏁 API CALL COMPLETED');
+        }
+    }, [buildQueryParams]);
+
+    // Debounced version for filter changes
+    const debouncedGetCourses = useCallback(
+        debounce((filters, page) => {
+            getCourses(filters, page);
         }, 300),
-        []
+        [getCourses]
     );
 
+    // Handle subcategory initialization
     useEffect(() => {
         if (subcategory) {
+            console.log('🏷️ Setting subcategory filter:', subcategory);
             setFilters(prev => ({
                 ...prev,
                 board: prev.board.length === 0 ? [subcategory.toLowerCase()] : prev.board
             }));
         }
-    }, []);
+    }, [subcategory]);
 
+    // Main effect for filter changes
     useEffect(() => {
-        // Use optional chaining with fallback
-        getCourses(filters, pagination?.currentPage || 1);
-    }, [filters, pagination?.currentPage, getCourses]);
+        console.log('🔄 Filters changed, fetching courses...');
+        debouncedGetCourses(filters, 1);
+        // Reset pagination when filters change
+        setPagination(prev => ({ ...prev, currentPage: 1 }));
+    }, [filters, debouncedGetCourses]);
 
     const handleFilterChange = (newFilters) => {
+        console.log('🎛️ Filter change:', newFilters);
         setFilters((prevFilters) => ({
             ...prevFilters,
             ...newFilters,
         }));
-        setPagination(prev => ({ ...prev, currentPage: 1 })); // Reset to first page on filter change
     };
 
     const handlePageChange = (newPage) => {
-        setPagination(prev => ({ ...prev, currentPage: newPage }));
+        console.log('📄 Page change to:', newPage);
+        if (newPage !== pagination.currentPage && newPage >= 1 && newPage <= pagination.totalPages) {
+            setPagination(prev => ({ ...prev, currentPage: newPage }));
+            // Call API directly for pagination (no debounce needed)
+            getCourses(filters, newPage);
+        }
     };
 
     const toggleFilterSidebar = () => {
@@ -143,6 +193,9 @@ const Courses = () => {
         setIsFilterOpen(false);
         document.body.style.overflow = 'auto';
     };
+
+    // Debug render logic
+    console.log('🎨 RENDER - courses.length:', courses.length, 'isLoading:', isLoading);
 
     return (
         <div className={`eduhub__courses section__padding ${isFilterOpen && isMobile ? 'filter-open' : ''}`}>
@@ -203,7 +256,7 @@ const Courses = () => {
                         >
                             <Spinner size="xl" color="blue.500" />
                         </Box>
-                    ) : courses.length === 0 && !isLoading ? (
+                    ) : courses.length === 0 ? (
                         <Box 
                             width="100%" 
                             textAlign="center" 
@@ -211,13 +264,19 @@ const Courses = () => {
                             mt={10}
                             className="eduhub__courses-empty-state"
                         >
-                            No courses found. Try adjusting your filters.
+                            <Text>No courses found. Try adjusting your filters.</Text>
+                            <Text fontSize="sm" mt={2} color="gray.400">
+                                Debug: Check browser console for detailed logs
+                            </Text>
                         </Box>
                     ) : (
                         <>
-                            {courses.map((course) => (
+                            <Text fontSize="sm" color="gray.500" mb={4}>
+                                Found {courses.length} courses
+                            </Text>
+                            {courses.map((course, index) => (
                                 <CourseCard
-                                    key={course.courseId || course.title}
+                                    key={course.courseId || course.title || index}
                                     title={course.title}
                                     fees={course.fees}
                                     institute={course.instituteName}
@@ -227,8 +286,8 @@ const Courses = () => {
                                 />
                             ))}
                             
-                            {/* Pagination Controls with safe property access */}
-                            {pagination && (
+                            {/* Pagination Controls */}
+                            {pagination && pagination.totalPages > 1 && (
                                 <Flex 
                                     justify="center" 
                                     align="center" 
@@ -238,8 +297,8 @@ const Courses = () => {
                                     width="100%"
                                 >
                                     <Button
-                                        onClick={() => handlePageChange((pagination?.currentPage || 1) - 1)}
-                                        isDisabled={!pagination?.hasPrevPage}
+                                        onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                        isDisabled={!pagination.hasPrevPage || pagination.currentPage <= 1}
                                         colorScheme="blue"
                                         variant="outline"
                                     >
@@ -247,12 +306,12 @@ const Courses = () => {
                                     </Button>
                                     
                                     <Text>
-                                        Page {pagination?.currentPage || 1} of {pagination?.totalPages || 1}
+                                        Page {pagination.currentPage} of {pagination.totalPages}
                                     </Text>
                                     
                                     <Button
-                                        onClick={() => handlePageChange((pagination?.currentPage || 1) + 1)}
-                                        isDisabled={!pagination?.hasNextPage}
+                                        onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                        isDisabled={!pagination.hasNextPage || pagination.currentPage >= pagination.totalPages}
                                         colorScheme="blue"
                                         variant="outline"
                                     >
