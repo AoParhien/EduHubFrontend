@@ -29,13 +29,6 @@ const Courses = () => {
         board: [],
     });
 
-    // Debug effect to monitor state changes
-    useEffect(() => {
-        console.log('🔍 COURSES STATE:', courses);
-        console.log('🔍 COURSES LENGTH:', courses.length);
-        console.log('🔍 IS LOADING:', isLoading);
-    }, [courses, isLoading]);
-
     const buildQueryParams = useCallback((filters, page = 1, limit = 8) => {
         const params = {
             page,
@@ -67,42 +60,30 @@ const Courses = () => {
 
     const getCourses = useCallback(async (filters, page = 1) => {
         setIsLoading(true);
-        console.log('🚀 API CALL STARTED - Page:', page, 'Filters:', filters);
         
         try {
             const query = buildQueryParams(filters, page, 8);
             const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
-            
-            console.log('📡 API URL:', apiUrl);
-            console.log('📡 Query:', query);
             
             if (!apiUrl) {
                 throw new Error('API URL not configured');
             }
             
             const fullUrl = `${apiUrl}/api/courses/getCourseListing?${query}`;
-            console.log('📡 FULL URL:', fullUrl);
             
             const response = await fetch(fullUrl, {
                 method: 'GET',
                 credentials: 'include',
             });
             
-            console.log('📡 Response Status:', response.status);
-            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
             const data = await response.json();
-            console.log('📡 RAW API RESPONSE:', data);
-            console.log('📡 data.courses exists?', !!data.courses);
-            console.log('📡 data.courses type:', typeof data.courses);
-            console.log('📡 data.courses length:', data.courses?.length);
             
             // Ensure courses is always an array
             const coursesArray = Array.isArray(data.courses) ? data.courses : [];
-            console.log('📡 Setting courses to:', coursesArray);
             
             setCourses(coursesArray);
             
@@ -116,11 +97,9 @@ const Courses = () => {
                 limit: 8
             };
             
-            console.log('📡 Setting pagination to:', paginationData);
             setPagination(paginationData);
             
         } catch (error) {
-            console.error('❌ API ERROR:', error);
             setCourses([]);
             setPagination({
                 currentPage: page,
@@ -132,7 +111,6 @@ const Courses = () => {
             });
         } finally {
             setIsLoading(false);
-            console.log('🏁 API CALL COMPLETED');
         }
     }, [buildQueryParams]);
 
@@ -147,7 +125,6 @@ const Courses = () => {
     // Handle subcategory initialization
     useEffect(() => {
         if (subcategory) {
-            console.log('🏷️ Setting subcategory filter:', subcategory);
             setFilters(prev => ({
                 ...prev,
                 board: prev.board.length === 0 ? [subcategory.toLowerCase()] : prev.board
@@ -157,14 +134,12 @@ const Courses = () => {
 
     // Main effect for filter changes
     useEffect(() => {
-        console.log('🔄 Filters changed, fetching courses...');
         debouncedGetCourses(filters, 1);
         // Reset pagination when filters change
         setPagination(prev => ({ ...prev, currentPage: 1 }));
     }, [filters, debouncedGetCourses]);
 
     const handleFilterChange = (newFilters) => {
-        console.log('🎛️ Filter change:', newFilters);
         setFilters((prevFilters) => ({
             ...prevFilters,
             ...newFilters,
@@ -172,7 +147,6 @@ const Courses = () => {
     };
 
     const handlePageChange = (newPage) => {
-        console.log('📄 Page change to:', newPage);
         if (newPage !== pagination.currentPage && newPage >= 1 && newPage <= pagination.totalPages) {
             setPagination(prev => ({ ...prev, currentPage: newPage }));
             // Call API directly for pagination (no debounce needed)
@@ -193,9 +167,6 @@ const Courses = () => {
         setIsFilterOpen(false);
         document.body.style.overflow = 'auto';
     };
-
-    // Debug render logic
-    console.log('🎨 RENDER - courses.length:', courses.length, 'isLoading:', isLoading);
 
     return (
         <div className={`eduhub__courses section__padding ${isFilterOpen && isMobile ? 'filter-open' : ''}`}>
@@ -265,15 +236,9 @@ const Courses = () => {
                             className="eduhub__courses-empty-state"
                         >
                             <Text>No courses found. Try adjusting your filters.</Text>
-                            <Text fontSize="sm" mt={2} color="gray.400">
-                                Debug: Check browser console for detailed logs
-                            </Text>
                         </Box>
                     ) : (
                         <>
-                            <Text fontSize="sm" color="gray.500" mb={4}>
-                                Found {courses.length} courses
-                            </Text>
                             {courses.map((course, index) => (
                                 <CourseCard
                                     key={course.courseId || course.title || index}
