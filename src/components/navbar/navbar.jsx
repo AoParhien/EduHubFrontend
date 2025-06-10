@@ -263,7 +263,9 @@ const Navbar = () => {
                         onMouseEnter={() => setShowCategories(true)}
                         onMouseLeave={() => setShowCategories(false)}
                     >
-                        <button className="eduhub__categories_button">Courses</button>
+                        <Link to="/courses">
+                            <button className="eduhub__categories_button">Courses</button>
+                        </Link>
                         {showCategories && (
                             <div className="eduhub__categories_dropdown">
                                 <Link to="/courses/Olevels"><p>Olevels</p></Link>
