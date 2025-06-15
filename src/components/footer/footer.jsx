@@ -21,9 +21,8 @@ const Footer = () => (
             </div>
             <div className="eduhub__footer-links_div">
                 <h4>Contact Us</h4>
-                <p>1234 Elm Street, Suite 567</p>
-                <p>+1 (234) 567-890</p>
-                <p>support@AoParhein.com</p>
+                <p>+92-331-2316152</p>
+                <p>aoparhien@gmail.com</p>
             </div>
             <div className="eduhub__footer-links_logo">
               <img src="Dblue.png" alt="eduhub_logo" />

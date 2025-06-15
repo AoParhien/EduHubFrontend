@@ -3,6 +3,26 @@ import { Box, Grid, GridItem, Text, Flex, HStack } from '@chakra-ui/react';
 
 const dayHeight = 70;
 
+// Array of light colors for batches
+const batchColors = [
+    'yellow.100',
+    'blue.100',
+    'green.100',
+    'purple.100',
+    'pink.100',
+    'orange.100',
+    'teal.100',
+    'cyan.100',
+    'red.100',
+    'gray.100'
+];
+
+// Function to get a consistent color for a batch
+const getBatchColor = (batchName) => {
+    // Use the batch name to generate a consistent index
+    const hash = batchName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return batchColors[hash % batchColors.length];
+};
 
 const Schedule = ({ batches, schedules }) => {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -19,9 +39,9 @@ const Schedule = ({ batches, schedules }) => {
                 day: schedule.day,
                 startHour: schedule.startHour,
                 duration: schedule.duration,
-                name: batch.batchName,  // Mapping batch name to your previous `name` field
+                name: batch.batchName,
                 location: '', // Set your location as needed
-                color: 'yellow.200' // Assign a default color if not specified
+                color: getBatchColor(batch.batchName) // Assign a consistent color based on batch name
             }));
         }).flat(); // Flatten the array if necessary
     };
