@@ -21,9 +21,12 @@ const Navbar = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [showMobileDropdown, setShowMobileDropdown] = useState(false);
     const user = useUserStore(state => state.user);
+    const authUser = useUserStore(state => state.authUser);
     const menuRef = useRef(null);
     const searchRef = useRef(null);
     const mobileSearchRef = useRef(null);
+    const studentFirstName = user?.student?.firstName;
+    const welcomeLabel = studentFirstName || authUser?.email || 'Your account';
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -183,12 +186,12 @@ const Navbar = () => {
                                 </div>
                             </div>
 
-                            {user ? (
+                            {studentFirstName ? (
                                 <div className="mobile-nav-section">
                                     <Link to="/student" onClick={closeMenu} className="mobile-enrollment">
                                         My Enrollments
                                     </Link>
-                                    <p className="mobile-welcome">Welcome, {user.student.firstName}</p>
+                                    <p className="mobile-welcome">Welcome, {welcomeLabel}</p>
                                 </div>
                             ) : (
                                 <div className="mobile-nav-section">
@@ -275,14 +278,14 @@ const Navbar = () => {
                             </div>
                         )}
                     </div>
-                    {user ? (
+                    {studentFirstName ? (
                         <>
                             <div className='eduhub__navbar-my-courses'>
                                 <Link to='/student'>
                                     <button type='button'>Enrollments</button>
                                 </Link>
                             </div>  
-                            <p className='eduhub__welcome-message'>Welcome, {user.student.firstName}</p>
+                            <p className='eduhub__welcome-message'>Welcome, {welcomeLabel}</p>
                         </>                     
                     ) : (
                         <>

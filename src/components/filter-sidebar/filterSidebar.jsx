@@ -29,6 +29,23 @@ const boardMapping = {
 
 const boards = Object.keys(boardMapping);
 
+const dedupeStrings = (values = []) => [...new Set(values.filter(Boolean))];
+
+const dedupeInstitutes = (values = []) => {
+  const seen = new Set();
+
+  return values.filter((item) => {
+    const name = item?.name?.trim();
+
+    if (!name || seen.has(name)) {
+      return false;
+    }
+
+    seen.add(name);
+    return true;
+  });
+};
+
 const FilterSidebar = ({ onFilterChange, initialFilters, isMobile, onClose }) => {
   const [localFilters, setLocalFilters] = useState(initialFilters);
   const [institutes, setInstitutes] = useState([{ name: 'Any' }]);
@@ -40,6 +57,8 @@ const FilterSidebar = ({ onFilterChange, initialFilters, isMobile, onClose }) =>
   }, [initialFilters]);
 
   useEffect(() => {
+    let isActive = true;
+
     const fetchData = async () => {
       try {
         const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
@@ -55,14 +74,22 @@ const FilterSidebar = ({ onFilterChange, initialFilters, isMobile, onClose }) =>
         const subjectsData = await subjectsResponse.json();
         const institutesData = await institutesResponse.json();
 
-        setSubjects((prev) => [...prev, ...subjectsData]);
-        setInstitutes((prev) => [...prev, ...institutesData]);
+        if (!isActive) {
+          return;
+        }
+
+        setSubjects(['Any', ...dedupeStrings(subjectsData)]);
+        setInstitutes([{ name: 'Any' }, ...dedupeInstitutes(institutesData)]);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   const handleChange = (name, value) => {

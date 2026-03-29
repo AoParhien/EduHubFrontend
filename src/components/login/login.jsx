@@ -90,7 +90,7 @@ const LoginForm = () => {
     } = useForm({
         mode: 'onTouched',
     });
-    const { fetchUser } = useUserStore();
+    const { fetchUser, setAuth } = useUserStore();
     const toast = useToast();
     const navigate = useNavigate(); // Initialize useNavigate
     const authUrl = process.env.REACT_APP_AUTH_SERVICE_URL;
@@ -103,12 +103,16 @@ const LoginForm = () => {
             }, {
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                withCredentials: true,
             });
     
             if (response.data && response.data.token) {
-                // Store token in session storage
-                sessionStorage.setItem("authToken", response.data.token);
+                setAuth({
+                    token: response.data.token,
+                    user: response.data.user || null,
+                });
+                await fetchUser(response.data.token);
     
                 toast({
                     title: "Login successful!",
@@ -119,7 +123,6 @@ const LoginForm = () => {
                 });
     
                 reset();
-                fetchUser();
                 navigate("/");
             }
         }catch (error) {

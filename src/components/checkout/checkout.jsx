@@ -44,7 +44,9 @@ const Checkout = () => {
     const navigate = useNavigate();
     const [course, setCourse] = useState(null);
     const toast = useToast();
-    const { user } = useUserStore();
+    const refreshSession = useUserStore(state => state.refreshSession);
+    const user = useUserStore(state => state.user);
+    const accessToken = useUserStore(state => state.accessToken);
     useEffect(() => {
         if (location.state && location.state.course) {
             setCourse(location.state.course);
@@ -65,10 +67,10 @@ const Checkout = () => {
 
     const handleCheckout = async () => {
 
-        if(!user){
+        if(!user?.student?._id){
             toast({
                 title: "Invalid User",
-                description: "Please login to enroll",
+                description: "Please sign in again to enroll in this course.",
                 status: "error",
                 duration: 5000,
                 isClosable: true,
@@ -82,16 +84,30 @@ const Checkout = () => {
 
         try {
             const apiUrl = process.env.REACT_APP_REGISTRATION_SERVICE_URL;
-            const authToken = sessionStorage.getItem("authToken");
 
-            const response = await fetch(`${apiUrl}/api/enrollment/addEnrollment`, {
+            let response = await fetch(`${apiUrl}/api/enrollment/addEnrollment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`
+                    'Authorization': `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(payload)
             });
+
+            if (response.status === 401) {
+                const refreshedSession = await refreshSession();
+
+                if (refreshedSession?.token) {
+                    response = await fetch(`${apiUrl}/api/enrollment/addEnrollment`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${refreshedSession.token}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                }
+            }
 
             if (response.ok) {
                 toast({

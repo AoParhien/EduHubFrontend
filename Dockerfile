@@ -1,5 +1,5 @@
 # Use Node.js to build the React app
-FROM node:20 as build
+FROM node:24-alpine AS build
 
 WORKDIR /app
 
@@ -15,7 +15,8 @@ RUN npm run build
 FROM nginx:alpine
 
 # Copy the built files to Nginx
-COPY --from=build /app/build /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
 
 # Expose port 80
 EXPOSE 80

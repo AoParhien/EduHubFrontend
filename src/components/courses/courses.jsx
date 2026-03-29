@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import FilterSidebar from '../filter-sidebar/filterSidebar';
-import { Box, useBreakpointValue, Spinner, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, useBreakpointValue, Spinner, Button, Flex, Text, Alert, AlertIcon } from '@chakra-ui/react';
 import CourseCard from '../course-card/courseCard';
 import './courses.css';
 import debounce from 'lodash.debounce';
@@ -10,6 +10,7 @@ const Courses = () => {
     const { subcategory } = useParams();
     const [courses, setCourses] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const isMobile = useBreakpointValue({ base: true, md: false });
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     
@@ -86,6 +87,7 @@ const Courses = () => {
             const coursesArray = Array.isArray(data.courses) ? data.courses : [];
             
             setCourses(coursesArray);
+            setErrorMessage('');
             
             // Set pagination with fallback
             const paginationData = data.pagination || {
@@ -101,6 +103,7 @@ const Courses = () => {
             
         } catch (error) {
             setCourses([]);
+            setErrorMessage('We could not load courses right now. Please retry in a moment.');
             setPagination({
                 currentPage: page,
                 totalPages: 1,
@@ -226,6 +229,20 @@ const Courses = () => {
                             className="eduhub__courses-empty-state"
                         >
                             <Spinner size="xl" color="blue.500" />
+                        </Box>
+                    ) : errorMessage ? (
+                        <Box width="100%" mt={6}>
+                            <Alert status="error" borderRadius="xl" flexDirection="column" alignItems="flex-start" gap={3}>
+                                <Flex width="100%" justify="space-between" align={{ base: 'flex-start', md: 'center' }} direction={{ base: 'column', md: 'row' }} gap={3}>
+                                    <Flex align="center" gap={2}>
+                                        <AlertIcon />
+                                        <Text>{errorMessage}</Text>
+                                    </Flex>
+                                    <Button colorScheme="red" variant="outline" onClick={() => getCourses(filters, pagination.currentPage)}>
+                                        Retry
+                                    </Button>
+                                </Flex>
+                            </Alert>
                         </Box>
                     ) : courses.length === 0 ? (
                         <Box 
