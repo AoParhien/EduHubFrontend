@@ -20,7 +20,7 @@ import {
 
 const locations = Array.from({ length: 200 }, (_, i) => `Location ${i + 1}`);
 const boardMapping = {
-  "O Levels": "olevels",
+  "O Levels": "Olevels",
   "A Levels": "alevels",
   "Intermediate": "intermediate",
   "Matric": "matric",

@@ -33,9 +33,9 @@ class ErrorBoundary extends React.Component {
           justifyContent="center"
           px={{ base: 4, md: 8 }}
           py={10}
-          bgImage="linear-gradient(135deg, #e6f0ff 0%, #f8fbff 45%, #eef4ff 100%)"
           position="relative"
           overflow="hidden"
+          style={{ backgroundImage: 'linear-gradient(135deg, #e6f0ff 0%, #f8fbff 45%, #eef4ff 100%)' }}
         >
           <Box
             position="absolute"

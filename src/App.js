@@ -45,7 +45,11 @@ function App() {
         ))}
       </Helmet>
       <ChakraProvider theme={theme}>
-        <Box className="App" bgImage="linear-gradient(180deg, #f9f9f9 0%, #e3e3e3 100%)" minH="100vh">
+        <Box
+          className="App"
+          minH="100vh"
+          style={{ backgroundImage: 'linear-gradient(180deg, #f9f9f9 0%, #e3e3e3 100%)' }}
+        >
           <Router>
             <Box className='gradient__bg'>
               <Navbar />
