@@ -4,6 +4,7 @@
     margin-bottom: 180px;
     margin-right: 50px;
     margin-top: 180px;
+    align-items: stretch;
 }
 
 .eduhub__instructor-section-content {
@@ -13,7 +14,11 @@
     align-items: flex-start;
     flex-direction: column;
     margin-top: -1rem;
-    padding: 90px;
+    padding: 3rem;
+    background: linear-gradient(180deg, #ffffff 0%, var(--eduhub-primary-softer) 100%);
+    border: 1px solid var(--eduhub-border);
+    border-radius: var(--eduhub-radius-2xl);
+    box-shadow: var(--eduhub-shadow-card);
 }
 
 .eduhub__instructor-section-content h1 {
@@ -22,6 +27,7 @@
     font-size: 55px;
     line-height: 83px;
     letter-spacing: -0.04em;
+    color: var(--eduhub-text);
 }
 
 .eduhub__instructor-section-content p {
@@ -29,16 +35,17 @@
     font-weight: 400;
     font-size: 19px;
     line-height: 24px;
-    color: black;
+    color: var(--eduhub-muted);
     padding-left: 0.1rem;
 }
 
 .eduhub__instructor-section-instructors {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.25rem;
     justify-content: space-between;
-    margin-left: 1rem;
+    margin-left: 1.25rem;
+    align-content: flex-start;
 }
 
 .eduhub__instructor-section-instructors > * {

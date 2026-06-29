@@ -48,7 +48,7 @@ function App() {
         <Box
           className="App"
           minH="100vh"
-          style={{ backgroundImage: 'linear-gradient(180deg, #f9f9f9 0%, #e3e3e3 100%)' }}
+          style={{ backgroundImage: 'linear-gradient(180deg, #fbfcff 0%, #eef3fb 100%)' }}
         >
           <Router>
             <Box className='gradient__bg'>

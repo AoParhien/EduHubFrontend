@@ -58,16 +58,17 @@ const Features = () => {
           <Box
             key={feature.id}
             border="1px solid"
-            borderColor="gray.300"
-            borderRadius="8px"
+            borderColor="brand.100"
+            borderRadius="2xl"
             p={8}
             textAlign="center"
-            boxShadow="md"
+            bg="linear-gradient(180deg, #ffffff 0%, #f7faff 100%)"
+            boxShadow="0 22px 44px -34px rgba(13, 59, 102, 0.32)"
             transition="transform 0.3s ease-in-out"
-            _hover={{ transform: 'translateY(-4px)' }}
+            _hover={{ transform: 'translateY(-4px)', boxShadow: '0 28px 56px -34px rgba(13, 59, 102, 0.42)' }}
           >
             {feature.icon}
-            <Text fontSize="24px" fontWeight="700" color="#00308F" mt={4} mb={2}>
+            <Text fontSize="24px" fontWeight="700" color="brand.500" mt={4} mb={2}>
               {feature.title}
             </Text>
             <Text fontSize="18px" color="gray.600" mb={4}>
