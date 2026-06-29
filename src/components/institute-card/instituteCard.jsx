@@ -24,30 +24,30 @@ const InstituteCard = ({
     return (
         <Card
             width="100%"
-            borderRadius="lg"
-            boxShadow="md"
-            p={1}
+            borderRadius="2xl"
+            borderWidth="1px"
+            borderColor="brand.100"
+            boxShadow="0 22px 44px -34px rgba(13, 59, 102, 0.32)"
             cursor="pointer"
             _hover={{
-                boxShadow: 'lg',
-                transform: 'scale(1.02)',
+                boxShadow: '0 28px 56px -34px rgba(13, 59, 102, 0.42)',
+                transform: 'translateY(-6px)',
                 transition: 'all 0.3s ease'
             }}
             _active={{
-                boxShadow: 'md',
-                transform: 'scale(0.98)',
+                boxShadow: '0 18px 34px -28px rgba(13, 59, 102, 0.35)',
+                transform: 'translateY(-2px)',
                 transition: 'all 0.2s ease'
             }}
             onClick={handleClick}
             overflow="hidden"
-            bg="white"
+            bg="linear-gradient(180deg, #ffffff 0%, #f7faff 100%)"
         >
             <CardBody p={0}>
                 <Box position="relative">
                     <Image
                         src={pictureUrl || '/api/placeholder/400/200'}
                         alt={name}
-                        borderRadius='lg'
                         objectFit='cover'
                         height="200px"
                         width="100%"
@@ -60,7 +60,7 @@ const InstituteCard = ({
                             colorScheme={rating >= 4 ? "green" : "orange"}
                             px={2}
                             py={1}
-                            borderRadius="md"
+                            borderRadius="full"
                         >
                             ★ {rating.toFixed(1)}
                         </Badge>
@@ -86,7 +86,7 @@ const InstituteCard = ({
                             boxSize='50px'
                             objectFit='cover'
                             border="2px"
-                            borderColor="gray.200"
+                            borderColor="brand.100"
                         />
                     </Flex>
 
@@ -110,7 +110,7 @@ const InstituteCard = ({
                                     variant="subtle"
                                     px={2}
                                     py={1}
-                                    borderRadius="md"
+                                    borderRadius="full"
                                 >
                                     {category}
                                 </Badge>
@@ -119,7 +119,7 @@ const InstituteCard = ({
                     </Box>
 
                     <Flex justify="space-between" align="center" mt={2}>
-                        <Text fontWeight="bold" color="blue.600">
+                        <Text fontWeight="bold" color="brand.500">
                             Registration Fee: Rs. {registrationFees.toLocaleString()}
                         </Text>
                     </Flex>

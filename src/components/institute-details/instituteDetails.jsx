@@ -176,7 +176,7 @@ const InstituteDetails = () => {
         width={registrationBoxWidth}
         mx="auto"
       >
-        <Heading size="md" textAlign="center">Registration Details</Heading>
+        {/* <Heading size="md" textAlign="center">Registration Details</Heading>
         <Divider />
         <HStack justify="space-between" w="full">
           <Text>Registration Fee:</Text>
@@ -192,7 +192,7 @@ const InstituteDetails = () => {
           color="white"
         >
           Enroll Now
-        </Button>
+        </Button> */}
         
         <VStack align="stretch" w="full" spacing={4}>
           <Text fontWeight="bold" textAlign="center">Contact Information</Text>
@@ -473,7 +473,7 @@ const InstituteDetails = () => {
               position="sticky"
               top={4}
             >
-              <Heading size="md">Registration Details</Heading>
+              {/* <Heading size="md">Registration Details</Heading>
               <Divider />
               <HStack justify="space-between" w="full">
                 <Text>Registration Fee:</Text>
@@ -489,7 +489,7 @@ const InstituteDetails = () => {
                 color="white"
               >
                 Enroll Now
-              </Button>
+              </Button> */}
               
               <VStack align="stretch" w="full" spacing={4}>
                 <Text fontWeight="bold">Contact Information</Text>

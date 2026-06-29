@@ -107,6 +107,8 @@ const SignUpForm = () => {
                 firstName: data.firstName,
                 lastName: data.lastName,
                 mobileNumber: data.mobileNumber.replace(/^0+/, '') // Remove leading zeros if any
+            }, {
+                withCredentials: true,
             });
 
             if (response.data) {

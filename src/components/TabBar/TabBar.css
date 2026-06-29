@@ -2,9 +2,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: rgba(151, 151, 153, 0.23);
-    padding: 6px;
-    border-radius: 8px;
+    background: linear-gradient(180deg, #ffffff 0%, var(--eduhub-primary-softer) 100%);
+    padding: 10px;
+    border-radius: var(--eduhub-radius-2xl);
+    border: 1px solid var(--eduhub-border);
+    box-shadow: var(--eduhub-shadow-card);
     position: relative; /* Ensure correct positioning of scroll buttons */
     width: 100%;
     
@@ -15,7 +17,7 @@
     overflow-x: auto;
     scrollbar-width: none; /* Hide scrollbar for Firefox */
     -ms-overflow-style: none;  /* Hide scrollbar for IE and Edge */
-    color: #00308F;
+    color: var(--eduhub-primary);
     font-size: 17px;
     white-space: nowrap; /* Prevent wrapping */
     flex: 1;
@@ -27,18 +29,20 @@
 
 .tabbar-tab {
     background-color: #fff;
-    border: none;
-    padding: 0.3rem 1.8rem;
-    margin: 0 1rem;
-    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.65rem 1.8rem;
+    margin: 0 0.65rem;
+    border-radius: 999px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
+    color: var(--eduhub-primary);
+    font-weight: 600;
 }
 
 .tabbar-tab.selected {
     font-weight: bold;
    /* border: 6px solid #00308F; /* Add border to the selected button */
-   background-color: #00308F;
+   background-color: var(--eduhub-primary);
    color:white;
    
 }
@@ -48,7 +52,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: #00308F;
+    color: var(--eduhub-primary);
     font-size: 24px; /* Adjust size for better visibility */
 }
 

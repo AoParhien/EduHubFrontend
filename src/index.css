@@ -5,11 +5,24 @@
 
 :root {
   --main-font-family: 'Roboto', serif;
+  --font-family: 'Roboto', serif;
 
   --gradient-text: black;
   --gradient-bar: linear-gradient(103.22deg, #AE67FA -13.86%, #F49867 99.55%);
   
   --highlight-color: #9E5CF2;
+  --eduhub-primary: #00308f;
+  --eduhub-primary-dark: #0d2760;
+  --eduhub-primary-soft: #eef4ff;
+  --eduhub-primary-softer: #f7faff;
+  --eduhub-border: #cfe0ff;
+  --eduhub-text: #1f2937;
+  --eduhub-muted: #5b6474;
+  --eduhub-radius-lg: 18px;
+  --eduhub-radius-xl: 24px;
+  --eduhub-radius-2xl: 28px;
+  --eduhub-shadow-card: 0 22px 44px -34px rgba(13, 59, 102, 0.32);
+  --eduhub-shadow-card-hover: 0 28px 56px -34px rgba(13, 59, 102, 0.42);
 
   --color-bg: #040C18;
   --color-footer : #52769f;
@@ -20,6 +33,8 @@
 
 body {
   font-family: var(--main-font-family);
+  color: var(--eduhub-text);
+  background: linear-gradient(180deg, #fbfcff 0%, #eef3fb 100%);
 }
 
 .gradient__text .highlighted-text {

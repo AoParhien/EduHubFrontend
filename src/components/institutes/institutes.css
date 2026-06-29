@@ -2,26 +2,31 @@
     display: flex;
     flex-direction: column;
     padding: 2rem 8rem;
-    background-color: #fff;
+    background-color: transparent;
     min-height: 100vh;
 }
 
 .eduhub__institutes-header {
     text-align: center;
     margin-bottom: 2rem;
+    background: linear-gradient(180deg, #ffffff 0%, var(--eduhub-primary-softer) 100%);
+    border: 1px solid var(--eduhub-border);
+    border-radius: var(--eduhub-radius-2xl);
+    box-shadow: var(--eduhub-shadow-card);
+    padding: 2.5rem 1.5rem;
 }
 
 .eduhub__institutes-header h1 {
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
     font-size: 2.5rem;
-    color: #333;
+    color: var(--eduhub-text);
 }
 
 .eduhub__institutes-header p {
     font-family: 'Poppins', sans-serif;
     font-size: 1rem;
-    color: #555;
+    color: var(--eduhub-muted);
     margin-top: 0.5rem;
 }
 
@@ -36,18 +41,6 @@
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
     padding: 0.5rem 0;
-}
-
-.eduhub__institutes-cards > div {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.eduhub__institutes-cards > div:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Responsive Layout */

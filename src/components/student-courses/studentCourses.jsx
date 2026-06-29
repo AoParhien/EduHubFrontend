@@ -24,21 +24,41 @@ const StudentCourses = () => {
   const [studentCourses, setStudentCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
+  const refreshSession = useUserStore(state => state.refreshSession);
   const user = useUserStore(state => state.user);
+  const accessToken = useUserStore(state => state.accessToken);
 
   useEffect(() => {
     const fetchCourses = async () => {
+      if (!user?.student?._id || !accessToken) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const apiUrl = process.env.REACT_APP_REGISTRATION_SERVICE_URL;
-        const authToken = sessionStorage.getItem("authToken");
 
-        const response = await fetch(`${apiUrl}/api/enrollment/studentEnrollments/${user.student._id}`, {
+        let response = await fetch(`${apiUrl}/api/enrollment/studentEnrollments/${user.student._id}`, {
           method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${authToken}`
+                'Authorization': `Bearer ${accessToken}`
             }
         });
+
+        if (response.status === 401) {
+          const refreshedSession = await refreshSession();
+
+          if (refreshedSession?.token) {
+            response = await fetch(`${apiUrl}/api/enrollment/studentEnrollments/${user.student._id}`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${refreshedSession.token}`
+              }
+            });
+          }
+        }
 
         if (!response.ok) {
           throw new Error('Failed to fetch courses');
@@ -60,7 +80,7 @@ const StudentCourses = () => {
     };
 
     fetchCourses();
-  }, [toast]);
+  }, [accessToken, refreshSession, toast, user?.student?._id]);
 
   if (loading) {
     return (

@@ -65,7 +65,7 @@ const Header = () => {
             as={motion.button}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            bg="#00308F"
+            bg="brand.500"
             color="white"
             width="100%"
             height="1rem"
@@ -74,7 +74,7 @@ const Header = () => {
             fontSize="1.2rem"
             lineHeight="1rem"
             borderColor="transparent"
-            borderRadius="39px"
+            borderRadius="var(--eduhub-radius-2xl)"
             _focus={{ outline: 'none' }}
             cursor="pointer"
             className='eduhub__header-register-button'

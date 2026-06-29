@@ -5,6 +5,11 @@
     padding: 4rem; /* Reduced padding for better responsiveness */
     align-items: center;
     justify-content: space-between;
+    background: linear-gradient(180deg, #ffffff 0%, var(--eduhub-primary-softer) 100%);
+    border: 1px solid var(--eduhub-border);
+    border-radius: var(--eduhub-radius-2xl);
+    box-shadow: var(--eduhub-shadow-card);
+    margin: 0 2rem;
 }
 
 .eduhub__header-content {
@@ -23,7 +28,7 @@
     font-size: 3rem; /* Changed to rem for scalability */
     line-height: 1.2;
     letter-spacing: -0.02em;
-    color: #1A202C; /* Ensure sufficient contrast */
+    color: var(--eduhub-text); /* Ensure sufficient contrast */
 }
 
 .eduhub__header-content p {
@@ -31,7 +36,7 @@
     font-weight: 400;
     font-size: 1.125rem; /* 18px */
     line-height: 1.6;
-    color: #4A5568; /* Tailwind's gray-600 equivalent */
+    color: var(--eduhub-muted); /* Tailwind's gray-600 equivalent */
     margin-top: 1.5rem;
 }
 
@@ -50,16 +55,16 @@
     font-weight: 500;
     font-size: 1rem;
     color: white;
-    background-color: #00308F;
+    background-color: var(--eduhub-primary);
     cursor: pointer;
     border: none;
-    border-radius: 1.5rem;
+    border-radius: var(--eduhub-radius-2xl);
     transition: background-color 0.3s ease;
     padding: 1.5rem;
 }
 
 .eduhub__header-register-button:hover {
-    background-color: #002B7A; /* Darker shade on hover */
+    background-color: var(--eduhub-primary-dark); /* Darker shade on hover */
 }
 
 .eduhub__header-learn-more-button {
@@ -68,16 +73,16 @@
     font-family: var(--font-family);
     font-weight: 500;
     font-size: 1rem;
-    color: #00308F;
+    color: var(--eduhub-primary);
     background-color: transparent;
     cursor: pointer;
-    border: 2px solid #00308F;
-    border-radius: 1.5rem;
+    border: 1px solid var(--eduhub-border);
+    border-radius: var(--eduhub-radius-2xl);
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .eduhub__header-learn-more-button:hover {
-    background-color: #00308F;
+    background-color: var(--eduhub-primary);
     color: white;
 }
 
@@ -110,6 +115,7 @@
     .eduhub__header {
         flex-direction: column;
         padding: 2rem;
+        margin: 0 1rem;
     }
 
     .eduhub__header-content {

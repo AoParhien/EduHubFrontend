@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import FilterSidebar from '../filter-sidebar/filterSidebar';
-import { Box, useBreakpointValue, Spinner, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, useBreakpointValue, Spinner, Button, Flex, Text, Alert, AlertIcon, Badge, Stack } from '@chakra-ui/react';
 import CourseCard from '../course-card/courseCard';
 import './courses.css';
 import debounce from 'lodash.debounce';
@@ -10,6 +10,7 @@ const Courses = () => {
     const { subcategory } = useParams();
     const [courses, setCourses] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const isMobile = useBreakpointValue({ base: true, md: false });
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     
@@ -86,6 +87,7 @@ const Courses = () => {
             const coursesArray = Array.isArray(data.courses) ? data.courses : [];
             
             setCourses(coursesArray);
+            setErrorMessage('');
             
             // Set pagination with fallback
             const paginationData = data.pagination || {
@@ -101,6 +103,7 @@ const Courses = () => {
             
         } catch (error) {
             setCourses([]);
+            setErrorMessage('We could not load courses right now. Please retry in a moment.');
             setPagination({
                 currentPage: page,
                 totalPages: 1,
@@ -168,6 +171,13 @@ const Courses = () => {
         document.body.style.overflow = 'auto';
     };
 
+    const activeFilterCount = [
+        filters.institute !== 'Any',
+        filters.subject !== 'Any',
+        Array.isArray(filters.board) && filters.board.length > 0,
+        Number(filters.fees.max) < 15000,
+    ].filter(Boolean).length;
+
     return (
         <div className={`eduhub__courses section__padding ${isFilterOpen && isMobile ? 'filter-open' : ''}`}>
             <Box 
@@ -194,6 +204,53 @@ const Courses = () => {
                         marginLeft: isMobile ? 0 : '20px' 
                     }}
                 >
+                    <Box
+                        className="eduhub__courses-toolbar"
+                        bg="linear-gradient(135deg, #ffffff 0%, #f7fbff 100%)"
+                        borderWidth="1px"
+                        borderColor="blue.100"
+                        borderRadius="28px"
+                        boxShadow="0 18px 40px -34px rgba(13, 59, 102, 0.32)"
+                        px={{ base: 4, md: 6 }}
+                        py={{ base: 4, md: 5 }}
+                        mb={5}
+                        width="100%"
+                    >
+                        <Flex
+                            justify="space-between"
+                            align={{ base: 'flex-start', lg: 'center' }}
+                            direction={{ base: 'column', lg: 'row' }}
+                            gap={4}
+                        >
+                            <Box>
+                                <Text
+                                    fontSize="xs"
+                                    textTransform="uppercase"
+                                    letterSpacing="0.18em"
+                                    color="blue.700"
+                                    fontWeight="800"
+                                    mb={1}
+                                >
+                                    Course Catalogue
+                                </Text>
+                                <Text fontSize={{ base: '2xl', md: '3xl' }} fontWeight="800" color="gray.800" lineHeight="1.1">
+                                    Discover courses that match your goals
+                                </Text>
+                                <Text mt={2} color="gray.600" maxW="680px">
+                                    Compare institutes, subjects, boards, and monthly fees from a cleaner catalog experience.
+                                </Text>
+                            </Box>
+                            <Stack direction={{ base: 'row', md: 'row' }} spacing={3} flexWrap="wrap">
+                                <Badge colorScheme="blue" variant="subtle" borderRadius="full" px={3} py={1.5}>
+                                    {courses.length} results
+                                </Badge>
+                                <Badge colorScheme="gray" variant="subtle" borderRadius="full" px={3} py={1.5}>
+                                    {activeFilterCount} active filters
+                                </Badge>
+                            </Stack>
+                        </Flex>
+                    </Box>
+
                     {isMobile && (
                         <Box 
                             className="eduhub__mobile-filter-button-container"
@@ -204,14 +261,14 @@ const Courses = () => {
                             py={2}
                             px={1}
                             mb={3}
-                            borderBottom="1px solid"
-                            borderColor="gray.100"
                         >
                             <button 
                                 onClick={toggleFilterSidebar}
                                 className='eduhub__mobile-filter-button'
                             >
-                                <span className="filter-icon">⚙️</span> Filter Courses
+                                <span className="filter-icon">⚙️</span>
+                                <span>Refine Results</span>
+                                <span className="filter-chip">{activeFilterCount}</span>
                             </button>
                         </Box>
                     )}
@@ -227,15 +284,46 @@ const Courses = () => {
                         >
                             <Spinner size="xl" color="blue.500" />
                         </Box>
+                    ) : errorMessage ? (
+                        <Box width="100%" mt={6}>
+                            <Alert status="error" borderRadius="xl" flexDirection="column" alignItems="flex-start" gap={3}>
+                                <Flex width="100%" justify="space-between" align={{ base: 'flex-start', md: 'center' }} direction={{ base: 'column', md: 'row' }} gap={3}>
+                                    <Flex align="center" gap={2}>
+                                        <AlertIcon />
+                                        <Text>{errorMessage}</Text>
+                                    </Flex>
+                                    <Button colorScheme="red" variant="outline" onClick={() => getCourses(filters, pagination.currentPage)}>
+                                        Retry
+                                    </Button>
+                                </Flex>
+                            </Alert>
+                        </Box>
                     ) : courses.length === 0 ? (
                         <Box 
                             width="100%" 
                             textAlign="center" 
                             color="gray.500" 
                             mt={10}
+                            bg="white"
+                            borderWidth="1px"
+                            borderColor="blue.100"
+                            borderRadius="28px"
+                            py={10}
+                            px={6}
                             className="eduhub__courses-empty-state"
                         >
-                            <Text>No courses found. Try adjusting your filters.</Text>
+                            <Text fontSize="2xl" fontWeight="800" color="gray.800" mb={2}>
+                                No courses match these filters
+                            </Text>
+                            <Text mb={5}>Try widening your fee range, changing the board, or clearing a few filters.</Text>
+                            <Button colorScheme="blue" variant="outline" onClick={() => setFilters({
+                                institute: 'Any',
+                                subject: 'Any',
+                                fees: { min: 0, max: 15000 },
+                                board: [],
+                            })}>
+                                Clear filters
+                            </Button>
                         </Box>
                     ) : (
                         <>
@@ -260,6 +348,12 @@ const Courses = () => {
                                     mb={4} 
                                     gap={4}
                                     width="100%"
+                                    bg="white"
+                                    borderWidth="1px"
+                                    borderColor="blue.100"
+                                    borderRadius="24px"
+                                    px={4}
+                                    py={4}
                                 >
                                     <Button
                                         onClick={() => handlePageChange(pagination.currentPage - 1)}
@@ -270,7 +364,7 @@ const Courses = () => {
                                         Previous
                                     </Button>
                                     
-                                    <Text>
+                                    <Text fontWeight="700" color="gray.700">
                                         Page {pagination.currentPage} of {pagination.totalPages}
                                     </Text>
                                     
