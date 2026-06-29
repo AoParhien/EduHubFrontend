@@ -78,6 +78,6 @@ function App() {
   );
 }
 
-// Checking deployment on Vercel
+// Checking deployment on Vercel with UAT branch
 //Updated user creds
 export default App;
