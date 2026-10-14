@@ -19,6 +19,7 @@ import { FaUser, FaClock, FaCalendar } from 'react-icons/fa';
 import Schedule from '../schedule/schedule';
 import CourseBatches from '../course-batches/courseBatches';
 import useUserStore from '../../store/useUserStore';
+import { BACKEND_URL } from '../../utils/backendUrl';
 
 const StudentCourses = () => {
   const [studentCourses, setStudentCourses] = useState([]);
@@ -36,7 +37,7 @@ const StudentCourses = () => {
       }
 
       try {
-        const apiUrl = process.env.REACT_APP_REGISTRATION_SERVICE_URL;
+        const apiUrl = BACKEND_URL;
 
         let response = await fetch(`${apiUrl}/api/enrollment/studentEnrollments/${user.student._id}`, {
           method: 'GET',

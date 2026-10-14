@@ -31,6 +31,7 @@ import MapWithPlusCode from '../map/map';
 import FeeTable from '../fee-table/FeeTable';
 import CenteredSpinner from '../centered-spinner/centeredSpinner';
 import CourseBatches from '../course-batches/courseBatches';
+import { BACKEND_URL } from '../../utils/backendUrl';
 
 const selectedFontWeight = 650;
 // const courses = [
@@ -52,7 +53,7 @@ const CourseDetails = () => {
 
     const getCourse = async () => {
         try {
-            const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+            const apiUrl = BACKEND_URL;
             const response = await fetch(`${apiUrl}/api/courses/getCourseDetails/${courseId}`, {
                 method: 'GET',
                 credentials: 'include',

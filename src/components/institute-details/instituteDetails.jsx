@@ -34,6 +34,7 @@ import { BsFilterRight } from 'react-icons/bs';
 import CourseCard from '../course-card/courseCard';
 import MapWithPlusCode from '../map/map';
 import InstructorCard from '../instructor-card/instructorCard';
+import { BACKEND_URL } from '../../utils/backendUrl';
 
 const selectedFontWeight = 650;
 
@@ -61,7 +62,7 @@ const InstituteDetails = () => {
   const fetchInstituteDetails = async () => {
     try {
       setLoading(true);
-      const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+      const apiUrl = BACKEND_URL;
       const response = await fetch(`${apiUrl}/api/institutes/${id}`);
                 
       if (!response.ok) {
@@ -81,7 +82,7 @@ const InstituteDetails = () => {
   const fetchIntituteCourses = async () => {
     try {
       setLoading(true);
-      const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+      const apiUrl = BACKEND_URL;
       const response = await fetch(`${apiUrl}/api/courses/getCourseByInstitute/${id}`);
                 
       if (!response.ok) {
@@ -101,7 +102,7 @@ const InstituteDetails = () => {
   const fetchTeachers = async () => {
     try {
       setLoading(true);
-      const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+      const apiUrl = BACKEND_URL;
       const response = await fetch(`${apiUrl}/api/faculty/getFacultiesByInstitute/${id}`);
                 
       if (!response.ok) {

@@ -22,6 +22,7 @@ import {
   Wrap,
   WrapItem
 } from '@chakra-ui/react';
+import { BACKEND_URL } from '../../utils/backendUrl';
 const boardMapping = {
   "O Levels": "Olevels",
   "A Levels": "alevels",
@@ -86,7 +87,7 @@ const FilterSidebar = ({ onFilterChange, initialFilters, isMobile, onClose }) =>
 
     const fetchData = async () => {
       try {
-        const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+        const apiUrl = BACKEND_URL;
         const subjectsResponse = await fetch(`${apiUrl}/api/courses/getSubjects`, {
           method: 'GET',
           credentials: 'include',

@@ -20,6 +20,7 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 import useUserStore from '../../store/useUserStore';
+import { BACKEND_URL } from '../../utils/backendUrl';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const FloatingLabelInput = ({ label, register, name, errors, type = "text", leftAddon, rules, ...rest }) => (
@@ -93,7 +94,7 @@ const LoginForm = () => {
     const { fetchUser, setAuth } = useUserStore();
     const toast = useToast();
     const navigate = useNavigate(); // Initialize useNavigate
-    const authUrl = process.env.REACT_APP_AUTH_SERVICE_URL;
+    const authUrl = BACKEND_URL;
     console.log(authUrl)
     const onSubmit = async (data) => {
         try {

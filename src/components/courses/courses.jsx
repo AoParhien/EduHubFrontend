@@ -5,6 +5,7 @@ import { Box, useBreakpointValue, Spinner, Button, Flex, Text, Alert, AlertIcon,
 import CourseCard from '../course-card/courseCard';
 import './courses.css';
 import debounce from 'lodash.debounce';
+import { BACKEND_URL } from '../../utils/backendUrl';
 
 const Courses = () => {
     const { subcategory } = useParams();
@@ -64,7 +65,7 @@ const Courses = () => {
         
         try {
             const query = buildQueryParams(filters, page, 8);
-            const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+            const apiUrl = BACKEND_URL;
             
             if (!apiUrl) {
                 throw new Error('API URL not configured');

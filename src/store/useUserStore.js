@@ -1,10 +1,9 @@
 import { create } from 'zustand';
 
-const getEnvValue = (primaryKey, fallbackKey = '') =>
-  process.env[primaryKey] || (fallbackKey ? process.env[fallbackKey] : '') || '';
+import { BACKEND_URL } from '../utils/backendUrl';
 
-const getAuthServiceUrl = () => getEnvValue('REACT_APP_AUTH_SERVICE_URL', 'VITE_AUTH_SERVICE_URL');
-const getStudentServiceUrl = () => getEnvValue('REACT_APP_STUDENT_SERVICE_URL', 'VITE_STUDENT_SERVICE_URL');
+const getAuthServiceUrl = () => BACKEND_URL;
+const getStudentServiceUrl = () => BACKEND_URL;
 
 const useUserStore = create((set, get) => ({
   user: null,

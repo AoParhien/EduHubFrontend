@@ -8,6 +8,7 @@ import Dblue from '../../assets/Dblue.png';
 import useUserStore from '../../store/useUserStore';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
+import { BACKEND_URL } from '../../utils/backendUrl';
 
 const Navbar = () => {
     const [showCategories, setShowCategories] = useState(false);
@@ -68,7 +69,7 @@ const Navbar = () => {
         isMobile ? setMobileLoading(true) : setLoading(true);
         
         try {
-            const instititeServiceUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+            const instititeServiceUrl = BACKEND_URL;
             const response = await axios.get(`${instititeServiceUrl}/api/courses/search?title=${query}`);
             isMobile ? 
                 setMobileSearchResults(response.data.courses || []) : 

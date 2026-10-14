@@ -20,6 +20,7 @@ import {
     useBreakpointValue,
 } from '@chakra-ui/react';
 import axios from 'axios';
+import { BACKEND_URL } from '../../utils/backendUrl';
 
 const FloatingLabelInput = ({ label, register, name, errors, type = "text", leftAddon, rules, ...rest }) => (
     <FormControl isInvalid={errors[name]} position="relative">
@@ -96,7 +97,7 @@ const SignUpForm = () => {
     });
 
     const toast = useToast();
-    const authUrl = process.env.REACT_APP_AUTH_SERVICE_URL;
+    const authUrl = BACKEND_URL;
 
     const onSubmit = async (data) => {
         try {

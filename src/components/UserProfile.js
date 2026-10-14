@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import useUserStore from '../store/useUserStore';
+import { BACKEND_URL } from '../utils/backendUrl';
 
 function UserProfile() {
   // Access user state, loading state, and actions from the store
@@ -7,7 +8,7 @@ function UserProfile() {
 
   const logout = async () => {
     try {
-      const authUrl = process.env.REACT_APP_AUTH_SERVICE_URL;
+      const authUrl = BACKEND_URL;
       await fetch(`${authUrl}/api/auth/logout`, { 
         method: 'POST',
         credentials: 'include',

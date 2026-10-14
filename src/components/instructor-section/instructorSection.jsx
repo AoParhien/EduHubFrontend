@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './instructorSection.css';
 import InstructorCard from '../instructor-card/instructorCard';
 import { px } from 'framer-motion';
+import { BACKEND_URL } from '../../utils/backendUrl';
 
 const InstructorSection = () => {
     const [topTeachers, setTopTeachers] = useState([]);
@@ -9,7 +10,7 @@ const InstructorSection = () => {
     // Fetch top teachers from the API
     const getCourses = async () => {
         try {
-            const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+            const apiUrl = BACKEND_URL;
             const response = await fetch(`${apiUrl}/api/teachers/getTopTeachers`, {
                 method: 'GET',
                 credentials: 'include', // Include credentials if required

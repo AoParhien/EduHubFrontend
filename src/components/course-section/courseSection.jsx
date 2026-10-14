@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './courseSection.css';
 import CourseCard from '../course-card/courseCard';
 import TabBar from '../TabBar/TabBar';
+import { BACKEND_URL } from '../../utils/backendUrl';
 
 const CourseSection = () => {
     const navigate = useNavigate();
@@ -27,7 +28,7 @@ const CourseSection = () => {
     // Function to fetch courses
     const getCourses = async () => {
         try {
-            const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+            const apiUrl = BACKEND_URL;
             const response = await fetch(`${apiUrl}/api/courses/getCourseListing`, {
                 method: 'GET',
                 credentials: 'include',

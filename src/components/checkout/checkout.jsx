@@ -21,6 +21,7 @@ import CenteredSpinner from '../centered-spinner/centeredSpinner';
 import harvard from '../../assets/harvard.svg';
 import Schedule from '../schedule/schedule';
 import useUserStore from '../../store/useUserStore';
+import { BACKEND_URL } from '../../utils/backendUrl';
 
 const BatchSelector = ({ batches, selectedBatch, handleBatchChange }) => {
     return (
@@ -110,7 +111,7 @@ const Checkout = () => {
         };
 
         try {
-            const apiUrl = process.env.REACT_APP_REGISTRATION_SERVICE_URL;
+            const apiUrl = BACKEND_URL;
 
             let response = await fetch(`${apiUrl}/api/enrollment/addEnrollment`, {
                 method: 'POST',

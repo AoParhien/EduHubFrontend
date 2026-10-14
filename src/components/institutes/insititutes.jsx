@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './institutes.css';
 import TabBar from '../TabBar/TabBar';
 import InstituteCard from '../institute-card/instituteCard';
+import { BACKEND_URL } from '../../utils/backendUrl';
 
 const Institutes = () => {
     const tabs = ['O\'Levels', 'A\'Levels', 'Edexcel', 'Matric', 'Inter', 'ECAT', 'MCAT', 'BCOM'];
@@ -16,7 +17,7 @@ const Institutes = () => {
             setError(null); // Reset error state on new fetch
 
             try {
-            const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
+            const apiUrl = BACKEND_URL;
             const response = await fetch(`${apiUrl}/api/institutes/getInstitutes?category=${selectedTab}`, {
                     method: 'GET',
                     headers: {
