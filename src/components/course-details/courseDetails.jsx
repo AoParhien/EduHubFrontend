@@ -115,7 +115,6 @@ const CourseDetails = () => {
     const hasTimes = schedules.length > 0;
     const teacher = course.teacher;
     const institute = course.institute || {};
-    const years = Number(teacher?.experience) || 0;
     const coords = Array.isArray(institute.location) && institute.location.length === 2 ? institute.location : null;
     const meta = [
         course.durationMonths && formatMonths(course.durationMonths),
@@ -159,7 +158,6 @@ const CourseDetails = () => {
                                     <div>
                                         <p>
                                             <RouterLink to={`/teachers/${teacher.id}`} className="course-hero__name">{teacher.name}</RouterLink>
-                                            {years > 0 && <span className="course-hero__muted">, {years} {years === 1 ? 'year' : 'years'} teaching</span>}
                                         </p>
                                         {teacher.description && <p className="course-hero__muted">{teacher.description}</p>}
                                     </div>
