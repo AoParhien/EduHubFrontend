@@ -226,7 +226,7 @@ const Checkout = () => {
                         {course.classFormat && (<><dt>Classes</dt><dd>{formatClassFormat(course.classFormat)}</dd></>)}
                         {selected && (<><dt>Batch</dt><dd>{selected.batchName}</dd></>)}
                     </dl>
-                    <FeeTable registrationFees={course.institute?.registrationFees} courseFees={course.fees} />
+                    <FeeTable registrationFees={course.institute?.registrationFees} courseFees={course.fees} oneTimeCharges={course.externalCharges} />
                     <p className="checkout__pay-note">Pay this amount at the institute on your first day of class.</p>
 
                     {errorMessage && (

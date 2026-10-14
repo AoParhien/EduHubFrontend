@@ -9,7 +9,10 @@ import Home from './components/home/home';
 import theme from './theme';
 import useUserStore from './store/useUserStore';
 
-const Courses = lazy(() => import('./components/courses/courses'));
+const SubjectDirectory = lazy(() => import('./components/subjects/SubjectDirectory'));
+const SubjectPage = lazy(() => import('./components/subjects/SubjectPage'));
+const TeachersDirectory = lazy(() => import('./components/teachers/TeachersDirectory'));
+const TeacherProfile = lazy(() => import('./components/teachers/TeacherProfile'));
 const Institutes = lazy(() => import('./components/institutes/insititutes'));
 const CourseDetails = lazy(() => import('./components/course-details/courseDetails'));
 const Checkout = lazy(() => import('./components/checkout/checkout'));
@@ -56,7 +59,10 @@ function App() {
               <Suspense fallback={<RouteFallback />}>
                 <Routes>
                   <Route path="/" element={<Home />} />
-                  <Route path="/courses/:subcategory?" element={<Courses />} />
+                  <Route path="/courses/:subcategory?" element={<SubjectDirectory />} />
+                  <Route path="/subjects/:slug" element={<SubjectPage />} />
+                  <Route path="/teachers" element={<TeachersDirectory />} />
+                  <Route path="/teachers/:id" element={<TeacherProfile />} />
                   <Route path="/institutes" element={<Institutes />} />
                   <Route path="/course-details/:courseId?" element={<CourseDetails />} />
                   <Route path="/checkout" element={<Checkout />} />

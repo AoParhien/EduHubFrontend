@@ -2,8 +2,8 @@ import React from 'react';
 import { formatRupees } from '../../utils/format';
 import './FeeTable.css';
 
-const FeeTable = ({ registrationFees = 0, courseFees = 0 }) => {
-    const dueOnFirstDay = Number(registrationFees || 0) + Number(courseFees || 0);
+const FeeTable = ({ registrationFees = 0, courseFees = 0, oneTimeCharges = 0 }) => {
+    const dueOnFirstDay = Number(registrationFees || 0) + Number(courseFees || 0) + Number(oneTimeCharges || 0);
 
     return (
         <table className="fee-table">
@@ -23,6 +23,15 @@ const FeeTable = ({ registrationFees = 0, courseFees = 0 }) => {
                     </th>
                     <td>{formatRupees(registrationFees)}</td>
                 </tr>
+                {Number(oneTimeCharges) > 0 && (
+                    <tr>
+                        <th scope="row">
+                            Books and materials
+                            <span>One-time, set by the institute</span>
+                        </th>
+                        <td>{formatRupees(oneTimeCharges)}</td>
+                    </tr>
+                )}
             </tbody>
             <tfoot>
                 <tr>

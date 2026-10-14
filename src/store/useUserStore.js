@@ -5,6 +5,9 @@ import { BACKEND_URL } from '../utils/backendUrl';
 const getAuthServiceUrl = () => BACKEND_URL;
 const getStudentServiceUrl = () => BACKEND_URL;
 
+// The refresh token rotates on every use, so concurrent refreshes must share one request.
+let refreshInFlight = null;
+
 const useUserStore = create((set, get) => ({
   user: null,
   authUser: null,
@@ -23,7 +26,16 @@ const useUserStore = create((set, get) => ({
     });
   },
 
-  refreshSession: async () => {
+  refreshSession: () => {
+    if (!refreshInFlight) {
+      refreshInFlight = get().requestRefresh().finally(() => {
+        refreshInFlight = null;
+      });
+    }
+    return refreshInFlight;
+  },
+
+  requestRefresh: async () => {
     const authUrl = getAuthServiceUrl();
 
     if (!authUrl) {

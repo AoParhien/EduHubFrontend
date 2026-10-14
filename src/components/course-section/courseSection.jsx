@@ -1,107 +1,93 @@
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Button, Skeleton } from '@chakra-ui/react';
-import CourseCard from '../course-card/courseCard';
 import TabBar from '../TabBar/TabBar';
 import { BACKEND_URL } from '../../utils/backendUrl';
-import { BOARDS } from '../../utils/format';
+import { BOARDS, formatRupees } from '../../utils/format';
+import '../subjects/subjects.css';
 import './courseSection.css';
 
-const COURSES_PER_BOARD = 8;
+const SUBJECTS_PER_BOARD = 8;
 const tabs = BOARDS.map((board) => ({ value: board.slug, label: board.label }));
 
+// Home page: the most-offered subjects for a board, each linking to a comparison page.
 const CourseSection = () => {
-    const [selectedBoard, setSelectedBoard] = useState(tabs[0].value);
-    const [courses, setCourses] = useState([]);
-    const [total, setTotal] = useState(0);
-    const [status, setStatus] = useState('loading');
+    const [board, setBoard] = useState(tabs[0].value);
+    const [subjects, setSubjects] = useState(null);
     const [reloadKey, setReloadKey] = useState(0);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         const controller = new AbortController();
-
-        const loadCourses = async () => {
-            setStatus('loading');
-            try {
-                const params = new URLSearchParams({ board: selectedBoard, limit: COURSES_PER_BOARD });
-                const response = await fetch(`${BACKEND_URL}/api/courses/getCourseListing?${params}`, {
-                    signal: controller.signal,
-                });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data = await response.json();
-                setCourses(data.courses || []);
-                setTotal(data.pagination?.totalCourses ?? (data.courses || []).length);
-                setStatus('ready');
-            } catch (error) {
-                if (error.name === 'AbortError') return;
-                setCourses([]);
-                setStatus('error');
-            }
-        };
-
-        loadCourses();
+        setSubjects(null);
+        setError(false);
+        fetch(`${BACKEND_URL}/api/catalog/subjects?board=${board}`, { signal: controller.signal })
+            .then((res) => (res.ok ? res.json() : Promise.reject(new Error(res.status))))
+            .then((data) =>
+                setSubjects(
+                    data
+                        .filter((subject) => subject.offerings > 0)
+                        .sort((a, b) => b.institutes - a.institutes || a.minFee - b.minFee)
+                )
+            )
+            .catch((err) => {
+                if (err.name !== 'AbortError') setError(true);
+            });
         return () => controller.abort();
-    }, [selectedBoard, reloadKey]);
+    }, [board, reloadKey]);
 
-    const boardLabel = tabs.find((tab) => tab.value === selectedBoard)?.label;
+    const boardLabel = tabs.find((tab) => tab.value === board)?.label;
+    const shown = (subjects || []).slice(0, SUBJECTS_PER_BOARD);
 
     return (
         <section className="course-section page page-section" aria-labelledby="course-section-title">
-            <div className="course-section__head">
-                <div className="section-heading">
-                    <h2 id="course-section-title">Courses open for enrollment</h2>
-                    <p>Pick your board to see current classes, who teaches them and what they cost each month.</p>
-                </div>
+            <div className="section-heading">
+                <h2 id="course-section-title">Find your subject</h2>
+                <p>Pick a board, then a subject, to compare every institute in Karachi that teaches it.</p>
             </div>
 
-            <TabBar tabs={tabs} value={selectedBoard} onSelect={setSelectedBoard} label="Board" />
+            <TabBar tabs={tabs} value={board} onSelect={setBoard} label="Board" />
 
-            <div className="course-section__results" aria-live="polite" aria-busy={status === 'loading'}>
-                {status === 'loading' ? (
-                    <div className="course-grid">
-                        {Array.from({ length: 4 }, (_, index) => (
-                            <Skeleton key={index} height="320px" borderRadius="16px" startColor="#eef2f8" endColor="#f7f9fc" />
-                        ))}
-                    </div>
-                ) : status === 'error' ? (
+            <div className="course-section__results" aria-live="polite" aria-busy={!subjects && !error}>
+                {error ? (
                     <div className="course-section__empty">
-                        <h3>Courses couldn't be loaded</h3>
+                        <h3>Subjects couldn't be loaded</h3>
                         <p>Check your connection and try again.</p>
-                        <Button variant="outline" onClick={() => setReloadKey((key) => key + 1)}>
-                            Try again
-                        </Button>
+                        <Button variant="outline" onClick={() => setReloadKey((key) => key + 1)}>Try again</Button>
                     </div>
-                ) : courses.length > 0 ? (
-                    <div className="course-grid">
-                        {courses.map((course) => (
-                            <CourseCard
-                                key={course.courseId}
-                                title={course.title}
-                                fees={course.fees}
-                                institute={course.instituteName}
-                                teacherName={course.teacherName}
-                                board={course.board}
-                                imageUrl={course.imageUrl}
-                                id={course.courseId}
-                            />
+                ) : !subjects ? (
+                    <div className="subject-grid">
+                        {Array.from({ length: 8 }, (_, i) => <Skeleton key={i} h="92px" borderRadius="16px" startColor="#eef2f8" endColor="#f7f9fc" />)}
+                    </div>
+                ) : shown.length ? (
+                    <ul className="subject-grid">
+                        {shown.map((subject) => (
+                            <li key={subject.slug}>
+                                <RouterLink to={`/subjects/${subject.slug}`} className="subject-tile">
+                                    <span className="subject-tile__name">
+                                        {subject.name}
+                                        {subject.level !== boardLabel && BOARDS.find((b) => b.slug === board)?.levels.length > 1 ? `, ${subject.level}` : ''}
+                                    </span>
+                                    <span className="subject-tile__meta">
+                                        {subject.institutes} {subject.institutes === 1 ? 'institute' : 'institutes'}, from {formatRupees(subject.minFee)}
+                                    </span>
+                                </RouterLink>
+                            </li>
                         ))}
-                    </div>
+                    </ul>
                 ) : (
                     <div className="course-section__empty">
-                        <h3>No {boardLabel} courses yet</h3>
-                        <p>Institutes add new batches regularly. In the meantime, browse every course on AoParhein.</p>
-                        <Button as={RouterLink} to="/courses" variant="outline">Browse all courses</Button>
+                        <h3>No {boardLabel} classes yet</h3>
+                        <p>Institutes are joining AoParhein every week. Try another board in the meantime.</p>
                     </div>
                 )}
             </div>
 
-            {status === 'ready' && courses.length > 0 && (
-                <div className="course-section__more">
-                    <Button as={RouterLink} to={`/courses/${selectedBoard}`} variant="outline">
-                        {total > courses.length ? `View all ${total} ${boardLabel} courses` : `Filter ${boardLabel} courses`}
-                    </Button>
-                </div>
-            )}
+            <div className="course-section__more">
+                <Button as={RouterLink} to={`/courses/${board}`} variant="outline">
+                    See all {boardLabel} subjects
+                </Button>
+            </div>
         </section>
     );
 };

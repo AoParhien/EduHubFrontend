@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './instructorCard.css';
 
 const initialsOf = (name = '') =>
@@ -9,12 +10,13 @@ const initialsOf = (name = '') =>
         .map((part) => part[0].toUpperCase())
         .join('');
 
-const InstructorCard = ({ teacherName, boards = [], image, description }) => {
+const InstructorCard = ({ teacherName, boards = [], image, description, to }) => {
     const [imageFailed, setImageFailed] = useState(false);
     const showImage = image && !imageFailed;
 
+    const Wrapper = to ? Link : 'article';
     return (
-        <article className="instructor-card">
+        <Wrapper className={`instructor-card${to ? ' instructor-card--link' : ''}`} {...(to ? { to } : {})}>
             <div className="instructor-card__photo">
                 {showImage ? (
                     <img src={image} alt="" loading="lazy" onError={() => setImageFailed(true)} />
@@ -29,7 +31,7 @@ const InstructorCard = ({ teacherName, boards = [], image, description }) => {
                     <p className="instructor-card__boards">{boards.join(', ')}</p>
                 )}
             </div>
-        </article>
+        </Wrapper>
     );
 };
 

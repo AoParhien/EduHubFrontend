@@ -118,11 +118,12 @@ const InstituteDetails = () => {
           <div>
             <h1>{institute.name}</h1>
             <p>
-              {courses.length} {courses.length === 1 ? 'course' : 'courses'}
+              {institute.area ? `${institute.area}, ` : ''}{courses.length} {courses.length === 1 ? 'course' : 'courses'}
               {institute.registrationFees != null && `, registration fee ${formatRupees(institute.registrationFees)}`}
             </p>
           </div>
         </div>
+        {institute.about && <p className="institute-hero__about">{institute.about}</p>}
         {contacts.length > 0 && (
           <ul className="institute-hero__contacts">
             {contacts.map(({ icon: Icon, label, href }) => (
@@ -169,7 +170,7 @@ const InstituteDetails = () => {
           <ul className="instructors__grid institute-page__teachers">
             {teachers.map((teacher) => (
               <li key={teacher._id}>
-                <InstructorCard teacherName={teacher.name} image={teacher.pictureUrl} description={teacher.description} />
+                <InstructorCard teacherName={teacher.name} image={teacher.pictureUrl} description={teacher.description} to={`/teachers/${teacher._id}`} />
               </li>
             ))}
           </ul>
@@ -178,11 +179,12 @@ const InstituteDetails = () => {
 
       <section id="location" className="course-section-block" aria-labelledby="institute-location-title">
         <h2 id="institute-location-title">Location</h2>
+        {institute.address && <p className="course-section-block__intro">{institute.address}</p>}
         {hasCoordinates && (
           <p className="course-section-block__intro">
             <a
               className="text-link"
-              href={`https://www.google.com/maps/dir/?api=1&destination=${coordinates[0]},${coordinates[1]}`}
+              href={`https://www.google.com/maps/dir/?api=1&destination=${coordinates[1]},${coordinates[0]}`}
               target="_blank"
               rel="noreferrer"
             >
