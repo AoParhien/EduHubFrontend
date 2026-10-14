@@ -281,3 +281,119 @@
     height: 260px;
   }
 }
+
+/* Title, short facts and who/where, each stated once */
+.course-hero__label {
+  display: inline-block;
+  margin-left: 12px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--gold-soft);
+  color: #5c4a06;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  vertical-align: middle;
+}
+
+.course-hero__meta {
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.course-hero__people {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  margin-top: 20px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.course-hero__teacher {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.course-hero__teacher img,
+.course-hero__avatar-empty {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  object-fit: cover;
+  object-position: center top;
+  background: var(--navy-tint);
+}
+
+.course-hero__avatar-empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.course-hero__name {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.course-hero__name:hover {
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.course-hero__muted {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.course-hero__institute {
+  color: var(--muted);
+}
+
+.course-hero__people + .course-hero__description {
+  margin-top: 16px;
+}
+
+/* Fee breakdown inside the price card */
+.enroll-card__breakdown {
+  margin: 14px 0 0;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.875rem;
+}
+
+.enroll-card__breakdown div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 3px 0;
+}
+
+.enroll-card__breakdown dt {
+  color: var(--muted);
+}
+
+.enroll-card__breakdown dd {
+  margin: 0;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.enroll-card__breakdown .enroll-card__total {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+  font-weight: 700;
+}
+
+.enroll-card__breakdown .enroll-card__total dt {
+  color: var(--ink);
+}
