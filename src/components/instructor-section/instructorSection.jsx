@@ -1,62 +1,59 @@
-import React, { useState, useEffect } from 'react';
-import './instructorSection.css';
+import React, { useEffect, useState } from 'react';
 import InstructorCard from '../instructor-card/instructorCard';
-import { px } from 'framer-motion';
 import { BACKEND_URL } from '../../utils/backendUrl';
+import { formatBoard, normalizeBoard } from '../../utils/format';
+import './instructorSection.css';
+
+const MAX_TEACHERS = 6;
+
+// Teachers often have the same board stored twice with different casing.
+const uniqueBoards = (boards = []) => {
+    const seen = new Set();
+    return boards.filter((board) => {
+        const key = normalizeBoard(board);
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+};
 
 const InstructorSection = () => {
-    const [topTeachers, setTopTeachers] = useState([]);
+    const [teachers, setTeachers] = useState([]);
 
-    // Fetch top teachers from the API
-    const getCourses = async () => {
-        try {
-            const apiUrl = BACKEND_URL;
-            const response = await fetch(`${apiUrl}/api/teachers/getTopTeachers`, {
-                method: 'GET',
-                credentials: 'include', // Include credentials if required
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            // Expand data to ensure a consistent number of cards (6)
-            const expandedData = Array.from({ length: 6 }, (_, i) => data[i % data.length]);
-
-            setTopTeachers(expandedData);
-        } catch (error) {
-            console.error('Error fetching teachers:', error);
-        }
-    };
-
-    // Fetch data when the component mounts
     useEffect(() => {
-        getCourses();
+        const controller = new AbortController();
+
+        fetch(`${BACKEND_URL}/api/teachers/getTopTeachers`, { signal: controller.signal })
+            .then((response) => (response.ok ? response.json() : []))
+            .then((data) => setTeachers(Array.isArray(data) ? data.slice(0, MAX_TEACHERS) : []))
+            .catch(() => {});
+
+        return () => controller.abort();
     }, []);
 
+    // Hide the section rather than show an empty block.
+    if (teachers.length === 0) {
+        return null;
+    }
+
     return (
-        <div className="eduhub__instructor-section section__padding">
-            <div className="eduhub__instructor-section-content">
-                <h1>Best Instructors Onboard</h1>
-                <p>
-                    At AoParhein, we strive to bring together the best
-                    <br />
-                    professors for the best courses
-                </p>
+        <section className="instructors page page-section" aria-labelledby="instructors-title">
+            <div className="section-heading">
+                <h2 id="instructors-title">Teachers on AoParhein</h2>
+                <p>The teachers behind the classes you can book, from our partner institutes.</p>
             </div>
-            <div className="eduhub__instructor-section-instructors">
-                {topTeachers.map((teacher, index) => (
-                    <InstructorCard
-                        key={teacher?.id || index} // Use teacher ID if available, fallback to index
-                        teacherName={teacher?.name || 'Unknown Instructor'}
-                        board={teacher?.boards?.[0] || 'N/A'} // Safely access boards or fallback to 'N/A'
-                        image={teacher?.picture || 'defaultImagePath'} // Provide a default image if not available
-                    />
+            <ul className="instructors__grid">
+                {teachers.map((teacher, index) => (
+                    <li key={`${teacher.name}-${index}`}>
+                        <InstructorCard
+                            teacherName={teacher.name}
+                            boards={uniqueBoards(teacher.boards).map(formatBoard)}
+                            image={teacher.picture}
+                        />
+                    </li>
                 ))}
-            </div>
-        </div>
+            </ul>
+        </section>
     );
 };
 

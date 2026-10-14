@@ -1,13 +1,12 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { ChakraProvider, Box, Spinner } from '@chakra-ui/react';
-import { HelmetProvider, Helmet } from 'react-helmet-async';
+import { HelmetProvider } from 'react-helmet-async';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/navbar/navbar';
 import Footer from './components/footer/footer';
-import Home from './components/home/home'; 
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './components/home/home';
 import theme from './theme';
-import { cspConfig, securityHeaders } from './security';
 import useUserStore from './store/useUserStore';
 
 const Courses = lazy(() => import('./components/courses/courses'));
@@ -20,12 +19,24 @@ const UserProfile = lazy(() => import('./components/UserProfile'));
 const StudentCourses = lazy(() => import('./components/student-courses/studentCourses'));
 const InstituteDetails = lazy(() => import('./components/institute-details/instituteDetails'));
 const WordMasterGame = lazy(() => import('./components/game/game'));
+const NotFound = lazy(() => import('./components/not-found/NotFound'));
 
 const RouteFallback = () => (
-  <Box minH="50vh" display="flex" alignItems="center" justifyContent="center">
-    <Spinner size="xl" color="blue.500" thickness="4px" />
+  <Box minH="60vh" display="flex" alignItems="center" justifyContent="center">
+    <Spinner size="lg" color="brand.500" thickness="3px" label="Loading page" />
   </Box>
 );
+
+// Start each new page at the top instead of keeping the previous scroll position.
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 function App() {
   const bootstrapSession = useUserStore((state) => state.bootstrapSession);
@@ -36,48 +47,35 @@ function App() {
 
   return (
     <HelmetProvider>
-      <Helmet>
-        <meta httpEquiv="Content-Security-Policy" content={Object.entries(cspConfig.directives)
-          .map(([key, value]) => `${key} ${value.join(' ')}`)
-          .join('; ')} />
-        {Object.entries(securityHeaders).map(([key, value]) => (
-          <meta key={key} httpEquiv={key} content={value} />
-        ))}
-      </Helmet>
       <ChakraProvider theme={theme}>
-        <Box
-          className="App"
-          minH="100vh"
-          style={{ backgroundImage: 'linear-gradient(180deg, #fbfcff 0%, #eef3fb 100%)' }}
-        >
-          <Router>
-            <Box className='gradient__bg'>
-              <Navbar />
+        <Router>
+          <ScrollToTop />
+          <Box className="App">
+            <Navbar />
+            <main className="app-main" id="main">
               <Suspense fallback={<RouteFallback />}>
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/courses/:subcategory?" element={<Courses />} />
                   <Route path="/institutes" element={<Institutes />} />
-                  <Route path='/course-details/:courseId?' element={<CourseDetails />} />
-                  <Route path='/checkout' element={<Checkout />} />
-                  <Route path='/signup' element={<SignUpForm />} />
-                  <Route path='/login' element={<LoginForm />} />
-                  <Route path='/profile' element={<UserProfile />} />
-                  <Route path='/student' element={<StudentCourses />} />
+                  <Route path="/course-details/:courseId?" element={<CourseDetails />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/signup" element={<SignUpForm />} />
+                  <Route path="/login" element={<LoginForm />} />
+                  <Route path="/profile" element={<UserProfile />} />
+                  <Route path="/student" element={<StudentCourses />} />
                   <Route path="/institute/:id" element={<InstituteDetails />} />
-                  <Route path='/game' element={<WordMasterGame />} />
-                  <Route path="*" element={<Box textAlign="center" fontSize="2xl" fontWeight="bold" py={10}>404 - Page Not Found</Box>} />
+                  <Route path="/game" element={<WordMasterGame />} />
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
-              <Footer />
-            </Box>
-          </Router>
-        </Box>
+            </main>
+            <Footer />
+          </Box>
+        </Router>
       </ChakraProvider>
     </HelmetProvider>
   );
 }
 
-// Checking deployment on Vercel with UAT branch
-//Updated user creds
 export default App;

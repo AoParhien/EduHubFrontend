@@ -1,166 +1,156 @@
-import React, { useEffect, useState } from 'react';
-import { 
-  Box, 
-  Heading, 
-  Stack, 
-  Text, 
-  Grid,
-  Card,
-  CardBody,
-  Badge,
-  Flex,
-  Icon,
-  Divider,
-  useToast,
-  VStack,
-  Spinner
-} from '@chakra-ui/react';
-import { FaUser, FaClock, FaCalendar } from 'react-icons/fa';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { Button, Skeleton } from '@chakra-ui/react';
 import Schedule from '../schedule/schedule';
-import CourseBatches from '../course-batches/courseBatches';
+import AccountGate from '../account/AccountGate';
+import PageTitle from '../page-title/PageTitle';
 import useUserStore from '../../store/useUserStore';
 import { BACKEND_URL } from '../../utils/backendUrl';
+import { formatBoard } from '../../utils/format';
+import { DAYS, describeStart, formatTimeRange } from '../../utils/schedule';
 
-const StudentCourses = () => {
-  const [studentCourses, setStudentCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const toast = useToast();
-  const refreshSession = useUserStore(state => state.refreshSession);
-  const user = useUserStore(state => state.user);
-  const accessToken = useUserStore(state => state.accessToken);
+const EnrolledCourses = () => {
+  const user = useUserStore((state) => state.user);
+  const accessToken = useUserStore((state) => state.accessToken);
+  const refreshSession = useUserStore((state) => state.refreshSession);
+  const [enrollments, setEnrollments] = useState([]);
+  const [status, setStatus] = useState('loading');
+  const studentId = user?.student?._id;
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      if (!user?.student?._id || !accessToken) {
-        setLoading(false);
+  const load = useCallback(async () => {
+    if (!studentId) {
+      setStatus('ready');
+      return;
+    }
+    setStatus('loading');
+
+    const request = (token) =>
+      fetch(`${BACKEND_URL}/api/enrollment/studentEnrollments/${studentId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+    try {
+      let response = await request(accessToken);
+      if (response.status === 401) {
+        const session = await refreshSession();
+        if (session?.token) response = await request(session.token);
+      }
+
+      // The API answers 404 when the student has no enrollments yet.
+      if (response.status === 404) {
+        setEnrollments([]);
+        setStatus('ready');
         return;
       }
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-      try {
-        const apiUrl = BACKEND_URL;
+      const data = await response.json();
+      setEnrollments(Array.isArray(data) ? data.filter((item) => item?.courseDetails) : []);
+      setStatus('ready');
+    } catch (error) {
+      setStatus('error');
+    }
+  }, [accessToken, refreshSession, studentId]);
 
-        let response = await fetch(`${apiUrl}/api/enrollment/studentEnrollments/${user.student._id}`, {
-          method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-            }
-        });
+  useEffect(() => {
+    load();
+  }, [load]);
 
-        if (response.status === 401) {
-          const refreshedSession = await refreshSession();
-
-          if (refreshedSession?.token) {
-            response = await fetch(`${apiUrl}/api/enrollment/studentEnrollments/${user.student._id}`, {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${refreshedSession.token}`
-              }
-            });
-          }
-        }
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch courses');
-        }
-        
-        const data = await response.json();
-        setStudentCourses(data);
-      } catch (error) {
-        toast({
-          title: 'Error fetching courses',
-          description: error.message,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCourses();
-  }, [accessToken, refreshSession, toast, user?.student?._id]);
-
-  if (loading) {
+  if (!studentId) {
     return (
-      <Flex justify="center" align="center" h="50vh">
-        <VStack spacing={4}>
-          <Spinner size="xl" thickness="4px" speed="0.65s" color="purple.500" />
-          <Text fontSize="lg" color="gray.600">Loading courses...</Text>
-        </VStack>
-      </Flex>
-    );
-  }
-  
-  if (studentCourses.length === 0) {
-    return (
-      <Flex justify="center" align="center" h="50vh">
-        <Text>No courses found. Please enroll in a course to get started.</Text>
-      </Flex>
+      <div className="account__empty">
+        <h2>Course bookings are for student accounts</h2>
+        <p>This account isn't a student account, so it has no course bookings.</p>
+      </div>
     );
   }
 
-  // Combine batches and schedules from all courses
-  const combinedBatches = studentCourses.flatMap(course => 
-    (course.courseDetails.batches || []).map(batch => ({
-      ...batch,
-      courseTitle: course.courseDetails.title // Add course title to each batch
-    }))
+  if (status === 'loading') {
+    return (
+      <div className="enrolled-list">
+        {[0, 1].map((key) => <Skeleton key={key} height="120px" borderRadius="16px" startColor="#eef2f8" endColor="#f7f9fc" />)}
+      </div>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <div className="account__empty">
+        <h2>Your courses couldn't be loaded</h2>
+        <p>Check your connection and try again.</p>
+        <Button onClick={load}>Try again</Button>
+      </div>
+    );
+  }
+
+  if (enrollments.length === 0) {
+    return (
+      <div className="account__empty">
+        <h2>You haven't reserved any seats yet</h2>
+        <p>Find a course, pick a batch that fits your week and reserve your seat. It will show up here.</p>
+        <Button as={RouterLink} to="/courses">Browse courses</Button>
+      </div>
+    );
+  }
+
+  const batches = enrollments.flatMap((item) =>
+    (item.courseDetails.batches || []).map((batch) => ({ ...batch, courseTitle: item.courseDetails.title }))
   );
-  const combinedSchedules = studentCourses.flatMap(course => course.courseDetails.schedules || []);
+  const schedules = enrollments.flatMap((item) => item.courseDetails.schedules || []);
 
   return (
-    <Box maxW="7xl" mx="auto" p={5}>
-      <Heading color="#00308F" size="lg" mb={6}>My Courses</Heading>
-      
-      <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} gap={6}>
-        {studentCourses.map((course, index) => (
-          <Card key={course.courseDetails.id || index} shadow="md" transition="all 0.2s" 
-                _hover={{ transform: 'translateY(-2px)', shadow: 'lg' }}>
-            <CardBody>
-              <Stack spacing={4}>
-                <Flex justify="space-between" align="center">
-                  <Heading size="md" color="#00308F">{course.courseDetails.title}</Heading>
-                  <Badge colorScheme="green">Active</Badge>
-                </Flex>
-                
-                <Stack spacing={2}>
-                  <Flex align="center">
-                    <Icon as={FaUser} color="gray.500" mr={2} />
-                    <Text fontSize="sm">{course.courseDetails.teacher.name}</Text>
-                  </Flex>
-                  
-                  <Flex align="center">
-                    <Icon as={FaClock} color="gray.500" mr={2} />
-                    <Text fontSize="sm">{course.courseDetails.durationMonths} months</Text>
-                  </Flex>
-                  
-                  <Flex align="center">
-                    <Icon as={FaCalendar} color="gray.500" mr={2} />
-                    <Text fontSize="sm">{course.courseDetails.classFormat}</Text>
-                  </Flex>
-                </Stack>
+    <>
+      <ul className="enrolled-list">
+        {enrollments.map((item, index) => {
+          const course = item.courseDetails;
+          const batch = course.batches?.[0];
+          const times = (course.schedules || []).slice().sort((a, b) => DAYS.indexOf(a.day) - DAYS.indexOf(b.day));
+          return (
+            <li key={`${course._id}-${batch?._id || index}`} className="enrolled">
+              <div className="enrolled__image">{course.imageUrl && <img src={course.imageUrl} alt="" />}</div>
+              <div>
+                <h2>{course.title}</h2>
+                <p className="enrolled__meta">
+                  {[batch?.batchName, course.institute?.name, formatBoard(course.board)].filter(Boolean).join(', ')}
+                  {batch?.startDate ? `. ${describeStart(batch.startDate)}` : ''}
+                </p>
+                {times.length > 0 ? (
+                  <p className="enrolled__times">
+                    {times.map((schedule) => (
+                      <span key={schedule._id}>{schedule.day.slice(0, 3)} {formatTimeRange(schedule.startHour, schedule.duration)}</span>
+                    ))}
+                  </p>
+                ) : (
+                  <p className="enrolled__meta">Class times will be shared by the institute.</p>
+                )}
+              </div>
+              <Button as={RouterLink} to={`/course-details/${course._id}`} variant="outline">View course</Button>
+            </li>
+          );
+        })}
+      </ul>
 
-                <Divider />
-                
-              </Stack>
-            </CardBody>
-          </Card>
-        ))}
-      </Grid>
-      <Box id="schedule" py={10}>
-        <Heading as="h2" size="lg">Class Schedule</Heading>
-        <Flex flexDirection={{ base: 'column', md: 'row' }}>
-          <Schedule batches={combinedBatches} schedules={combinedSchedules} />
-          <Stack ml={{ base: 0, md: 15 }} mt={{ base: 5, md: 0 }} spacing={5} width={{ base: '100%', md: '400px' }}>
-            <CourseBatches batches={combinedBatches} schedules={combinedSchedules}/>
-          </Stack>
-        </Flex>
-      </Box>
-    </Box>
+      {schedules.length > 0 && (
+        <section className="account__section" aria-labelledby="my-timetable-title">
+          <h2 id="my-timetable-title">Your week</h2>
+          <Schedule batches={batches} schedules={schedules} />
+        </section>
+      )}
+    </>
   );
 };
+
+const StudentCourses = () => (
+  <AccountGate title="My courses" message="Log in to see the courses you've reserved and your weekly timetable.">
+    <div className="page account">
+      <PageTitle title="My courses" />
+      <header className="account__header">
+        <h1>My courses</h1>
+        <p>Seats you've reserved. Pay each institute on your first day of class.</p>
+      </header>
+      <EnrolledCourses />
+    </div>
+  </AccountGate>
+);
 
 export default StudentCourses;

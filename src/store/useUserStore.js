@@ -11,6 +11,8 @@ const useUserStore = create((set, get) => ({
   accessToken: null,
   isLoading: false,
   isBootstrapping: false,
+  // True once the initial session check has finished (signed in or not).
+  sessionChecked: false,
   error: null,
 
   setAuth: ({ token, user = null }) => {
@@ -62,12 +64,12 @@ const useUserStore = create((set, get) => ({
     const session = await get().refreshSession();
 
     if (!session?.token) {
-      set({ isBootstrapping: false, isLoading: false });
+      set({ isBootstrapping: false, isLoading: false, sessionChecked: true });
       return null;
     }
 
     await get().fetchUser(session.token, false);
-    set({ isBootstrapping: false });
+    set({ isBootstrapping: false, sessionChecked: true });
 
     return session;
   },
@@ -119,6 +121,18 @@ const useUserStore = create((set, get) => ({
     }
   },
 
+  logout: async () => {
+    try {
+      await fetch(`${getAuthServiceUrl()}/api/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (error) {
+      // Clearing local state below still signs the user out of this tab.
+    }
+    get().clearUser();
+  },
+
   clearUser: () => {
     set({
       user: null,
@@ -127,6 +141,7 @@ const useUserStore = create((set, get) => ({
       error: null,
       isLoading: false,
       isBootstrapping: false,
+      sessionChecked: true,
     });
   },
 }));

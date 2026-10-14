@@ -1,79 +1,42 @@
-import { Box, Text } from '@chakra-ui/react';
+import React from 'react';
+import { batchColor, DAYS, describeStart, formatTimeRange } from '../../utils/schedule';
+import './courseBatches.css';
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-};
+const byDay = (a, b) => DAYS.indexOf(a.day) - DAYS.indexOf(b.day);
 
-const timeStringToDecimal = (timeString) => {
-  if (!timeString.includes(':')) {
-    return parseFloat(timeString);
-  }
+// Lists each batch with its start date and weekly class times.
+const CourseBatches = ({ batches = [], schedules = [], selectedBatchId }) => (
+  <ul className="batch-list">
+    {batches.map((batch, index) => {
+      const batchSchedules = schedules.filter((schedule) => schedule.batchId === batch._id).sort(byDay);
+      const isSelected = selectedBatchId === batch._id;
 
-  const [hours, minutes] = timeString.split(':').map(Number);
-
-  if (isNaN(hours) || isNaN(minutes)) {
-    console.error(`Invalid time string: ${timeString}`);
-    return 0;
-  }
-
-  return hours + (minutes / 60);
-};
-
-const decimalToTimeString = (decimal) => {
-  const hours = Math.floor(decimal);
-  const minutes = Math.round((decimal - hours) * 60);
-  const minutesFormatted = minutes === 0 ? '00' : minutes;
-  return `${hours}:${minutesFormatted}`;
-};
-
-const CourseBatches = ({ batches, schedules }) => {
-  return (
-    <>
-      {batches.map((batch, index) => {
-        const batchSchedules = schedules.filter(schedule => schedule.batchId === batch._id);
-
-        return (
-          <Box key={batch._id} mt={index > 0 ? 4 : 0}>
-              <Text fontWeight="bold">
+      return (
+        <li key={batch._id} className={`batch-list__item${isSelected ? ' is-selected' : ''}`}>
+          <span className="batch-list__swatch" style={{ background: batchColor(index).accent }} aria-hidden="true" />
+          <div>
+            <p className="batch-list__name">
               {batch.batchName}
-            </Text>
-            {batch.courseTitle && batches.length>1 &&
-              <Text fontWeight="bold">
-              [{batch.courseTitle}]
-            </Text>
-            }
-            <Text>
-              <Text as="span" color="purple.500" whiteSpace="nowrap">
-                Start Date: {formatDate(batch.startDate)}
-              </Text>
-            </Text>
-
+              {batch.courseTitle && <span>, {batch.courseTitle}</span>}
+            </p>
+            {batch.startDate && <p className="batch-list__start">{describeStart(batch.startDate)}</p>}
             {batchSchedules.length > 0 ? (
-              batchSchedules.map(schedule => {
-                const startHour = timeStringToDecimal(schedule.startHour);
-                if (isNaN(startHour)) {
-                  return <Text key={schedule._id}>Invalid start time</Text>;
-                }
-                
-                const endHour = startHour + schedule.duration;
-                const startTime = decimalToTimeString(startHour);
-                const endTime = decimalToTimeString(endHour);
-
-                return (
-                  <Text key={schedule._id}>
-                    {schedule.day}: {startTime} - {endTime}
-                  </Text>
-                );
-              })
+              <ul className="batch-list__times">
+                {batchSchedules.map((schedule) => (
+                  <li key={schedule._id}>
+                    <span>{schedule.day}</span>
+                    <span>{formatTimeRange(schedule.startHour, schedule.duration)}</span>
+                  </li>
+                ))}
+              </ul>
             ) : (
-              <Text>No schedules available</Text>
+              <p className="batch-list__pending">Class times not published yet</p>
             )}
-          </Box>
-        );
-      })}
-    </>
-  );
-};
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+);
 
 export default CourseBatches;

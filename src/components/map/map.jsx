@@ -3,9 +3,12 @@ import { Box, Text } from "@chakra-ui/react";
 import { LoadScript, GoogleMap, Marker } from "@react-google-maps/api";
 import axios from "axios";
 
+// Fills its parent; callers set the height.
 const mapContainerStyle = {
   width: "100%",
-  height: "400px",
+  height: "100%",
+  minHeight: "260px",
+  borderRadius: "16px",
 };
 
 const GOOGLE_MAPS_API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -60,10 +63,11 @@ const MapWithPlusCode = ({ plusCode, coordinates }) => {
       <Box
         width="100%"
         minH="220px"
-        borderRadius="xl"
+        height="100%"
+        borderRadius="16px"
         border="1px dashed"
-        borderColor="gray.300"
-        bg="gray.50"
+        borderColor="#c7d3e6"
+        bg="wash"
         display="flex"
         alignItems="center"
         justifyContent="center"
@@ -71,10 +75,10 @@ const MapWithPlusCode = ({ plusCode, coordinates }) => {
         textAlign="center"
       >
         <Box>
-          <Text fontWeight="700" color="gray.700" mb={2}>
+          <Text fontWeight="700" color="ink" mb={2}>
             Map preview unavailable
           </Text>
-          <Text color="gray.600">{mapError}</Text>
+          <Text color="muted">{mapError}</Text>
         </Box>
       </Box>
     );
@@ -85,15 +89,16 @@ const MapWithPlusCode = ({ plusCode, coordinates }) => {
       <Box
         width="100%"
         minH="220px"
-        borderRadius="xl"
+        height="100%"
+        borderRadius="16px"
         border="1px solid"
-        borderColor="gray.200"
-        bg="white"
+        borderColor="line"
+        bg="wash"
         display="flex"
         alignItems="center"
         justifyContent="center"
       >
-        <Text color="gray.500">Loading location preview...</Text>
+        <Text color="muted">Loading map…</Text>
       </Box>
     );
   }
@@ -103,7 +108,7 @@ const MapWithPlusCode = ({ plusCode, coordinates }) => {
       googleMapsApiKey={GOOGLE_MAPS_API_KEY}
       onError={() => setMapError("Map services are unavailable at the moment.")}
     >
-      <GoogleMap mapContainerStyle={mapContainerStyle} center={mapCenter} zoom={13}>
+      <GoogleMap mapContainerStyle={mapContainerStyle} center={mapCenter} zoom={15}>
         <Marker position={mapCenter} />
       </GoogleMap>
     </LoadScript>

@@ -1,49 +1,41 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import './TabBar.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
-const TabBar = ({ width = '100%', tabs, onSelect }) => {
-    const [selectedTab, setSelectedTab] = useState(tabs[0]);
-    const scrollContainerRef = useRef(null);
+/*
+ * Horizontally scrollable pill tabs.
+ * `tabs` is a list of { value, label } (plain strings also work).
+ */
+const TabBar = ({ tabs, value, onSelect, label = 'Filter' }) => {
+    const listRef = useRef(null);
+    const items = tabs.map((tab) => (typeof tab === 'string' ? { value: tab, label: tab } : tab));
 
-    const handleTabClick = (tab) => {
-        setSelectedTab(tab);
-        onSelect(tab);
-    };
-
-    const scroll = (direction) => {
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollBy({
-                left: direction === 'left' ? -130 : 130, // Scroll amount, adjust as needed
-                behavior: 'smooth'
-            });
-        }
+    const handleKeyDown = (event, index) => {
+        if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+        event.preventDefault();
+        const next = (index + (event.key === 'ArrowRight' ? 1 : -1) + items.length) % items.length;
+        onSelect(items[next].value);
+        listRef.current?.querySelectorAll('button')[next]?.focus();
     };
 
     return (
-        <div className="tabbar-container">
-            <button className="tabbar-button" onClick={() => scroll('left')}>
-                <FontAwesomeIcon icon={faChevronLeft} />
-            </button>
-            <div
-                className="tabbar-scroll"
-                ref={scrollContainerRef}
-                style={{ width }}
-            >
-                {tabs.map((tab, index) => (
+        <div className="tabbar" role="tablist" aria-label={label} ref={listRef}>
+            {items.map((tab, index) => {
+                const isSelected = tab.value === value;
+                return (
                     <button
-                        key={index}
-                        className={`tabbar-tab ${tab === selectedTab ? 'selected' : ''}`}
-                        onClick={() => handleTabClick(tab)}
+                        key={tab.value}
+                        type="button"
+                        role="tab"
+                        aria-selected={isSelected}
+                        tabIndex={isSelected ? 0 : -1}
+                        className={`tabbar__tab${isSelected ? ' is-selected' : ''}`}
+                        onClick={() => onSelect(tab.value)}
+                        onKeyDown={(event) => handleKeyDown(event, index)}
                     >
-                        {tab}
+                        {tab.label}
                     </button>
-                ))}
-            </div>
-            <button className="tabbar-button" onClick={() => scroll('right')}>
-                <FontAwesomeIcon icon={faChevronRight} />
-            </button>
+                );
+            })}
         </div>
     );
 };

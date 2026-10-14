@@ -1,132 +1,99 @@
-import React, { useRef, useEffect } from 'react';
-import { Box, Grid, GridItem, Text, Flex, HStack } from '@chakra-ui/react';
+import React from 'react';
+import { batchColor, DAYS, formatTime, formatTimeRange, startOffset } from '../../utils/schedule';
+import './schedule.css';
 
-const dayHeight = 70;
+const MIN_SLOT_WIDTH = 88;
+const LANE_HEIGHT = 48;
 
-// Array of light colors for batches
-const batchColors = [
-    'yellow.100',
-    'blue.100',
-    'green.100',
-    'purple.100',
-    'pink.100',
-    'orange.100',
-    'teal.100',
-    'cyan.100',
-    'red.100',
-    'gray.100'
-];
-
-// Function to get a consistent color for a batch
-const getBatchColor = (batchName) => {
-    // Use the batch name to generate a consistent index
-    const hash = batchName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return batchColors[hash % batchColors.length];
+// Gives overlapping classes on the same day separate lanes so none are hidden.
+const assignLanes = (entries) => {
+    const laneEnds = [];
+    return [...entries]
+        .sort((a, b) => a.start - b.start)
+        .map((entry) => {
+            let lane = laneEnds.findIndex((end) => end <= entry.start);
+            if (lane === -1) lane = laneEnds.length;
+            laneEnds[lane] = entry.start + entry.duration;
+            return { ...entry, lane };
+        });
 };
 
-const Schedule = ({ batches, schedules }) => {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const hours = ['12-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10', '10-11', '11-12'];
+/*
+ * Weekly timetable. Rows are days, columns are hours; only the hours that
+ * actually have classes (plus one either side) are shown.
+ */
+const Schedule = ({ batches = [], schedules = [] }) => {
+    const colorFor = new Map(batches.map((batch, index) => [batch._id, batchColor(index)]));
+    const nameFor = new Map(batches.map((batch) => [batch._id, batch.courseTitle ? `${batch.courseTitle}, ${batch.batchName}` : batch.batchName]));
 
-    const mergeBatchesAndSchedules = (batches, schedules) => {
-        console.log(batches, schedules)
-        return batches.map(batch => {
-            // Find the schedules related to this batch
-            const relatedSchedules = schedules.filter(schedule => schedule.batchId === batch._id);
+    const classes = schedules
+        .filter((schedule) => colorFor.has(schedule.batchId))
+        .map((schedule) => ({
+            id: schedule._id,
+            day: schedule.day,
+            start: startOffset(schedule.startHour),
+            duration: Number(schedule.duration) || 1,
+            label: nameFor.get(schedule.batchId),
+            time: formatTimeRange(schedule.startHour, schedule.duration),
+            color: colorFor.get(schedule.batchId),
+        }))
+        .filter((entry) => !Number.isNaN(entry.start));
 
-            // Convert schedules to desired format, extracting details
-            return relatedSchedules.map(schedule => ({
-                day: schedule.day,
-                startHour: schedule.startHour,
-                duration: schedule.duration,
-                name: batch.batchName,
-                location: '', // Set your location as needed
-                color: getBatchColor(batch.batchName) // Assign a consistent color based on batch name
-            }));
-        }).flat(); // Flatten the array if necessary
-    };
+    if (classes.length === 0) {
+        return (
+            <div className="schedule-empty">
+                Class times haven't been published for this course yet. The institute will share them before your first class.
+            </div>
+        );
+    }
 
-    const convertedBatches = mergeBatchesAndSchedules(batches, schedules);
-
-    const scrollRef = useRef(null);
-
-    const getBatchForCell = (day, hour) => {
-        return convertedBatches.find(batch => {
-            const startIndex = hours.indexOf(batch.startHour);
-            const durationDecimal = parseFloat(batch.duration);
-            const endIndex = startIndex + durationDecimal;
-            return batch.day === day && hours.indexOf(hour) >= startIndex && hours.indexOf(hour) < endIndex;
-        });
-    };
-
-    useEffect(() => {
-        const handleScroll = () => {
-            // Handling scroll for future use
-        };
-
-        const scrollContainer = scrollRef.current;
-        if (scrollContainer) {
-            scrollContainer.addEventListener('scroll', handleScroll);
-        }
-
-        return () => {
-            if (scrollContainer) {
-                scrollContainer.removeEventListener('scroll', handleScroll);
-            }
-        };
-    }, []);
+    const firstHour = Math.max(0, Math.floor(Math.min(...classes.map((c) => c.start))) - 1);
+    const lastHour = Math.min(12, Math.ceil(Math.max(...classes.map((c) => c.start + c.duration))) + 1);
+    const hours = Array.from({ length: lastHour - firstHour }, (_, i) => firstHour + i);
+    const pct = (value) => `${(value / hours.length) * 100}%`;
 
     return (
-        <Box borderWidth="1px" borderRadius="lg" overflow="hidden" m={4} maxWidth={1100}>
-            <Grid templateColumns="auto 1fr" gap={0}>
-                <GridItem>
-                    <Box height="50px" borderBottomWidth="1px" />
-                    {days.map((day) => (
-                        <Box key={day} p={2} borderRightWidth="1px" borderBottomWidth="1px" height={`${dayHeight}px`}>
-                            <Text fontSize="sm">{day}</Text>
-                        </Box>
+        <div className="schedule" role="region" aria-label="Weekly timetable" tabIndex={0}>
+            <div className="schedule__grid" style={{ minWidth: hours.length * MIN_SLOT_WIDTH + 112 }}>
+                <div className="schedule__corner" />
+                <div className="schedule__hours">
+                    {hours.map((hour) => (
+                        <span key={hour}>{formatTime(hour)}</span>
                     ))}
-                </GridItem>
-                <GridItem overflowX="auto" ref={scrollRef}>
-                    <HStack spacing={0} width={`${hours.length * 100}px`} position="relative">
-                        {hours.map((hour) => (
-                            <Box key={hour} p={3} textAlign="center" borderRightWidth="1px" borderBottomWidth="1px" width="100px" flexShrink={0} height="50px">
-                                <Text fontSize="sm">{hour}</Text>
-                            </Box>
-                        ))}
-                    </HStack>
-                    {days.map((day) => (
-                        <Flex key={day} width={`${hours.length * 100}px`} height={`${dayHeight}px`} borderBottomWidth="1px">
-                            {hours.map((hour) => {
-                                const batch = getBatchForCell(day, hour);
-                                const isStart = batch && batch.startHour === hour;
-                                return (
-                                    <Box key={`${day}-${hour}`} p={2} borderRightWidth="1px" width="100px" flexShrink={0}>
-                                        {isStart && (
-                                            <Box
-                                                bg={batch.color}
-                                                p={1}
-                                                borderRadius="md"
-                                                width={`${batch.duration * 100 - 16}px`}
-                                                color={batch.color === 'blue.400' ? 'white' : 'black'}
-                                                display="flex"                  // Add flex display
-                                                flexDirection="column"          // Stack items vertically
-                                                alignItems="center"             // Center items horizontally
-                                                justifyContent="center"         // Center items vertically
-                                                textAlign="center"              // Center the text inside the items
-                                            >
-                                                <Text fontWeight="bold">{batch.name}</Text>
-                                                <Text fontSize="xs">{batch.location}</Text>
-                                            </Box>
-                                        )}
-                                    </Box>
-                                );
-                            })}
-                        </Flex>
-                    ))}
-                </GridItem>
-            </Grid>
-        </Box>
+                </div>
+
+                {DAYS.map((day) => {
+                    const dayClasses = assignLanes(classes.filter((entry) => entry.day === day));
+                    const lanes = Math.max(1, ...dayClasses.map((entry) => entry.lane + 1));
+                    const rowHeight = lanes * LANE_HEIGHT + 8;
+                    return (
+                        <React.Fragment key={day}>
+                            <div className={`schedule__day${dayClasses.length ? ' has-classes' : ''}`} style={{ height: rowHeight }}>{day.slice(0, 3)}</div>
+                            <div className="schedule__track" style={{ height: rowHeight, backgroundSize: `${pct(1)} 100%` }}>
+                                {dayClasses.map((entry) => (
+                                    <div
+                                        key={entry.id}
+                                        className="schedule__class"
+                                        style={{
+                                            top: entry.lane * LANE_HEIGHT + 4,
+                                            height: LANE_HEIGHT - 4,
+                                            left: `calc(${pct(entry.start - firstHour)} + 3px)`,
+                                            width: `calc(${pct(entry.duration)} - 6px)`,
+                                            background: entry.color.fill,
+                                            borderLeftColor: entry.color.accent,
+                                        }}
+                                        title={`${entry.label}, ${day} ${entry.time}`}
+                                    >
+                                        <strong>{entry.label}</strong>
+                                        <span>{entry.time}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </React.Fragment>
+                    );
+                })}
+            </div>
+        </div>
     );
 };
 

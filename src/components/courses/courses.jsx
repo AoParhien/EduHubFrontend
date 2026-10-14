@@ -1,402 +1,241 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import FilterSidebar from '../filter-sidebar/filterSidebar';
-import { Box, useBreakpointValue, Spinner, Button, Flex, Text, Alert, AlertIcon, Badge, Stack } from '@chakra-ui/react';
-import CourseCard from '../course-card/courseCard';
-import './courses.css';
+import {
+    Button,
+    Drawer,
+    DrawerBody,
+    DrawerCloseButton,
+    DrawerContent,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerOverlay,
+    Skeleton,
+    useDisclosure,
+} from '@chakra-ui/react';
+import { FiSliders, FiX } from 'react-icons/fi';
 import debounce from 'lodash.debounce';
+import FilterSidebar, { DEFAULT_FILTERS, FEE_LIMIT } from '../filter-sidebar/filterSidebar';
+import CourseCard from '../course-card/courseCard';
+import PageTitle from '../page-title/PageTitle';
 import { BACKEND_URL } from '../../utils/backendUrl';
+import { BOARDS, formatBoard, formatRupees, normalizeBoard } from '../../utils/format';
+import './courses.css';
+
+const PAGE_SIZE = 12;
+
+const boardFromParam = (param) => {
+    if (!param) return [];
+    const key = normalizeBoard(param);
+    const match = BOARDS.find((board) => board.slug === key || normalizeBoard(board.label) === key);
+    return [match ? match.slug : key];
+};
+
+const buildQuery = (filters, page) => {
+    const params = new URLSearchParams({ page, limit: PAGE_SIZE });
+    if (filters.institute !== 'Any') params.set('instituteName', filters.institute);
+    if (filters.subject !== 'Any') params.set('subject', filters.subject);
+    if (Number(filters.fees.max) < FEE_LIMIT) params.set('maxFees', filters.fees.max);
+    (filters.board || []).forEach((board) => params.append('board', board));
+    return params.toString();
+};
 
 const Courses = () => {
     const { subcategory } = useParams();
+    const [filters, setFilters] = useState(() => ({ ...DEFAULT_FILTERS, board: boardFromParam(subcategory) }));
+    const [page, setPage] = useState(1);
     const [courses, setCourses] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const isMobile = useBreakpointValue({ base: true, md: false });
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
-    
-    const [pagination, setPagination] = useState({
-        currentPage: 1,
-        totalPages: 1,
-        totalCourses: 0,
-        hasNextPage: false,
-        hasPrevPage: false,
-        limit: 8
-    });
+    const [pagination, setPagination] = useState({ totalPages: 1, totalCourses: 0 });
+    const [status, setStatus] = useState('loading');
+    const filterDrawer = useDisclosure();
+    const resultsRef = useRef(null);
+    const requestRef = useRef(0);
 
-    const [filters, setFilters] = useState({
-        institute: 'Any',
-        subject: 'Any',
-        fees: { min: 0, max: 15000 },
-        board: [],
-    });
-
-    const buildQueryParams = useCallback((filters, page = 1, limit = 8) => {
-        const params = {
-            page,
-            limit
-        };
-        
-        const trimAndLowercase = (value) => 
-            typeof value === 'string' ? value.trim().toLowerCase() : value;
-    
-        if (filters.institute && filters.institute !== 'Any') 
-            params.instituteName = filters.institute;
-        if (filters.subject && filters.subject !== 'Any') 
-            params.subject = trimAndLowercase(filters.subject);
-        if (filters.fees.min) 
-            params.minFees = filters.fees.min;
-        if (filters.fees.max) 
-            params.maxFees = filters.fees.max;
-        if (filters.board && Array.isArray(filters.board) && filters.board.length > 0) 
-            params.board = filters.board;
-
-        return new URLSearchParams(
-            Object.entries(params).flatMap(([key, value]) => 
-                Array.isArray(value) 
-                    ? value.map(v => [key, v])
-                    : [[key, value]]
-            )
-        ).toString();
-    }, []);
-
-    const getCourses = useCallback(async (filters, page = 1) => {
-        setIsLoading(true);
-        
-        try {
-            const query = buildQueryParams(filters, page, 8);
-            const apiUrl = BACKEND_URL;
-            
-            if (!apiUrl) {
-                throw new Error('API URL not configured');
-            }
-            
-            const fullUrl = `${apiUrl}/api/courses/getCourseListing?${query}`;
-            
-            const response = await fetch(fullUrl, {
-                method: 'GET',
-                credentials: 'include',
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            
-            // Ensure courses is always an array
-            const coursesArray = Array.isArray(data.courses) ? data.courses : [];
-            
-            setCourses(coursesArray);
-            setErrorMessage('');
-            
-            // Set pagination with fallback
-            const paginationData = data.pagination || {
-                currentPage: page,
-                totalPages: 1,
-                totalCourses: coursesArray.length,
-                hasNextPage: false,
-                hasPrevPage: false,
-                limit: 8
-            };
-            
-            setPagination(paginationData);
-            
-        } catch (error) {
-            setCourses([]);
-            setErrorMessage('We could not load courses right now. Please retry in a moment.');
-            setPagination({
-                currentPage: page,
-                totalPages: 1,
-                totalCourses: 0,
-                hasNextPage: false,
-                hasPrevPage: false,
-                limit: 8
-            });
-        } finally {
-            setIsLoading(false);
-        }
-    }, [buildQueryParams]);
-
-    // Debounced version for filter changes
-    const debouncedGetCourses = useCallback(
-        debounce((filters, page) => {
-            getCourses(filters, page);
-        }, 300),
-        [getCourses]
-    );
-
-    // Handle subcategory initialization
+    // A new board in the URL (e.g. from the navbar) starts a fresh search for that board.
     useEffect(() => {
-        if (subcategory) {
-            setFilters(prev => ({
-                ...prev,
-                board: prev.board.length === 0 ? [subcategory.toLowerCase()] : prev.board
-            }));
-        }
+        setFilters({ ...DEFAULT_FILTERS, board: boardFromParam(subcategory) });
+        setPage(1);
     }, [subcategory]);
 
-    // Main effect for filter changes
+    const loadCourses = useCallback(async (activeFilters, activePage) => {
+        const requestId = ++requestRef.current;
+        setStatus('loading');
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/courses/getCourseListing?${buildQuery(activeFilters, activePage)}`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            if (requestId !== requestRef.current) return;
+            const list = Array.isArray(data.courses) ? data.courses : [];
+            setCourses(list);
+            setPagination({
+                totalPages: data.pagination?.totalPages || 1,
+                totalCourses: data.pagination?.totalCourses ?? list.length,
+            });
+            setStatus('ready');
+        } catch (error) {
+            if (requestId !== requestRef.current) return;
+            setCourses([]);
+            setStatus('error');
+        }
+    }, []);
+
+    // Debounce so dragging the fee slider doesn't fire a request per step.
+    const debouncedLoad = useMemo(() => debounce(loadCourses, 250), [loadCourses]);
+    useEffect(() => () => debouncedLoad.cancel(), [debouncedLoad]);
+
     useEffect(() => {
-        debouncedGetCourses(filters, 1);
-        // Reset pagination when filters change
-        setPagination(prev => ({ ...prev, currentPage: 1 }));
-    }, [filters, debouncedGetCourses]);
+        debouncedLoad(filters, page);
+    }, [filters, page, debouncedLoad]);
 
-    const handleFilterChange = (newFilters) => {
-        setFilters((prevFilters) => ({
-            ...prevFilters,
-            ...newFilters,
-        }));
+    const handleFilterChange = (next) => {
+        setFilters(next);
+        setPage(1);
     };
 
-    const handlePageChange = (newPage) => {
-        if (newPage !== pagination.currentPage && newPage >= 1 && newPage <= pagination.totalPages) {
-            setPagination(prev => ({ ...prev, currentPage: newPage }));
-            // Call API directly for pagination (no debounce needed)
-            getCourses(filters, newPage);
-        }
+    const goToPage = (nextPage) => {
+        setPage(nextPage);
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
-    const toggleFilterSidebar = () => {
-        setIsFilterOpen(!isFilterOpen);
-        if (!isFilterOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'auto';
-        }
-    };
+    const activeChips = [
+        ...(filters.board || []).map((slug) => ({
+            key: `board-${slug}`,
+            label: formatBoard(slug),
+            remove: () => handleFilterChange({ ...filters, board: filters.board.filter((b) => b !== slug) }),
+        })),
+        filters.subject !== 'Any' && {
+            key: 'subject',
+            label: filters.subject,
+            remove: () => handleFilterChange({ ...filters, subject: 'Any' }),
+        },
+        filters.institute !== 'Any' && {
+            key: 'institute',
+            label: filters.institute,
+            remove: () => handleFilterChange({ ...filters, institute: 'Any' }),
+        },
+        Number(filters.fees.max) < FEE_LIMIT && {
+            key: 'fees',
+            label: `Up to ${formatRupees(filters.fees.max)}`,
+            remove: () => handleFilterChange({ ...filters, fees: { ...filters.fees, max: FEE_LIMIT } }),
+        },
+    ].filter(Boolean);
 
-    const closeFilterSidebar = () => {
-        setIsFilterOpen(false);
-        document.body.style.overflow = 'auto';
-    };
-
-    const activeFilterCount = [
-        filters.institute !== 'Any',
-        filters.subject !== 'Any',
-        Array.isArray(filters.board) && filters.board.length > 0,
-        Number(filters.fees.max) < 15000,
-    ].filter(Boolean).length;
+    const singleBoard = filters.board?.length === 1 ? formatBoard(filters.board[0]) : null;
+    const heading = singleBoard ? `${singleBoard} courses` : 'All courses';
 
     return (
-        <div className={`eduhub__courses section__padding ${isFilterOpen && isMobile ? 'filter-open' : ''}`}>
-            <Box 
-                display="flex" 
-                flexDirection={isMobile ? 'column' : 'row'}
-                alignItems="flex-start"
-                position="relative"
-            >
-                {!isMobile && (
-                    <FilterSidebar 
-                        onFilterChange={handleFilterChange} 
-                        initialFilters={filters}
-                        width="300px"
-                        position="sticky"
-                        top="20px"
-                        isMobile={false}
-                    />
-                )}
+        <div className="catalog page">
+            <PageTitle title={heading} />
+            <header className="catalog__header">
+                <h1>{heading}</h1>
+                <p>Compare classes by board, subject, institute and monthly fee.</p>
+            </header>
 
-                <div 
-                    className='eduhub__courses-cards'
-                    style={{ 
-                        width: isMobile ? '100%' : 'calc(100% - 320px)', 
-                        marginLeft: isMobile ? 0 : '20px' 
-                    }}
-                >
-                    <Box
-                        className="eduhub__courses-toolbar"
-                        bg="linear-gradient(135deg, #ffffff 0%, #f7fbff 100%)"
-                        borderWidth="1px"
-                        borderColor="blue.100"
-                        borderRadius="28px"
-                        boxShadow="0 18px 40px -34px rgba(13, 59, 102, 0.32)"
-                        px={{ base: 4, md: 6 }}
-                        py={{ base: 4, md: 5 }}
-                        mb={5}
-                        width="100%"
-                    >
-                        <Flex
-                            justify="space-between"
-                            align={{ base: 'flex-start', lg: 'center' }}
-                            direction={{ base: 'column', lg: 'row' }}
-                            gap={4}
-                        >
-                            <Box>
-                                <Text
-                                    fontSize="xs"
-                                    textTransform="uppercase"
-                                    letterSpacing="0.18em"
-                                    color="blue.700"
-                                    fontWeight="800"
-                                    mb={1}
-                                >
-                                    Course Catalogue
-                                </Text>
-                                <Text fontSize={{ base: '2xl', md: '3xl' }} fontWeight="800" color="gray.800" lineHeight="1.1">
-                                    Discover courses that match your goals
-                                </Text>
-                                <Text mt={2} color="gray.600" maxW="680px">
-                                    Compare institutes, subjects, boards, and monthly fees from a cleaner catalog experience.
-                                </Text>
-                            </Box>
-                            <Stack direction={{ base: 'row', md: 'row' }} spacing={3} flexWrap="wrap">
-                                <Badge colorScheme="blue" variant="subtle" borderRadius="full" px={3} py={1.5}>
-                                    {courses.length} results
-                                </Badge>
-                                <Badge colorScheme="gray" variant="subtle" borderRadius="full" px={3} py={1.5}>
-                                    {activeFilterCount} active filters
-                                </Badge>
-                            </Stack>
-                        </Flex>
-                    </Box>
+            <div className="catalog__layout">
+                <aside className="catalog__filters" aria-label="Filters">
+                    <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
+                </aside>
 
-                    {isMobile && (
-                        <Box 
-                            className="eduhub__mobile-filter-button-container"
-                            position="sticky"
-                            top="0"
-                            zIndex="10"
-                            bg="white"
-                            py={2}
-                            px={1}
-                            mb={3}
+                <section className="catalog__results" ref={resultsRef} aria-live="polite" aria-busy={status === 'loading'}>
+                    <div className="catalog__toolbar">
+                        <p className="catalog__count">
+                            {status === 'ready'
+                                ? `${pagination.totalCourses} ${pagination.totalCourses === 1 ? 'course' : 'courses'}`
+                                : status === 'loading' ? 'Loading courses…' : ''}
+                        </p>
+                        <Button
+                            className="catalog__filter-button"
+                            leftIcon={<FiSliders />}
+                            variant="outline"
+                            onClick={filterDrawer.onOpen}
                         >
-                            <button 
-                                onClick={toggleFilterSidebar}
-                                className='eduhub__mobile-filter-button'
-                            >
-                                <span className="filter-icon">⚙️</span>
-                                <span>Refine Results</span>
-                                <span className="filter-chip">{activeFilterCount}</span>
-                            </button>
-                        </Box>
+                            Filters{activeChips.length > 0 ? ` (${activeChips.length})` : ''}
+                        </Button>
+                    </div>
+
+                    {activeChips.length > 0 && (
+                        <ul className="catalog__chips" aria-label="Active filters">
+                            {activeChips.map((chip) => (
+                                <li key={chip.key}>
+                                    <button type="button" onClick={chip.remove} aria-label={`Remove filter: ${chip.label}`}>
+                                        {chip.label}
+                                        <FiX aria-hidden="true" />
+                                    </button>
+                                </li>
+                            ))}
+                            <li>
+                                <button type="button" className="catalog__clear" onClick={() => handleFilterChange(DEFAULT_FILTERS)}>
+                                    Clear all
+                                </button>
+                            </li>
+                        </ul>
                     )}
 
-                    {isLoading ? (
-                        <Box 
-                            width="100%" 
-                            textAlign="center" 
-                            mt={10} 
-                            display="flex" 
-                            justifyContent="center"
-                            className="eduhub__courses-empty-state"
-                        >
-                            <Spinner size="xl" color="blue.500" />
-                        </Box>
-                    ) : errorMessage ? (
-                        <Box width="100%" mt={6}>
-                            <Alert status="error" borderRadius="xl" flexDirection="column" alignItems="flex-start" gap={3}>
-                                <Flex width="100%" justify="space-between" align={{ base: 'flex-start', md: 'center' }} direction={{ base: 'column', md: 'row' }} gap={3}>
-                                    <Flex align="center" gap={2}>
-                                        <AlertIcon />
-                                        <Text>{errorMessage}</Text>
-                                    </Flex>
-                                    <Button colorScheme="red" variant="outline" onClick={() => getCourses(filters, pagination.currentPage)}>
-                                        Retry
-                                    </Button>
-                                </Flex>
-                            </Alert>
-                        </Box>
-                    ) : courses.length === 0 ? (
-                        <Box 
-                            width="100%" 
-                            textAlign="center" 
-                            color="gray.500" 
-                            mt={10}
-                            bg="white"
-                            borderWidth="1px"
-                            borderColor="blue.100"
-                            borderRadius="28px"
-                            py={10}
-                            px={6}
-                            className="eduhub__courses-empty-state"
-                        >
-                            <Text fontSize="2xl" fontWeight="800" color="gray.800" mb={2}>
-                                No courses match these filters
-                            </Text>
-                            <Text mb={5}>Try widening your fee range, changing the board, or clearing a few filters.</Text>
-                            <Button colorScheme="blue" variant="outline" onClick={() => setFilters({
-                                institute: 'Any',
-                                subject: 'Any',
-                                fees: { min: 0, max: 15000 },
-                                board: [],
-                            })}>
-                                Clear filters
+                    {status === 'loading' && courses.length === 0 ? (
+                        <div className="course-grid">
+                            {Array.from({ length: 6 }, (_, index) => (
+                                <Skeleton key={index} height="320px" borderRadius="16px" startColor="#eef2f8" endColor="#f7f9fc" />
+                            ))}
+                        </div>
+                    ) : status === 'error' ? (
+                        <div className="catalog__empty">
+                            <h2>Courses couldn't be loaded</h2>
+                            <p>Check your connection and try again.</p>
+                            <Button onClick={() => loadCourses(filters, page)}>Try again</Button>
+                        </div>
+                    ) : status === 'ready' && courses.length === 0 ? (
+                        <div className="catalog__empty">
+                            <h2>No courses match these filters</h2>
+                            <p>Try removing a filter or raising the fee limit.</p>
+                            <Button variant="outline" onClick={() => handleFilterChange(DEFAULT_FILTERS)}>
+                                Clear all filters
                             </Button>
-                        </Box>
+                        </div>
                     ) : (
-                        <>
-                            {courses.map((course, index) => (
+                        <div className={`course-grid${status === 'loading' ? ' is-refreshing' : ''}`}>
+                            {courses.map((course) => (
                                 <CourseCard
-                                    key={course.courseId || course.title || index}
+                                    key={course.courseId}
                                     title={course.title}
                                     fees={course.fees}
                                     institute={course.instituteName}
+                                    teacherName={course.teacherName}
                                     board={course.board}
                                     imageUrl={course.imageUrl}
                                     id={course.courseId}
                                 />
                             ))}
-                            
-                            {/* Pagination Controls */}
-                            {pagination && pagination.totalPages > 1 && (
-                                <Flex 
-                                    justify="center" 
-                                    align="center" 
-                                    mt={6} 
-                                    mb={4} 
-                                    gap={4}
-                                    width="100%"
-                                    bg="white"
-                                    borderWidth="1px"
-                                    borderColor="blue.100"
-                                    borderRadius="24px"
-                                    px={4}
-                                    py={4}
-                                >
-                                    <Button
-                                        onClick={() => handlePageChange(pagination.currentPage - 1)}
-                                        isDisabled={!pagination.hasPrevPage || pagination.currentPage <= 1}
-                                        colorScheme="blue"
-                                        variant="outline"
-                                    >
-                                        Previous
-                                    </Button>
-                                    
-                                    <Text fontWeight="700" color="gray.700">
-                                        Page {pagination.currentPage} of {pagination.totalPages}
-                                    </Text>
-                                    
-                                    <Button
-                                        onClick={() => handlePageChange(pagination.currentPage + 1)}
-                                        isDisabled={!pagination.hasNextPage || pagination.currentPage >= pagination.totalPages}
-                                        colorScheme="blue"
-                                        variant="outline"
-                                    >
-                                        Next
-                                    </Button>
-                                </Flex>
-                            )}
-                        </>
+                        </div>
                     )}
-                </div>
-            </Box>
 
-            {isMobile && isFilterOpen && (
-                <>
-                    <div className="eduhub__mobile-filter-overlay" onClick={closeFilterSidebar}></div>
-                    <div className={`eduhub__mobile-filter-panel ${!isFilterOpen ? 'hidden' : ''}`}>
-                        <FilterSidebar 
-                            onFilterChange={handleFilterChange} 
-                            initialFilters={filters}
-                            isMobile={true}
-                            onClose={closeFilterSidebar}
-                        />
-                    </div>
-                </>
-            )}
+                    {pagination.totalPages > 1 && courses.length > 0 && (
+                        <nav className="catalog__pagination" aria-label="Pagination">
+                            <Button variant="outline" onClick={() => goToPage(page - 1)} isDisabled={page <= 1}>
+                                Previous
+                            </Button>
+                            <span>Page {page} of {pagination.totalPages}</span>
+                            <Button variant="outline" onClick={() => goToPage(page + 1)} isDisabled={page >= pagination.totalPages}>
+                                Next
+                            </Button>
+                        </nav>
+                    )}
+                </section>
+            </div>
+
+            <Drawer isOpen={filterDrawer.isOpen} placement="bottom" onClose={filterDrawer.onClose}>
+                <DrawerOverlay />
+                <DrawerContent borderTopRadius="20px" maxH="85vh">
+                    <DrawerCloseButton top={4} />
+                    <DrawerHeader borderBottomWidth="1px" borderColor="line">Filters</DrawerHeader>
+                    <DrawerBody py={6}>
+                        <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
+                    </DrawerBody>
+                    <DrawerFooter borderTopWidth="1px" borderColor="line">
+                        <Button width="full" size="lg" onClick={filterDrawer.onClose}>
+                            {status === 'ready' ? `Show ${pagination.totalCourses} ${pagination.totalCourses === 1 ? 'course' : 'courses'}` : 'Show courses'}
+                        </Button>
+                    </DrawerFooter>
+                </DrawerContent>
+            </Drawer>
         </div>
     );
 };

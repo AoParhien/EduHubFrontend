@@ -1,0 +1,67 @@
+.app-error {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: var(--wash);
+}
+
+.app-error__card {
+  width: 100%;
+  max-width: 520px;
+  padding: 40px 32px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: #fff;
+}
+
+.app-error__logo {
+  height: 48px;
+  width: auto;
+  margin-bottom: 24px;
+}
+
+.app-error h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.app-error p {
+  margin-top: 12px;
+  color: var(--muted);
+}
+
+.app-error__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.app-error__primary,
+.app-error__secondary {
+  display: inline-flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.app-error__primary {
+  border: 0;
+  background: var(--navy);
+  color: #fff;
+}
+
+.app-error__primary:hover {
+  background: var(--navy-hover);
+}
+
+.app-error__secondary {
+  border: 1px solid var(--line);
+  color: var(--navy);
+}

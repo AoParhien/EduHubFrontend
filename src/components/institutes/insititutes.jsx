@@ -1,92 +1,95 @@
-import React, { useState, useEffect } from 'react';
-import './institutes.css';
-import TabBar from '../TabBar/TabBar';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Button, Input, InputGroup, InputLeftElement, Skeleton } from '@chakra-ui/react';
+import { FiSearch } from 'react-icons/fi';
 import InstituteCard from '../institute-card/instituteCard';
+import PageTitle from '../page-title/PageTitle';
 import { BACKEND_URL } from '../../utils/backendUrl';
+import './institutes.css';
 
 const Institutes = () => {
-    const tabs = ['O\'Levels', 'A\'Levels', 'Edexcel', 'Matric', 'Inter', 'ECAT', 'MCAT', 'BCOM'];
-    const [selectedTab, setSelectedTab] = useState(tabs[0]);
     const [institutes, setInstitutes] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [status, setStatus] = useState('loading');
+    const [query, setQuery] = useState('');
+
+    const loadInstitutes = useCallback(async () => {
+        setStatus('loading');
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/institutes/getInstitutes`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            setInstitutes(Array.isArray(data) ? data : []);
+            setStatus('ready');
+        } catch (error) {
+            setStatus('error');
+        }
+    }, []);
 
     useEffect(() => {
-        const fetchInstitutes = async () => {
-            setLoading(true);
-            setError(null); // Reset error state on new fetch
+        loadInstitutes();
+    }, [loadInstitutes]);
 
-            try {
-            const apiUrl = BACKEND_URL;
-            const response = await fetch(`${apiUrl}/api/institutes/getInstitutes?category=${selectedTab}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch institutes');
-                }
-
-                const data = await response.json();
-                setInstitutes(data);
-            } catch (err) {
-                setError('Failed to load institutes. Please try again later.');
-                console.error('Error fetching institutes:', err);
-                setInstitutes([]); // Clear institutes on error
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchInstitutes();
-    }, [selectedTab]); // Re-fetch when selectedTab changes
-
-    const handleTabSelect = (tab) => {
-        if (tab !== selectedTab) {
-            setSelectedTab(tab);
-        }
-    };
+    const visible = useMemo(() => {
+        const term = query.trim().toLowerCase();
+        const sorted = [...institutes].sort((a, b) => a.name.localeCompare(b.name));
+        return term ? sorted.filter((institute) => institute.name.toLowerCase().includes(term)) : sorted;
+    }, [institutes, query]);
 
     return (
-        <div className='eduhub__institutes section__padding'>
-            <div className='eduhub__institutes-header'>
-                <h1>Institutes On Board</h1>
-                <p>Explore and find the best institutes for your preferred education track.</p>
-            </div>
-            <div className='eduhub__institutes-tabbar'>
-                <TabBar tabs={tabs} onSelect={handleTabSelect} selectedTab={selectedTab} />
-            </div>
+        <div className="page institutes">
+            <PageTitle title="Institutes" />
+            <header className="institutes__header">
+                <div>
+                    <h1>Institutes</h1>
+                    <p>Tuition centres and colleges offering classes on AoParhein. Open one to see its courses, teachers and location.</p>
+                </div>
+                <InputGroup size="lg" maxW={{ base: '100%', md: '320px' }}>
+                    <InputLeftElement pointerEvents="none" color="muted"><FiSearch /></InputLeftElement>
+                    <Input
+                        type="search"
+                        value={query}
+                        onChange={(event) => setQuery(event.target.value)}
+                        placeholder="Filter by name"
+                        aria-label="Filter institutes by name"
+                        fontSize="md"
+                        borderRadius="full"
+                    />
+                </InputGroup>
+            </header>
 
-            {loading ? (
-                <div className="eduhub__institutes-loading">
-                    <h1>Loading institutes...</h1>
-                </div>
-            ) : error ? (
-                <div className="eduhub__institutes-error">
-                    <h1>Error</h1>
-                    <p>{error}</p>
-                </div>
-            ) : (
-                <div className='eduhub__institutes-cards'>
-                    {institutes.length > 0 ? (
-                        institutes.map((institute) => (
-                            <InstituteCard 
-                                key={institute._id}
-                                _id={institute._id}  
-                                name={institute.name}
-                                registrationFees={institute.registrationFees}
-                                pictureUrl={institute.pictureUrl}
-                                logoUrl={institute.logoUrl}
-                                location={institute.location}
-                            />
-                        ))
-                    ) : (
-                        <p>No institutes available for this category.</p>
-                    )}
-                </div>
-            )}
+            <div aria-live="polite" aria-busy={status === 'loading'}>
+                {status === 'loading' ? (
+                    <div className="institutes__grid">
+                        {Array.from({ length: 6 }, (_, index) => (
+                            <Skeleton key={index} height="280px" borderRadius="16px" startColor="#eef2f8" endColor="#f7f9fc" />
+                        ))}
+                    </div>
+                ) : status === 'error' ? (
+                    <div className="institutes__empty">
+                        <h2>Institutes couldn't be loaded</h2>
+                        <p>Check your connection and try again.</p>
+                        <Button onClick={loadInstitutes}>Try again</Button>
+                    </div>
+                ) : visible.length === 0 ? (
+                    <div className="institutes__empty">
+                        <h2>{query ? `No institutes match "${query}"` : 'No institutes yet'}</h2>
+                        {query && <Button variant="outline" mt={4} onClick={() => setQuery('')}>Clear filter</Button>}
+                    </div>
+                ) : (
+                    <ul className="institutes__grid">
+                        {visible.map((institute) => (
+                            <li key={institute._id}>
+                                <InstituteCard
+                                    _id={institute._id}
+                                    name={institute.name}
+                                    registrationFees={institute.registrationFees}
+                                    pictureUrl={institute.pictureUrl}
+                                    logoUrl={institute.logoUrl}
+                                />
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
         </div>
     );
 };

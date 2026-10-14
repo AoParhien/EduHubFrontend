@@ -1,46 +1,149 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Marko+One&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Expletus+Sans:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
+/*
+ * AoParhein design tokens.
+ * Navy carries every action and link; the logo gold is reserved for the
+ * hero panel and a few highlights so it stays special.
+ */
 :root {
-  --main-font-family: 'Roboto', serif;
-  --font-family: 'Roboto', serif;
+  --font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --main-font-family: var(--font-family);
 
-  --gradient-text: black;
-  --gradient-bar: linear-gradient(103.22deg, #AE67FA -13.86%, #F49867 99.55%);
-  
-  --highlight-color: #9E5CF2;
-  --eduhub-primary: #00308f;
-  --eduhub-primary-dark: #0d2760;
-  --eduhub-primary-soft: #eef4ff;
-  --eduhub-primary-softer: #f7faff;
-  --eduhub-border: #cfe0ff;
-  --eduhub-text: #1f2937;
-  --eduhub-muted: #5b6474;
-  --eduhub-radius-lg: 18px;
-  --eduhub-radius-xl: 24px;
-  --eduhub-radius-2xl: 28px;
-  --eduhub-shadow-card: 0 22px 44px -34px rgba(13, 59, 102, 0.32);
-  --eduhub-shadow-card-hover: 0 28px 56px -34px rgba(13, 59, 102, 0.42);
+  --navy: #00308f;
+  --navy-hover: #0a2a73;
+  --navy-deep: #0b214f;
+  --navy-tint: #eef3fd;
+  --gold: #f6d33c;
+  --gold-soft: #fdf6d6;
 
-  --color-bg: #040C18;
-  --color-footer : #52769f;
-  --color-blog: #042c54;
-  --color-text: #81AFDD;
-  --color-subtext: #FF8A71;
+  --ink: #0f1b33;
+  --text: #2b3550;
+  --muted: #5d6a82;
+  --line: #dde4f0;
+  --line-strong: #c7d3e6;
+  --wash: #f5f7fb;
+  --surface: #ffffff;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+
+  --shadow-raise: 0 12px 32px -18px rgba(11, 33, 79, 0.28);
+
+  --page-max: 1200px;
+  --gutter: clamp(16px, 4vw, 40px);
+
+  /* Legacy names still referenced by older stylesheets */
+  --eduhub-primary: var(--navy);
+  --eduhub-primary-dark: var(--navy-deep);
+  --eduhub-primary-soft: var(--navy-tint);
+  --eduhub-primary-softer: var(--wash);
+  --eduhub-border: var(--line);
+  --eduhub-text: var(--ink);
+  --eduhub-muted: var(--muted);
+  --eduhub-radius-lg: var(--radius-md);
+  --eduhub-radius-xl: var(--radius-lg);
+  --eduhub-radius-2xl: var(--radius-lg);
+  --eduhub-shadow-card: none;
+  --eduhub-shadow-card-hover: var(--shadow-raise);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 96px;
 }
 
 body {
-  font-family: var(--main-font-family);
-  color: var(--eduhub-text);
-  background: linear-gradient(180deg, #fbfcff 0%, #eef3fb 100%);
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.gradient__text .highlighted-text {
-  color: #9E5CF2;
+h1, h2, h3, h4 {
+  color: var(--ink);
+  line-height: 1.2;
+  margin: 0;
 }
 
-.my-class {
-  font-family: var(--main-font-family);
+p {
+  margin: 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(0, 48, 143, 0.45);
+  outline-offset: 2px;
+}
+
+/* Shared page shell */
+.page {
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* Vertical rhythm only, so it can sit on the same element as .page */
+.page-section {
+  padding-top: clamp(48px, 7vw, 88px);
+  padding-bottom: clamp(48px, 7vw, 88px);
+}
+
+.section-heading {
+  max-width: 640px;
+  margin-bottom: 32px;
+}
+
+.section-heading h2 {
+  font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.section-heading p {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 1.0625rem;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

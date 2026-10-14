@@ -1,181 +1,130 @@
-/* General Styles */
-.eduhub__header {
-    display: flex;
-    flex-direction: row;
-    padding: 4rem; /* Reduced padding for better responsiveness */
-    align-items: center;
-    justify-content: space-between;
-    background: linear-gradient(180deg, #ffffff 0%, var(--eduhub-primary-softer) 100%);
-    border: 1px solid var(--eduhub-border);
-    border-radius: var(--eduhub-radius-2xl);
-    box-shadow: var(--eduhub-shadow-card);
-    margin: 0 2rem;
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(32px, 6vw, 80px);
+  padding-top: clamp(32px, 6vw, 72px);
+  padding-bottom: clamp(48px, 7vw, 96px);
 }
 
-.eduhub__header-content {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 10px;
-    margin-right: 5rem;
+.hero h1 {
+  font-size: clamp(2.25rem, 1.4rem + 3vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  max-width: 14ch;
 }
 
-.eduhub__header-content h1 {
-    font-family: var(--font-family);
-    font-weight: 600;
-    font-size: 3rem; /* Changed to rem for scalability */
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    color: var(--eduhub-text); /* Ensure sufficient contrast */
+.hero__lead {
+  margin-top: 20px;
+  max-width: 52ch;
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: var(--muted);
 }
 
-.eduhub__header-content p {
-    font-family: var(--font-family);
-    font-weight: 400;
-    font-size: 1.125rem; /* 18px */
-    line-height: 1.6;
-    color: var(--eduhub-muted); /* Tailwind's gray-600 equivalent */
-    margin-top: 1.5rem;
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
 }
 
-.eduhub__header-content__input {
-    width: 100%;
-    margin: 2rem 0 1rem 0;
-    display: flex;
-    flex-direction: row;
-    gap: 1.5rem; /* Use gap for spacing between buttons */
+.hero__boards {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
 }
 
-.eduhub__header-register-button {
-    flex: 1;
-    height: 3rem;
-    font-family: var(--font-family);
-    font-weight: 500;
-    font-size: 1rem;
-    color: white;
-    background-color: var(--eduhub-primary);
-    cursor: pointer;
-    border: none;
-    border-radius: var(--eduhub-radius-2xl);
-    transition: background-color 0.3s ease;
-    padding: 1.5rem;
+.hero__boards p {
+  color: var(--muted);
+  font-size: 0.9375rem;
 }
 
-.eduhub__header-register-button:hover {
-    background-color: var(--eduhub-primary-dark); /* Darker shade on hover */
+.hero__boards ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.eduhub__header-learn-more-button {
-    flex: 1;
-    height: 3rem;
-    font-family: var(--font-family);
-    font-weight: 500;
-    font-size: 1rem;
-    color: var(--eduhub-primary);
-    background-color: transparent;
-    cursor: pointer;
-    border: 1px solid var(--eduhub-border);
-    border-radius: var(--eduhub-radius-2xl);
-    transition: background-color 0.3s ease, color 0.3s ease;
+.hero__boards a {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 }
 
-.eduhub__header-learn-more-button:hover {
-    background-color: var(--eduhub-primary);
-    color: white;
+.hero__boards a:hover {
+  border-color: var(--navy);
+  color: var(--navy);
+  background: var(--navy-tint);
 }
 
-.eduhub__header-image {
-    flex: 1;
-    display: flex;
-    justify-content: center; /* Center the image */
-    align-items: center;
-    padding: 1rem;
+/* Navy panel with the logo's gold outline offset behind it */
+.hero__visual {
+  position: relative;
+  padding: 0 20px 20px 0;
 }
 
-.eduhub__header-image img {
-    width: 100%;
-    max-width: 500px; /* Set a reasonable max width */
-    height: auto;
-    object-fit: contain;
-    transition: transform 0.3s ease;
+.hero__visual::before {
+  content: '';
+  position: absolute;
+  inset: 20px 0 0 20px;
+  border: 3px solid var(--gold);
+  border-radius: var(--radius-lg);
 }
 
-.eduhub__header-image img:hover {
-    transform: scale(1.05); /* Subtle zoom on hover */
+.hero__panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 5 / 4;
+  padding: clamp(20px, 4vw, 40px);
+  background: var(--navy);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 
-.highlighted-text {
-    color: #9E5CF2;
+.hero__panel img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 24px 32px rgba(0, 0, 0, 0.35));
 }
 
-/* Responsive Styles */
-@media screen and (max-width: 1050px) {
-    .eduhub__header {
-        flex-direction: column;
-        padding: 2rem;
-        margin: 0 1rem;
-    }
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
 
-    .eduhub__header-content {
-        margin: 0;
-        text-align: center;
-    }
+  .hero h1 {
+    max-width: 18ch;
+  }
 
-    .eduhub__header-content__input {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .eduhub__header-register-button,
-    .eduhub__header-learn-more-button {
-        width: 100%;
-    }
-
-    .eduhub__header-image {
-        margin-top: 2rem;
-    }
+  .hero__visual {
+    max-width: 560px;
+  }
 }
 
-@media screen and (max-width: 650px) {
-    .eduhub__header-content h1 {
-        font-size: 2.5rem;
-    }
+@media (max-width: 560px) {
+  .hero__actions .chakra-button {
+    flex: 1 1 100%;
+  }
 
-    .eduhub__header-content p {
-        font-size: 1rem;
-    }
-
-    .eduhub__header-register-button,
-    .eduhub__header-learn-more-button {
-        font-size: 0.875rem; /* 14px */
-        padding: 0.75rem 1rem;
-    }
-}
-
-@media screen and (max-width: 490px) {
-    .eduhub__header-content h1 {
-        font-size: 2rem;
-    }
-
-    .eduhub__header-content p {
-        font-size: 0.875rem; /* 14px */
-    }
-
-    .eduhub__header-content__input {
-        flex-direction: column;
-    }
-
-    .eduhub__header-register-button{
-        font-size: 0.875rem; /* 14px */
-        padding: 1rem 1rem;
-    }
-    .eduhub__header-learn-more-button {
-        font-size: 0.875rem; /* 14px */
-        padding: 0.75rem 1rem;
-    }
-    .eduhub__header-image {
-        display: none;
-    }
+  .hero__visual {
+    display: none;
+  }
 }

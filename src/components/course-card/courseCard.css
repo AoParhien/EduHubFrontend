@@ -1,0 +1,136 @@
+.course-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.course-card:hover {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-raise);
+}
+
+.course-card:focus-visible {
+  outline: 3px solid rgba(0, 48, 143, 0.45);
+  outline-offset: 2px;
+}
+
+.course-card__media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--wash);
+  overflow: hidden;
+}
+
+.course-card__media img,
+.course-card__placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.course-card__placeholder {
+  background: linear-gradient(135deg, var(--navy-tint), var(--wash));
+}
+
+.course-card__board {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 999px;
+  color: var(--navy);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.course-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 16px 18px 18px;
+}
+
+.course-card__title {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.course-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.course-card__meta li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.course-card__meta svg {
+  flex-shrink: 0;
+}
+
+.course-card__meta span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.course-card__footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.course-card__fee {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.course-card__fee strong {
+  color: var(--ink);
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.course-card__cta {
+  color: var(--navy);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.course-card:hover .course-card__cta {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Responsive grid used wherever course cards are listed */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
