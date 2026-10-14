@@ -159,7 +159,6 @@ const CourseDetails = () => {
                                         <p>
                                             <RouterLink to={`/teachers/${teacher.id}`} className="course-hero__name">{teacher.name}</RouterLink>
                                         </p>
-                                        {teacher.description && <p className="course-hero__muted">{teacher.description}</p>}
                                     </div>
                                 </div>
                             )}
