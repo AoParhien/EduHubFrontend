@@ -150,24 +150,19 @@ const CourseDetails = () => {
                         {meta.length > 0 && <p className="course-hero__meta">{meta.join(' · ')}</p>}
 
                         <div className="course-hero__people">
-                            {teacher?.name && (
-                                <div className="course-hero__teacher">
-                                    {teacher.picture
-                                        ? <img src={teacher.picture} alt="" />
-                                        : <span className="course-hero__avatar-empty" aria-hidden="true">{teacher.name[0]}</span>}
-                                    <div>
-                                        <p>
-                                            <RouterLink to={`/teachers/${teacher.id}`} className="course-hero__name">{teacher.name}</RouterLink>
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
-                            {institute.name && (
-                                <p className="course-hero__institute">
-                                    at <RouterLink to={`/institute/${institute.id}`} className="course-hero__name">{institute.name}</RouterLink>
-                                    {institute.area && <span className="course-hero__muted">, {institute.area}</span>}
-                                </p>
-                            )}
+                            {teacher?.picture
+                                ? <img src={teacher.picture} alt="" className="course-hero__avatar" />
+                                : <span className="course-hero__avatar course-hero__avatar-empty" aria-hidden="true">{(teacher?.name || institute.name || '?')[0]}</span>}
+                            <div className="course-hero__who">
+                                {teacher?.name && (
+                                    <RouterLink to={`/teachers/${teacher.id}`} className="course-hero__name">{teacher.name}</RouterLink>
+                                )}
+                                {institute.name && (
+                                    <RouterLink to={`/institute/${institute.id}`} className="course-hero__place">
+                                        {institute.name}{institute.area ? `, ${institute.area}` : ''}
+                                    </RouterLink>
+                                )}
+                            </div>
                         </div>
 
                         {course.description && <p className="course-hero__description">{course.description}</p>}
