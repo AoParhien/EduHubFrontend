@@ -20,6 +20,11 @@ const SECTIONS = [
 
 const EnrollCard = ({ course }) => {
     const hasBatches = (course.batches || []).length > 0;
+    const compareLink = course.subjectInfo && (
+        <p className="enroll-card__compare">
+            <RouterLink to={`/subjects/${course.subjectInfo.slug}`} className="text-link">Compare other institutes for {course.subjectInfo.title}</RouterLink>
+        </p>
+    );
     return (
         <div className="enroll-card">
             <p className="enroll-card__price">
@@ -45,6 +50,7 @@ const EnrollCard = ({ course }) => {
                     ? 'Nothing to pay online. You pay the institute on your first day.'
                     : 'This course has no open batch right now. Check back soon.'}
             </p>
+            {compareLink}
         </div>
     );
 };
@@ -110,7 +116,7 @@ const CourseDetails = () => {
     const batches = course.batches || [];
     const schedules = course.schedules || [];
     const facts = [
-        course.teacher?.name && { icon: FiUser, label: 'Teacher', value: course.teacher.name },
+        course.teacher?.name && { icon: FiUser, label: 'Teacher', value: course.teacher.name, to: course.teacher.id ? `/teachers/${course.teacher.id}` : null },
         course.durationMonths && { icon: FiCalendar, label: 'Duration', value: formatMonths(course.durationMonths) },
         course.classFormat && { icon: FiClock, label: 'Classes', value: formatClassFormat(course.classFormat) },
         course.institute?.name && { icon: FiMapPin, label: 'Institute', value: course.institute.name, to: `/institute/${course.institute.id}` },
@@ -118,13 +124,14 @@ const CourseDetails = () => {
 
     return (
         <div className="page course-page">
-            <PageTitle title={course.title} />
+            <PageTitle title={`${course.subjectInfo?.title || course.title}${course.institute?.name ? ` at ${course.institute.name}` : ''}`} />
 
             <nav className="breadcrumb" aria-label="Breadcrumb">
                 <ol>
-                    <li><RouterLink to="/courses">Courses</RouterLink></li>
+                    <li><RouterLink to="/courses">Find a class</RouterLink></li>
                     {boardLabel && <li><RouterLink to={`/courses/${normalizeBoard(course.board)}`}>{boardLabel}</RouterLink></li>}
-                    <li aria-current="page">{course.title}</li>
+                    {course.subjectInfo && <li><RouterLink to={`/subjects/${course.subjectInfo.slug}`}>{course.subjectInfo.title}</RouterLink></li>}
+                    <li aria-current="page">{course.institute?.name || course.title}</li>
                 </ol>
             </nav>
 
@@ -136,8 +143,12 @@ const CourseDetails = () => {
                                 <img src={course.imageUrl} alt="" />
                             </div>
                         )}
-                        {boardLabel && <p className="course-hero__board">{boardLabel}{course.subject ? `, ${course.subject}` : ''}</p>}
-                        <h1>{course.title}</h1>
+                        {boardLabel && <p className="course-hero__board">{course.subjectInfo?.level || boardLabel}{course.label ? `, ${course.label}` : ''}</p>}
+                        <h1>{course.subjectInfo?.title || course.title}</h1>
+                        <p className="course-hero__byline">
+                            {course.teacher?.name && <>with <RouterLink to={`/teachers/${course.teacher.id}`} className="text-link">{course.teacher.name}</RouterLink> </>}
+                            {course.institute?.name && <>at <RouterLink to={`/institute/${course.institute.id}`} className="text-link">{course.institute.name}</RouterLink>{course.institute.area ? `, ${course.institute.area}` : ''}</>}
+                        </p>
                         {course.description && <p className="course-hero__description">{course.description}</p>}
 
                         <dl className="course-facts">
@@ -169,7 +180,9 @@ const CourseDetails = () => {
                                 <span className="teacher-row__photo teacher-row__photo--empty" aria-hidden="true" />
                             )}
                             <div>
-                                <p className="teacher-row__name">{course.teacher?.name || 'To be announced'}</p>
+                                <p className="teacher-row__name">
+                                    {course.teacher?.id ? <RouterLink to={`/teachers/${course.teacher.id}`} className="text-link">{course.teacher.name}</RouterLink> : course.teacher?.name || 'To be announced'}
+                                </p>
                                 {Number(course.teacher?.experience) > 0 && (
                                     <p className="teacher-row__bio">{course.teacher.experience} {Number(course.teacher.experience) === 1 ? 'year' : 'years'} teaching</p>
                                 )}

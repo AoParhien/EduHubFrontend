@@ -205,7 +205,7 @@
 }
 
 @media (max-width: 1080px) {
-  .nav__links .nav-link:nth-child(3) {
+  .nav__links .nav-link:nth-child(4) {
     display: none;
   }
 }

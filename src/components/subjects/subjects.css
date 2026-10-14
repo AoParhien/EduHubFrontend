@@ -1,0 +1,319 @@
+.directory,
+.subject-page,
+.teacher-page,
+.teacher-directory {
+  padding-top: clamp(24px, 4vw, 48px);
+  padding-bottom: clamp(48px, 7vw, 88px);
+}
+
+.directory__header h1,
+.subject-page__header h1,
+.teacher-directory h1 {
+  font-size: clamp(1.75rem, 1.3rem + 1.5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.directory__header p,
+.subject-page__header p,
+.teacher-directory__intro {
+  margin-top: 8px;
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 1.0625rem;
+}
+
+.directory__header {
+  margin-bottom: 24px;
+}
+
+.directory__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 24px 0 8px;
+}
+
+.directory__count {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.directory__level {
+  margin-top: 28px;
+}
+
+.directory__level h2 {
+  margin-bottom: 12px;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.subject-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.subject-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 100%;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.subject-tile:hover {
+  border-color: var(--navy);
+  box-shadow: var(--shadow-raise);
+}
+
+.subject-tile__name {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.subject-tile__meta {
+  color: var(--navy);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.subject-tile.is-empty {
+  background: var(--wash);
+}
+
+.subject-tile.is-empty .subject-tile__meta {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.directory__empty {
+  margin-top: 24px;
+  padding: 40px 32px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--wash);
+}
+
+.directory__empty h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.directory__empty p {
+  margin: 8px 0 16px;
+  color: var(--muted);
+}
+
+/* Subject page */
+.subject-page__header {
+  margin-bottom: 24px;
+}
+
+.subject-page__level {
+  color: var(--navy);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.subject-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.subject-filters__count {
+  margin-left: auto;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.offering-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Teacher profile */
+.teacher-hero {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.teacher-hero__photo {
+  flex-shrink: 0;
+  width: 132px;
+  height: 132px;
+  border-radius: 999px;
+  object-fit: cover;
+  object-position: center top;
+  background: var(--navy-tint);
+  border: 4px solid #fff;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.teacher-hero__photo--empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy);
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.teacher-hero h1 {
+  font-size: clamp(1.75rem, 1.3rem + 1.5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.teacher-hero__meta {
+  margin-top: 4px;
+  color: var(--navy);
+  font-weight: 500;
+}
+
+.teacher-hero__bio {
+  margin-top: 10px;
+  max-width: 64ch;
+  color: var(--muted);
+  font-size: 1.0625rem;
+}
+
+.teacher-page__institutes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teacher-page__institutes a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 14px 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+
+.teacher-page__institutes a:hover {
+  border-color: var(--navy);
+}
+
+.teacher-page__institutes img {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.teacher-page h2 {
+  margin: 32px 0 14px;
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+/* Teacher directory */
+.teacher-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teacher-tile {
+  display: flex;
+  gap: 14px;
+  height: 100%;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.teacher-tile:hover {
+  border-color: var(--navy);
+  box-shadow: var(--shadow-raise);
+}
+
+.teacher-tile img,
+.teacher-tile__empty {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  object-fit: cover;
+  object-position: center top;
+  background: var(--navy-tint);
+}
+
+.teacher-tile__empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.teacher-tile__name {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.teacher-tile__meta {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.teacher-tile__subjects {
+  margin-top: 4px;
+  color: var(--navy);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .teacher-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .teacher-hero__photo {
+    width: 104px;
+    height: 104px;
+  }
+
+  .subject-filters__count {
+    margin-left: 0;
+    width: 100%;
+  }
+}

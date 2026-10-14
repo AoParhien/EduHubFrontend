@@ -11,7 +11,8 @@ const BOARD_LABELS = {
   edexcel: 'Edexcel',
   sat: 'SAT',
   ecat: 'ECAT',
-  mcat: 'MCAT',
+  mcat: 'MDCAT',
+  mdcat: 'MDCAT',
   bcom: 'B.Com',
 };
 
@@ -20,15 +21,14 @@ export const normalizeBoard = (board = '') =>
 
 export const formatBoard = (board) => BOARD_LABELS[normalizeBoard(board)] || board || '';
 
-// Boards a student can browse. `slug` is what the course listing API expects.
+// Boards a student can browse; must match backend/modules/catalog/data/boards.js.
 export const BOARDS = [
-  { slug: 'olevels', label: 'O Levels' },
-  { slug: 'alevels', label: 'A Levels' },
-  { slug: 'matric', label: 'Matric' },
-  { slug: 'intermediate', label: 'Intermediate' },
-  { slug: 'edexcel', label: 'Edexcel' },
-  { slug: 'ecat', label: 'ECAT' },
-  { slug: 'mcat', label: 'MCAT' },
+  { slug: 'olevels', label: 'O Levels', levels: ['O Level'] },
+  { slug: 'alevels', label: 'A Levels', levels: ['AS Level', 'A2 Level'] },
+  { slug: 'matric', label: 'Matric', levels: ['Class 9', 'Class 10'] },
+  { slug: 'intermediate', label: 'Intermediate', levels: ['XI', 'XII'] },
+  { slug: 'mdcat', label: 'MDCAT', levels: ['MDCAT'] },
+  { slug: 'ecat', label: 'ECAT', levels: ['ECAT'] },
 ];
 
 export const formatClassFormat = (format) => {

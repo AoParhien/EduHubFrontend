@@ -22,7 +22,8 @@ const Footer = () => (
                 <div>
                     <h2>Students</h2>
                     <ul>
-                        <li><Link to="/courses">Browse courses</Link></li>
+                        <li><Link to="/courses">Find a class</Link></li>
+                        <li><Link to="/teachers">Teachers</Link></li>
                         <li><Link to="/institutes">Institutes</Link></li>
                         <li><Link to="/student">My courses</Link></li>
                         <li><a href="/#how-it-works">How booking works</a></li>

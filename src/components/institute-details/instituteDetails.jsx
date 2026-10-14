@@ -118,7 +118,7 @@ const InstituteDetails = () => {
           <div>
             <h1>{institute.name}</h1>
             <p>
-              {courses.length} {courses.length === 1 ? 'course' : 'courses'}
+              {institute.area ? `${institute.area}, ` : ''}{courses.length} {courses.length === 1 ? 'course' : 'courses'}
               {institute.registrationFees != null && `, registration fee ${formatRupees(institute.registrationFees)}`}
             </p>
           </div>
@@ -170,7 +170,7 @@ const InstituteDetails = () => {
           <ul className="instructors__grid institute-page__teachers">
             {teachers.map((teacher) => (
               <li key={teacher._id}>
-                <InstructorCard teacherName={teacher.name} image={teacher.pictureUrl} description={teacher.description} />
+                <InstructorCard teacherName={teacher.name} image={teacher.pictureUrl} description={teacher.description} to={`/teachers/${teacher._id}`} />
               </li>
             ))}
           </ul>

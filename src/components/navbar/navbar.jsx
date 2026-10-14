@@ -24,7 +24,6 @@ import debounce from 'lodash.debounce';
 import Dblue from '../../assets/Dblue.png';
 import useUserStore from '../../store/useUserStore';
 import { BACKEND_URL } from '../../utils/backendUrl';
-import { formatBoard } from '../../utils/format';
 import './navbar.css';
 
 const INSTITUTE_SIGNUP_URL =
@@ -32,10 +31,13 @@ const INSTITUTE_SIGNUP_URL =
     process.env.VITE_INSTITUTE_SIGNUP_URL ||
     'mailto:aoparhien@gmail.com?subject=List%20my%20institute%20on%20AoParhein';
 
-const CourseSearch = ({ onNavigate, autoFocus = false }) => {
+const EMPTY_RESULTS = { subjects: [], teachers: [], institutes: [] };
+
+// Searches subjects, teachers and institutes. Enter opens the first result.
+const SiteSearch = ({ onNavigate, inputId = 'site-search' }) => {
     const navigate = useNavigate();
     const [query, setQuery] = useState('');
-    const [results, setResults] = useState([]);
+    const [results, setResults] = useState(EMPTY_RESULTS);
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef(null);
@@ -44,16 +46,14 @@ const CourseSearch = ({ onNavigate, autoFocus = false }) => {
         () =>
             debounce(async (value) => {
                 try {
-                    const response = await axios.get(`${BACKEND_URL}/api/courses/search`, {
-                        params: { title: value },
-                    });
-                    setResults(response.data.courses || []);
+                    const response = await axios.get(`${BACKEND_URL}/api/catalog/search`, { params: { q: value } });
+                    setResults({ ...EMPTY_RESULTS, ...response.data });
                 } catch (error) {
-                    setResults([]);
+                    setResults(EMPTY_RESULTS);
                 } finally {
                     setIsLoading(false);
                 }
-            }, 300),
+            }, 250),
         []
     );
 
@@ -61,9 +61,7 @@ const CourseSearch = ({ onNavigate, autoFocus = false }) => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (containerRef.current && !containerRef.current.contains(event.target)) {
-                setIsOpen(false);
-            }
+            if (containerRef.current && !containerRef.current.contains(event.target)) setIsOpen(false);
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -72,82 +70,61 @@ const CourseSearch = ({ onNavigate, autoFocus = false }) => {
     const handleChange = (event) => {
         const value = event.target.value;
         setQuery(value);
-
-        if (!value.trim()) {
+        if (value.trim().length < 2) {
             runSearch.cancel();
-            setResults([]);
+            setResults(EMPTY_RESULTS);
             setIsOpen(false);
             setIsLoading(false);
             return;
         }
-
         setIsOpen(true);
         setIsLoading(true);
         runSearch(value.trim());
     };
 
-    const goToCourse = useCallback((courseId) => {
+    const items = [
+        ...results.subjects.map((s) => ({ key: `s-${s.slug}`, to: `/subjects/${s.slug}`, title: s.title, meta: 'Subject' })),
+        ...results.teachers.map((t) => ({ key: `t-${t._id}`, to: `/teachers/${t._id}`, title: t.name, meta: 'Teacher' })),
+        ...results.institutes.map((i) => ({ key: `i-${i._id}`, to: `/institute/${i._id}`, title: i.name, meta: i.area ? `Institute, ${i.area}` : 'Institute' })),
+    ];
+
+    const go = useCallback((to) => {
         setQuery('');
-        setResults([]);
+        setResults(EMPTY_RESULTS);
         setIsOpen(false);
-        navigate(`/course-details/${courseId}`);
+        navigate(to);
         onNavigate?.();
     }, [navigate, onNavigate]);
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        if (results[0]) {
-            goToCourse(results[0]._id);
-        }
-    };
-
-    const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-            setIsOpen(false);
-        }
-    };
-
     return (
         <div className="nav-search" ref={containerRef}>
-            <form role="search" onSubmit={handleSubmit}>
-                <label htmlFor={autoFocus ? 'mobile-course-search' : 'course-search'} className="visually-hidden">
-                    Search courses
-                </label>
+            <form role="search" onSubmit={(event) => { event.preventDefault(); if (items[0]) go(items[0].to); }}>
+                <label htmlFor={inputId} className="visually-hidden">Search subjects, teachers and institutes</label>
                 <FiSearch className="nav-search__icon" aria-hidden="true" />
                 <input
-                    id={autoFocus ? 'mobile-course-search' : 'course-search'}
+                    id={inputId}
                     type="search"
                     value={query}
                     onChange={handleChange}
-                    onFocus={() => query.trim() && setIsOpen(true)}
-                    onKeyDown={handleKeyDown}
-                    placeholder="Search courses, e.g. O Level Maths"
+                    onFocus={() => query.trim().length >= 2 && setIsOpen(true)}
+                    onKeyDown={(event) => event.key === 'Escape' && setIsOpen(false)}
+                    placeholder="Subject, teacher or institute"
                     autoComplete="off"
                 />
             </form>
-
             {isOpen && (
-                <div className="nav-search__results" role="listbox" aria-label="Matching courses">
+                <div className="nav-search__results" role="listbox" aria-label="Search results">
                     {isLoading ? (
                         <p className="nav-search__status">Searching…</p>
-                    ) : results.length > 0 ? (
-                        results.slice(0, 8).map((course) => (
-                            <button
-                                type="button"
-                                role="option"
-                                aria-selected="false"
-                                key={course._id}
-                                className="nav-search__result"
-                                onClick={() => goToCourse(course._id)}
-                            >
-                                <span className="nav-search__result-title">{course.title}</span>
-                                <span className="nav-search__result-meta">
-                                    {[formatBoard(course.board), course.subject].filter(Boolean).join(', ')}
-                                </span>
+                    ) : items.length ? (
+                        items.map((item) => (
+                            <button type="button" role="option" aria-selected="false" key={item.key} className="nav-search__result" onClick={() => go(item.to)}>
+                                <span className="nav-search__result-title">{item.title}</span>
+                                <span className="nav-search__result-meta">{item.meta}</span>
                             </button>
                         ))
                     ) : (
-                        <p className="nav-search__status">No courses match "{query}". Try a subject such as Physics.</p>
+                        <p className="nav-search__status">Nothing matches "{query}". Try a subject such as Physics.</p>
                     )}
                 </div>
             )}
@@ -189,11 +166,12 @@ const Navbar = () => {
                 </RouterLink>
 
                 <div className="nav__search-desktop">
-                    <CourseSearch />
+                    <SiteSearch />
                 </div>
 
                 <nav className="nav__links" aria-label="Main">
-                    <NavLink to="/courses" className={navLinkClass}>Courses</NavLink>
+                    <NavLink to="/courses" className={navLinkClass}>Find a class</NavLink>
+                    <NavLink to="/teachers" className={navLinkClass}>Teachers</NavLink>
                     <NavLink to="/institutes" className={navLinkClass}>Institutes</NavLink>
                     {!isSignedIn && (
                         <a href={INSTITUTE_SIGNUP_URL} className="nav-link" target={INSTITUTE_SIGNUP_URL.startsWith('http') ? '_blank' : undefined} rel="noreferrer">
@@ -239,9 +217,10 @@ const Navbar = () => {
                 <DrawerContent>
                     <DrawerCloseButton top={4} right={4} />
                     <DrawerBody pt={16} px={5}>
-                        <CourseSearch autoFocus onNavigate={onClose} />
+                        <SiteSearch inputId="mobile-site-search" onNavigate={onClose} />
                         <Box as="nav" aria-label="Mobile" mt={6} className="nav-drawer__links">
-                            <NavLink to="/courses" className={navLinkClass}>Courses</NavLink>
+                            <NavLink to="/courses" className={navLinkClass}>Find a class</NavLink>
+                            <NavLink to="/teachers" className={navLinkClass}>Teachers</NavLink>
                             <NavLink to="/institutes" className={navLinkClass}>Institutes</NavLink>
                             {isSignedIn ? (
                                 <>

@@ -6,6 +6,19 @@
   overflow: hidden;
 }
 
+.instructor-card {
+  display: block;
+}
+
+.instructor-card--link {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.instructor-card--link:hover {
+  border-color: var(--navy);
+  box-shadow: var(--shadow-raise);
+}
+
 .instructor-card__photo {
   aspect-ratio: 1 / 1;
   background: var(--navy-tint);
