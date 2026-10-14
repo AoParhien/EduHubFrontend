@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import { Button, Checkbox, FormControl, FormLabel, Select, Skeleton } from '@chakra-ui/react';
 import OfferingCard from '../offering-card/OfferingCard';
+import SubjectArt from '../subject-art/SubjectArt';
 import PageTitle from '../page-title/PageTitle';
 import { BACKEND_URL } from '../../utils/backendUrl';
 import { BOARDS } from '../../utils/format';
@@ -92,7 +93,11 @@ const SubjectPage = () => {
         </ol>
       </nav>
 
-      <header className="subject-page__header">
+      <header className="subject-page__header subject-page__header--banner">
+        <div className="subject-page__banner-art" aria-hidden="true">
+          <SubjectArt name={subject.name} />
+        </div>
+        <div className="subject-page__banner-text">
         <p className="subject-page__level">{subject.level}</p>
         <h1>{subject.title}</h1>
         <p>
@@ -100,6 +105,7 @@ const SubjectPage = () => {
             ? `${offerings.length} ${offerings.length === 1 ? 'class' : 'classes'} at ${instituteCount} ${instituteCount === 1 ? 'institute' : 'institutes'} in Karachi. Compare teachers, timings and fees, then reserve a seat.`
             : 'No institute lists this subject yet. Institutes are joining every week, so check back soon.'}
         </p>
+        </div>
       </header>
 
       {offerings.length > 0 && (

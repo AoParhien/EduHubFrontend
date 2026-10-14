@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Button, Input, InputGroup, InputLeftElement, Skeleton } from '@chakra-ui/react';
 import { FiSearch } from 'react-icons/fi';
 import TabBar from '../TabBar/TabBar';
+import SubjectCard from '../subject-art/SubjectCard';
 import PageTitle from '../page-title/PageTitle';
 import { BACKEND_URL } from '../../utils/backendUrl';
-import { BOARDS, formatRupees, normalizeBoard } from '../../utils/format';
+import { BOARDS, normalizeBoard } from '../../utils/format';
 import './subjects.css';
 
 const boardFromParam = (param) => {
@@ -49,7 +50,7 @@ const SubjectDirectory = () => {
       <PageTitle title={`${boardInfo.label} subjects`} />
       <header className="directory__header">
         <h1>Find a class</h1>
-        <p>Choose your board and subject to compare every institute that teaches it, by teacher, area, timing and fee.</p>
+        <p>Pick your board, then a subject. You'll see every institute in Karachi that teaches it, side by side, with teachers, timings and fees.</p>
       </header>
 
       <TabBar
@@ -87,7 +88,7 @@ const SubjectDirectory = () => {
 
       {!subjects && !error && (
         <div className="subject-grid">
-          {Array.from({ length: 8 }, (_, i) => <Skeleton key={i} h="92px" borderRadius="16px" startColor="#eef2f8" endColor="#f7f9fc" />)}
+          {Array.from({ length: 8 }, (_, i) => <Skeleton key={i} h="250px" borderRadius="16px" startColor="#eef2f8" endColor="#f7f9fc" />)}
         </div>
       )}
 
@@ -101,16 +102,7 @@ const SubjectDirectory = () => {
                 {boardInfo.levels.length > 1 && <h2 id={`level-${level}`}>{level}</h2>}
                 <ul className="subject-grid">
                   {items.map((subject) => (
-                    <li key={subject.slug}>
-                      <Link to={`/subjects/${subject.slug}`} className={`subject-tile${subject.offerings ? '' : ' is-empty'}`}>
-                        <span className="subject-tile__name">{subject.name}</span>
-                        <span className="subject-tile__meta">
-                          {subject.offerings
-                            ? `${subject.institutes} ${subject.institutes === 1 ? 'institute' : 'institutes'}, from ${formatRupees(subject.minFee)}`
-                            : 'No classes listed yet'}
-                        </span>
-                      </Link>
-                    </li>
+                    <li key={subject.slug}><SubjectCard subject={subject} /></li>
                   ))}
                 </ul>
               </section>

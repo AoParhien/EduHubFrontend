@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Button, Skeleton } from '@chakra-ui/react';
 import TabBar from '../TabBar/TabBar';
+import SubjectCard from '../subject-art/SubjectCard';
 import { BACKEND_URL } from '../../utils/backendUrl';
-import { BOARDS, formatRupees } from '../../utils/format';
+import { BOARDS } from '../../utils/format';
 import '../subjects/subjects.css';
 import './courseSection.css';
 
@@ -57,22 +58,12 @@ const CourseSection = () => {
                     </div>
                 ) : !subjects ? (
                     <div className="subject-grid">
-                        {Array.from({ length: 8 }, (_, i) => <Skeleton key={i} h="92px" borderRadius="16px" startColor="#eef2f8" endColor="#f7f9fc" />)}
+                        {Array.from({ length: 4 }, (_, i) => <Skeleton key={i} h="250px" borderRadius="16px" startColor="#eef2f8" endColor="#f7f9fc" />)}
                     </div>
                 ) : shown.length ? (
                     <ul className="subject-grid">
                         {shown.map((subject) => (
-                            <li key={subject.slug}>
-                                <RouterLink to={`/subjects/${subject.slug}`} className="subject-tile">
-                                    <span className="subject-tile__name">
-                                        {subject.name}
-                                        {subject.level !== boardLabel && BOARDS.find((b) => b.slug === board)?.levels.length > 1 ? `, ${subject.level}` : ''}
-                                    </span>
-                                    <span className="subject-tile__meta">
-                                        {subject.institutes} {subject.institutes === 1 ? 'institute' : 'institutes'}, from {formatRupees(subject.minFee)}
-                                    </span>
-                                </RouterLink>
-                            </li>
+                            <li key={subject.slug}><SubjectCard subject={subject} /></li>
                         ))}
                     </ul>
                 ) : (
