@@ -1,0 +1,136 @@
+.subject-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.subject-art--muted {
+  filter: grayscale(0.85);
+  opacity: 0.7;
+}
+
+.subject-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.subject-card:hover {
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-raise);
+}
+
+.subject-card:hover .subject-card__name {
+  color: var(--navy);
+}
+
+.subject-card__art {
+  aspect-ratio: 16 / 9;
+  height: auto;
+}
+
+.subject-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  padding: 14px 16px 16px;
+}
+
+.subject-card__name {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+  transition: color 0.15s ease;
+}
+
+.subject-card__meta {
+  color: var(--text);
+  font-size: 0.875rem;
+}
+
+.subject-card__meta--empty {
+  color: var(--muted);
+}
+
+.subject-card__teachers {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+  min-width: 0;
+}
+
+.subject-card__faces {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.subject-card__faces img,
+.subject-card__faces span {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 2px solid #fff;
+  object-fit: cover;
+  object-position: center top;
+  background: var(--navy-tint);
+  margin-left: -8px;
+}
+
+.subject-card__faces > :first-child {
+  margin-left: 0;
+}
+
+.subject-card__faces span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.subject-card__teacher-names {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.subject-card.is-empty {
+  background: var(--wash);
+}
+
+/* Two compact cards per row on phones */
+@media (max-width: 560px) {
+  .subject-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .subject-card__body {
+    padding: 10px 12px 12px;
+    gap: 4px;
+  }
+
+  .subject-card__name {
+    font-size: 0.9375rem;
+  }
+
+  .subject-card__meta {
+    font-size: 0.8125rem;
+  }
+
+  .subject-card__teacher-names {
+    display: none;
+  }
+}

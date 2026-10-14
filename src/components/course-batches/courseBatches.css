@@ -64,3 +64,15 @@
 .batch-list__times li span:first-child {
   color: var(--muted);
 }
+
+/* Key under the timetable grid: name and start date, times are in the grid */
+.batch-list--compact {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.batch-list--compact .batch-list__item {
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+}

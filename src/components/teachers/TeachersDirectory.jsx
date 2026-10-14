@@ -51,11 +51,12 @@ const TeachersDirectory = () => {
                   {teacher.picture ? <img src={teacher.picture} alt="" loading="lazy" /> : <span className="teacher-tile__empty" aria-hidden="true">{teacher.name[0]}</span>}
                   <div>
                     <p className="teacher-tile__name">{teacher.name}</p>
-                    <p className="teacher-tile__meta">
-                      {Number(teacher.experience) > 0 ? `${teacher.experience} years teaching, ` : ''}
-                      {teacher.institutes.length} {teacher.institutes.length === 1 ? 'institute' : 'institutes'}
+                    {Number(teacher.experience) > 0 && (
+                      <p className="teacher-tile__meta">{teacher.experience} {Number(teacher.experience) === 1 ? 'year' : 'years'} teaching</p>
+                    )}
+                    <p className="teacher-tile__subjects">
+                      {teacher.courses} {teacher.courses === 1 ? 'course' : 'courses'} at {teacher.institutes.length} {teacher.institutes.length === 1 ? 'institute' : 'institutes'}
                     </p>
-                    <p className="teacher-tile__subjects">{teacher.subjects.slice(0, 3).join(', ')}{teacher.subjects.length > 3 ? ` +${teacher.subjects.length - 3}` : ''}</p>
                   </div>
                 </Link>
               </li>

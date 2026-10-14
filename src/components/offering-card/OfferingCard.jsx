@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import SubjectArt from '../subject-art/SubjectArt';
 import { formatRupees } from '../../utils/format';
 import { describeStart } from '../../utils/schedule';
 import { nextBatch, summarizeTimes } from '../../utils/offering';
@@ -17,6 +18,11 @@ const OfferingCard = ({ offering, show = 'teacher' }) => {
 
   return (
     <article className="offering">
+      <Link to={`/course-details/${offering.courseId}`} className="offering__image" tabIndex={-1} aria-hidden="true">
+        {offering.imageUrl
+          ? <img src={offering.imageUrl} alt="" loading="lazy" />
+          : <SubjectArt name={offering.subject?.title || offering.title} />}
+      </Link>
       <div className="offering__who">
         {show === 'teacher' ? (
           <>

@@ -5,8 +5,8 @@ import './courseBatches.css';
 const byDay = (a, b) => DAYS.indexOf(a.day) - DAYS.indexOf(b.day);
 
 // Lists each batch with its start date and weekly class times.
-const CourseBatches = ({ batches = [], schedules = [], selectedBatchId }) => (
-  <ul className="batch-list">
+const CourseBatches = ({ batches = [], schedules = [], selectedBatchId, compact = false }) => (
+  <ul className={`batch-list${compact ? ' batch-list--compact' : ''}`}>
     {batches.map((batch, index) => {
       const batchSchedules = schedules.filter((schedule) => schedule.batchId === batch._id).sort(byDay);
       const isSelected = selectedBatchId === batch._id;
@@ -20,7 +20,9 @@ const CourseBatches = ({ batches = [], schedules = [], selectedBatchId }) => (
               {batch.courseTitle && <span>, {batch.courseTitle}</span>}
             </p>
             {batch.startDate && <p className="batch-list__start">{describeStart(batch.startDate)}</p>}
-            {batchSchedules.length > 0 ? (
+            {compact ? (
+              batchSchedules.length === 0 && <p className="batch-list__pending">Class times not published yet</p>
+            ) : batchSchedules.length > 0 ? (
               <ul className="batch-list__times">
                 {batchSchedules.map((schedule) => (
                   <li key={schedule._id}>

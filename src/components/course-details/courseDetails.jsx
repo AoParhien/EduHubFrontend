@@ -1,56 +1,53 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link as RouterLink, useParams } from 'react-router-dom';
 import { Button, Skeleton, SkeletonText } from '@chakra-ui/react';
-import { FiCalendar, FiClock, FiMapPin, FiUser } from 'react-icons/fi';
 import Schedule from '../schedule/schedule';
 import MapWithPlusCode from '../map/map';
-import FeeTable from '../fee-table/FeeTable';
 import CourseBatches from '../course-batches/courseBatches';
 import PageTitle from '../page-title/PageTitle';
 import { BACKEND_URL } from '../../utils/backendUrl';
 import { formatBoard, formatClassFormat, formatMonths, formatRupees, normalizeBoard } from '../../utils/format';
 import './courseDetails.css';
 
-const SECTIONS = [
-    { id: 'teacher', label: 'Teacher' },
-    { id: 'timetable', label: 'Timetable' },
-    { id: 'location', label: 'Location' },
-    { id: 'fees', label: 'Fees' },
-];
-
+// Price, what's due on day one and the reserve button. The only place fees appear.
 const EnrollCard = ({ course }) => {
     const hasBatches = (course.batches || []).length > 0;
-    const compareLink = course.subjectInfo && (
-        <p className="enroll-card__compare">
-            <RouterLink to={`/subjects/${course.subjectInfo.slug}`} className="text-link">Compare other institutes for {course.subjectInfo.title}</RouterLink>
-        </p>
-    );
+    const registration = Number(course.institute?.registrationFees || 0);
+    const oneTime = Number(course.externalCharges || 0);
+    const dueFirstDay = Number(course.fees || 0) + registration + oneTime;
+
     return (
         <div className="enroll-card">
             <p className="enroll-card__price">
                 <strong>{formatRupees(course.fees)}</strong> / month
             </p>
-            <p className="enroll-card__sub">
-                Plus {formatRupees(course.institute?.registrationFees)} one-time registration
-            </p>
+            <dl className="enroll-card__breakdown">
+                <div><dt>Registration, one time</dt><dd>{formatRupees(registration)}</dd></div>
+                {oneTime > 0 && <div><dt>Books and materials, one time</dt><dd>{formatRupees(oneTime)}</dd></div>}
+                <div className="enroll-card__total"><dt>Due on your first day</dt><dd>{formatRupees(dueFirstDay)}</dd></div>
+            </dl>
             <Button
                 as={RouterLink}
                 to="/checkout"
                 state={{ course }}
                 size="lg"
                 width="full"
-                mt={5}
+                mt={4}
                 isDisabled={!hasBatches}
                 pointerEvents={hasBatches ? undefined : 'none'}
             >
                 {hasBatches ? 'Reserve a seat' : 'No batches open yet'}
             </Button>
             <p className="enroll-card__note">
-                {hasBatches
-                    ? 'Nothing to pay online. You pay the institute on your first day.'
-                    : 'This course has no open batch right now. Check back soon.'}
+                {hasBatches ? 'Nothing to pay online.' : 'Check back soon for a new batch.'}
             </p>
-            {compareLink}
+            {course.subjectInfo && (
+                <p className="enroll-card__compare">
+                    <RouterLink to={`/subjects/${course.subjectInfo.slug}`} className="text-link">
+                        Compare other institutes for this subject
+                    </RouterLink>
+                </p>
+            )}
         </div>
     );
 };
@@ -115,23 +112,26 @@ const CourseDetails = () => {
     const boardLabel = formatBoard(course.board);
     const batches = course.batches || [];
     const schedules = course.schedules || [];
-    const facts = [
-        course.teacher?.name && { icon: FiUser, label: 'Teacher', value: course.teacher.name, to: course.teacher.id ? `/teachers/${course.teacher.id}` : null },
-        course.durationMonths && { icon: FiCalendar, label: 'Duration', value: formatMonths(course.durationMonths) },
-        course.classFormat && { icon: FiClock, label: 'Classes', value: formatClassFormat(course.classFormat) },
-        course.institute?.name && { icon: FiMapPin, label: 'Institute', value: course.institute.name, to: `/institute/${course.institute.id}` },
+    const hasTimes = schedules.length > 0;
+    const teacher = course.teacher;
+    const institute = course.institute || {};
+    const coords = Array.isArray(institute.location) && institute.location.length === 2 ? institute.location : null;
+    const meta = [
+        course.durationMonths && formatMonths(course.durationMonths),
+        course.classFormat && `${formatClassFormat(course.classFormat)} classes`,
+        batches.length > 0 && `${batches.length} ${batches.length === 1 ? 'batch' : 'batches'}`,
     ].filter(Boolean);
 
     return (
         <div className="page course-page">
-            <PageTitle title={`${course.subjectInfo?.title || course.title}${course.institute?.name ? ` at ${course.institute.name}` : ''}`} />
+            <PageTitle title={`${course.subjectInfo?.title || course.title}${institute.name ? ` at ${institute.name}` : ''}`} />
 
             <nav className="breadcrumb" aria-label="Breadcrumb">
                 <ol>
                     <li><RouterLink to="/courses">Find a class</RouterLink></li>
                     {boardLabel && <li><RouterLink to={`/courses/${normalizeBoard(course.board)}`}>{boardLabel}</RouterLink></li>}
-                    {course.subjectInfo && <li><RouterLink to={`/subjects/${course.subjectInfo.slug}`}>{course.subjectInfo.title}</RouterLink></li>}
-                    <li aria-current="page">{course.institute?.name || course.title}</li>
+                    {course.subjectInfo && <li><RouterLink to={`/subjects/${course.subjectInfo.slug}`}>{course.subjectInfo.name || course.subjectInfo.title}</RouterLink></li>}
+                    <li aria-current="page">{institute.name || course.title}</li>
                 </ol>
             </nav>
 
@@ -143,100 +143,69 @@ const CourseDetails = () => {
                                 <img src={course.imageUrl} alt="" />
                             </div>
                         )}
-                        {boardLabel && <p className="course-hero__board">{course.subjectInfo?.level || boardLabel}{course.label ? `, ${course.label}` : ''}</p>}
-                        <h1>{course.subjectInfo?.title || course.title}</h1>
-                        <p className="course-hero__byline">
-                            {course.teacher?.name && <>with <RouterLink to={`/teachers/${course.teacher.id}`} className="text-link">{course.teacher.name}</RouterLink> </>}
-                            {course.institute?.name && <>at <RouterLink to={`/institute/${course.institute.id}`} className="text-link">{course.institute.name}</RouterLink>{course.institute.area ? `, ${course.institute.area}` : ''}</>}
-                        </p>
-                        {course.description && <p className="course-hero__description">{course.description}</p>}
+                        <h1>
+                            {course.subjectInfo?.title || course.title}
+                            {course.label && <span className="course-hero__label">{course.label}</span>}
+                        </h1>
+                        {meta.length > 0 && <p className="course-hero__meta">{meta.join(' · ')}</p>}
 
-                        <dl className="course-facts">
-                            {facts.map(({ icon: Icon, label, value, to }) => (
-                                <div key={label}>
-                                    <dt><Icon aria-hidden="true" />{label}</dt>
-                                    <dd>{to ? <RouterLink to={to}>{value}</RouterLink> : value}</dd>
-                                </div>
-                            ))}
-                        </dl>
+                        <div className="course-hero__people">
+                            {teacher?.picture
+                                ? <img src={teacher.picture} alt="" className="course-hero__avatar" />
+                                : <span className="course-hero__avatar course-hero__avatar-empty" aria-hidden="true">{(teacher?.name || institute.name || '?')[0]}</span>}
+                            <div className="course-hero__who">
+                                {teacher?.name && (
+                                    <RouterLink to={`/teachers/${teacher.id}`} className="course-hero__name">{teacher.name}</RouterLink>
+                                )}
+                                {institute.name && (
+                                    <RouterLink to={`/institute/${institute.id}`} className="course-hero__place">
+                                        {institute.name}{institute.area ? `, ${institute.area}` : ''}
+                                    </RouterLink>
+                                )}
+                            </div>
+                        </div>
+
+                        {course.description && <p className="course-hero__description">{course.description}</p>}
                     </header>
 
                     <div className="course-page__enroll-mobile">
                         <EnrollCard course={course} />
                     </div>
 
-                    <nav className="section-tabs" aria-label="On this page">
-                        {SECTIONS.map((section) => (
-                            <a key={section.id} href={`#${section.id}`}>{section.label}</a>
-                        ))}
-                    </nav>
-
-                    <section id="teacher" className="course-section-block" aria-labelledby="teacher-title">
-                        <h2 id="teacher-title">Teacher</h2>
-                        <div className="teacher-row">
-                            {course.teacher?.picture ? (
-                                <img src={course.teacher.picture} alt="" className="teacher-row__photo" />
-                            ) : (
-                                <span className="teacher-row__photo teacher-row__photo--empty" aria-hidden="true" />
-                            )}
-                            <div>
-                                <p className="teacher-row__name">
-                                    {course.teacher?.id ? <RouterLink to={`/teachers/${course.teacher.id}`} className="text-link">{course.teacher.name}</RouterLink> : course.teacher?.name || 'To be announced'}
-                                </p>
-                                {Number(course.teacher?.experience) > 0 && (
-                                    <p className="teacher-row__bio">{course.teacher.experience} {Number(course.teacher.experience) === 1 ? 'year' : 'years'} teaching</p>
-                                )}
-                                {course.teacher?.description && <p className="teacher-row__bio">{course.teacher.description}</p>}
-                            </div>
-                        </div>
-                    </section>
-
                     <section id="timetable" className="course-section-block" aria-labelledby="timetable-title">
                         <h2 id="timetable-title">Timetable</h2>
-                        <p className="course-section-block__intro">
-                            {batches.length > 0
-                                ? `${batches.length} ${batches.length === 1 ? 'batch' : 'batches'} for this course. You'll choose one when you reserve your seat.`
-                                : 'No batches have been published for this course yet.'}
-                        </p>
-                        {batches.length > 0 && (
+                        {batches.length === 0 ? (
+                            <p className="course-section-block__intro">No batches have been published yet.</p>
+                        ) : (
                             <>
-                                <Schedule batches={batches} schedules={schedules} />
-                                <div className="course-section-block__spacer" />
-                                <CourseBatches batches={batches} schedules={schedules} />
+                                <p className="course-section-block__intro">You'll pick one batch when you reserve your seat.</p>
+                                {hasTimes && <Schedule batches={batches} schedules={schedules} />}
+                                <CourseBatches batches={batches} schedules={schedules} compact={hasTimes} />
                             </>
                         )}
                     </section>
 
                     <section id="location" className="course-section-block" aria-labelledby="location-title">
-                        <h2 id="location-title">Location</h2>
-                        {course.institute?.name && (
+                        <h2 id="location-title">Where classes are held</h2>
+                        {(institute.address || coords) && (
                             <p className="course-section-block__intro">
-                                Classes are held at{' '}
-                                <RouterLink to={`/institute/${course.institute.id}`} className="text-link">{course.institute.name}</RouterLink>
-                                {course.institute.address ? `, ${course.institute.address}` : ''}.
-                                {Array.isArray(course.institute.location) && course.institute.location.length === 2 && (
-                                    <>
-                                        {' '}
-                                        <a
-                                            className="text-link"
-                                            href={`https://www.google.com/maps/dir/?api=1&destination=${course.institute.location[1]},${course.institute.location[0]}`}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                        >
-                                            Get directions
-                                        </a>
-                                    </>
+                                {institute.address}
+                                {institute.address && coords ? '. ' : ''}
+                                {coords && (
+                                    <a
+                                        className="text-link"
+                                        href={`https://www.google.com/maps/dir/?api=1&destination=${coords[1]},${coords[0]}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        Get directions
+                                    </a>
                                 )}
                             </p>
                         )}
                         <div className="course-map">
-                            <MapWithPlusCode plusCode={course.institute?.plusCode} coordinates={course.institute?.location} />
+                            <MapWithPlusCode plusCode={institute.plusCode} coordinates={institute.location} />
                         </div>
-                    </section>
-
-                    <section id="fees" className="course-section-block" aria-labelledby="fees-title">
-                        <h2 id="fees-title">Fees</h2>
-                        <FeeTable registrationFees={course.institute?.registrationFees} courseFees={course.fees} oneTimeCharges={course.externalCharges} />
                     </section>
                 </div>
 
