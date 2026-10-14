@@ -1,761 +1,237 @@
-/* General Navbar Styles */
-.eduhub__navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2rem 2.5rem; /* Reduced padding */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: 12px var(--gutter);
+  background: linear-gradient(180deg, #fff 70%, rgba(255, 255, 255, 0));
 }
 
-.eduhub__navbar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.8rem 1rem;
-    border-radius: 57px;
-    width: 100%;
-    height: auto;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25); 
-    outline: none;
-    background: #fefefe;
+.nav__bar {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  height: 64px;
+  padding: 0 12px 0 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px -20px rgba(11, 33, 79, 0.45);
 }
 
-.eduhub__navbar-left {
-    display: flex;
-    align-items: center;
+.nav-skip {
+  position: absolute;
+  left: 16px;
+  top: -48px;
+  padding: 8px 14px;
+  background: var(--navy);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  z-index: 60;
 }
 
-.eduhub__navbar-right {
-    display: flex;
-    align-items: center;
-    font-size: 17px;
-    font-weight: 400;
+.nav-skip:focus {
+  top: 12px;
 }
 
-.eduhub__navbar-right > * {
-    margin-left: 0rem;
+.nav__logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
-.eduhub__navbar-links_logo img {
-    width: 200%;
-    height: 50px;
-    font-size: 24px;
-    font-weight: 400;
-    font-family: var(--font-family);
-    margin-right: 1rem;
+.nav__logo img {
+  height: 46px;
+  width: auto;
 }
 
-.eduhub__search-container {
-    position: relative;
-    width: 42vw;
-    height: auto;
-    margin-left: 4rem;
+.nav__search-desktop {
+  flex: 1;
+  max-width: 420px;
 }
 
-.eduhub__search-container .eduhub__search-icon {
-    position: absolute;
-    top: 50%;
-    right: 8px;
-    transform: translateY(-50%);
-    fill: white;
-    pointer-events: none; 
-    width: 20px; /* Reduced icon size */
-    height: auto;
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
 }
 
-.eduhub__search-container input[type="search"] {
-    width: 100%;
-    height: 45px; /* Reduced height */
-    padding: 0.4rem 1rem; /* Reduced padding */
-    font-size: 17px; /* Reduced font size */
-    border: 1px solid #00308F;
-    border-radius: 20px;
-    outline: none;
-    background-color: #fff;
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 999px;
+  color: var(--text);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.eduhub__search-container input[type="search"]::placeholder {
-    color: #888;
+.nav-link:hover {
+  background: var(--wash);
+  color: var(--ink);
 }
 
-.eduhub__search-icon-wrapper {
-    position: absolute;
-    top: 50%;
-    right: 14px;
-    transform: translateY(-50%);
-    display: flex;
-    width: 36px; 
-    height: 31px; 
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%; 
+.nav-link.is-active {
+  color: var(--navy);
+  background: var(--navy-tint);
 }
 
-.eduhub__categories_button_container {
-    position: relative;
-    display: flex;
-    margin: 0 1rem 0 0; /* Added right margin */
-    align-items: flex-end;
-    justify-content: flex-end;
-    flex-direction: row;
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
-.eduhub__categories_button_container:hover .eduhub__categories_dropdown {
-    display: flex; /* Show dropdown on hover */
-
+.nav__menu-button {
+  display: none !important;
+  margin-left: auto;
 }
 
-.eduhub__categories_button {
-    box-sizing: border-box;
-    display: block;
-    position: relative;
-    color: #00308F;
-    font-family: var(--font-family);
-    font-weight: 400;
-    font-size: 17spx;
-    padding: 0.5rem 1rem;
-    border: none;
-    cursor: pointer;
-    outline: none;
-    z-index: 1;
+/* Course search */
+.nav-search {
+  position: relative;
+  width: 100%;
 }
 
-.eduhub__navbar-my-courses button{
-    box-sizing: border-box;
-    display: block;
-    position: relative;
-    color: #00308F;
-    font-family: var(--font-family);
-    font-weight: 400;
-    font-size: 17spx;
-    border: none;
-    cursor: pointer;
-    outline: none;
-    z-index: 1;
-    width: 100%;
+.nav-search form {
+  position: relative;
 }
 
-.eduhub__categories_dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-    padding: 10px;
-    display: none; /* Initially hide dropdown */
-    flex-direction: column;
+.nav-search input {
+  width: 100%;
+  height: 42px;
+  padding: 0 16px 0 42px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--wash);
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--ink);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-.eduhub__categories_dropdown p {
-    margin: 0;
-    padding: 10px;
-    color: #00308F;
-    cursor: pointer;
-    font-size: 14px;
+.nav-search input::placeholder {
+  color: var(--muted);
 }
 
-.eduhub__categories_dropdown p:hover {
-    color: #F6D33C;
+.nav-search input:hover {
+  border-color: var(--line-strong);
 }
 
-.eduhub__navbar-login button {
-    margin-left: 3.5rem;
-    padding: 0.5rem 0.5rem;
-    color: #00308F;
-    font-family: var(--font-family);
-    font-weight: bold; /* Make text bold */
-    font-size: 17px;
-    outline: none;
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+.nav-search input:focus {
+  outline: none;
+  background: #fff;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(0, 48, 143, 0.15);
 }
 
-
-.eduhub__navbar-signup button {
-    margin-left: 1rem;
-    margin-right: 1rem;
-    padding: 0.5rem 1rem;
-    color: white;
-    font-family: var(--font-family);
-    font-weight: bold; /* Make text bold */
-    font-size: 17px;
-    outline: none;
-    cursor: pointer;
-    background: #00308F;
-    border: transparent;
-    border-radius: 38px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+.nav-search__icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
 }
 
-/* Keep all your existing CSS, but modify the search-dropdown section */
+.nav-search__results {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-raise);
+  z-index: 70;
+}
 
-/* Update your search dropdown styling in navbar.css */
+.nav-search__result {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
 
-.search-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    max-height: 300px;
-    overflow-y: auto;
-    background-color: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    margin-top: 8px;
-    padding: 8px 0;
+.nav-search__result:hover,
+.nav-search__result:focus-visible {
+  background: var(--navy-tint);
+}
+
+.nav-search__result-title {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.nav-search__result-meta {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.nav-search__status {
+  padding: 12px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* Mobile drawer */
+.nav-drawer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-drawer__links .nav-link {
+  height: 48px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+}
+
+@media (max-width: 1080px) {
+  .nav__links .nav-link:nth-child(3) {
     display: none;
-    transition: all 0.3s ease;
+  }
 }
 
-.search-dropdown.visible {
-    display: block;
-    animation: fadeIn 0.3s ease forwards;
-}
+@media (max-width: 900px) {
+  .nav {
+    padding: 8px 12px;
+  }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+  .nav__bar {
+    height: 60px;
+    gap: 12px;
+    padding: 0 8px 0 16px;
+  }
 
-.search-result-item {
-    display: block;
-    padding: 12px 16px;
-    color: #333;
-    text-decoration: none;
-    font-size: 15px;
-    font-family: var(--font-family);
-    transition: all 0.2s ease;
-    border-left: 3px solid transparent;
-}
-
-.search-result-item:hover {
-    background-color: #f5f8ff;
-    border-left: 3px solid #00308F;
-    color: #00308F;
-}
-
-.loading, .no-results {
-    padding: 14px 16px;
-    color: #666;
-    font-size: 15px;
-    text-align: center;
-    font-family: var(--font-family);
-}
-
-.loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-}
-
-.loading:after {
-    content: "";
-    width: 20px;
-    height: 20px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #00308F;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Add responsive styling for the dropdown */
-@media screen and (max-width: 768px) {
-    .search-dropdown {
-        position: fixed;
-        top: 110px;
-        left: 10px;
-        right: 10px;
-        max-height: 60vh;
-        z-index: 1001;
-    }
-}
-
-/* Improved scrollbar styling */
-.search-dropdown::-webkit-scrollbar {
-    width: 6px;
-}
-
-.search-dropdown::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-}
-
-.search-dropdown::-webkit-scrollbar-thumb {
-    background: #00308F;
-    border-radius: 3px;
-    opacity: 0.7;
-}
-
-.search-dropdown::-webkit-scrollbar-thumb:hover {
-    background: #002066;
-}
-
-/* Media query for screens with max-width 1050px */
-@media screen and (max-width: 1050px) {
-    .eduhub__navbar-container {
-        flex-direction: row;
-        padding: 1rem;
-    }
-
-    .eduhub__navbar-left,
-    .eduhub__navbar-right {
-        width: 100%;
-        flex-direction: row;
-        align-items: center;
-    }
-
-    .eduhub__navbar-links_logo h1 {
-        margin-right: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .eduhub__search-container {
-        width: 100%;
-        max-width: 480px;
-        margin-left: 0;
-        margin-bottom: 1rem;
-    }
-
-    .eduhub__navbar-right {
-        margin-top: 1rem;
-    }
-
-    .eduhub__navbar-right > * {
-        margin-left: 0;
-        margin-bottom: 1rem;
-    }
-
-    .eduhub__categories_button_container {
-        width: 100%;
-        justify-content: center;
-    }
-
-
-    .eduhub__categories_dropdown {
-        width: 100%;
-        text-align: center;
-    }
-
-    .eduhub__navbar-login,
-    .eduhub__navbar-signup {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-
-    .eduhub__navbar-login button,
-    .eduhub__navbar-signup button {
-        width: 100%;
-        max-width: 200px;
-        justify-content: center;
-    }
-}
-
-/* Mobile Menu Styles */
-.eduhub__navbar-menu {
-    margin-left: 1rem;
+  .nav__search-desktop,
+  .nav__links,
+  .nav__actions {
     display: none;
-    position: relative;
-}
+  }
 
-.eduhub__navbar-menu svg {
-    cursor: pointer;
-}
+  .nav__menu-button {
+    display: inline-flex !important;
+  }
 
-.eduhub__navbar-menu_container {
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
-    flex-direction: column;
-    text-align: end;
-    background: white;
-    padding: 1rem;
-    position: absolute;
-    left: 0;
-    top: 20px;
-    margin-top: 1rem;
-    min-width: 210px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 5px rgba(0,0, 0,0.2);
-}
-
-.eduhub__navbar-menu_container p {
-    margin: 1rem 0;
-    
-}
-
-.eduhub__navbar-menu_container-links-sign {
-    display: none;
-}
-
-.eduhub__navbar-right .eduhub__welcome-message {
-    margin-right: 2rem;  /* Reduced from 20rem to be more reasonable */
-    font-weight: 500;    /* Make it slightly bold */
-    padding: 0.5rem 1rem;
-    margin-left: 10rem;
-    width: 100%;
-}
-
-/* Keep all existing styles and add/update mobile-specific styles */
-
-/* Mobile Menu Styles - Updated */
-@media screen and (max-width: 768px) {
-    .eduhub__navbar {
-        padding: 0.5rem 0;
-    }
-
-    .eduhub__navbar-container {
-        padding: 0.5rem 1rem;
-        border-radius: 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .eduhub__navbar-menu {
-        display: flex;
-        align-items: left;
-        margin-left: 0;
-    }
-
-    .eduhub__navbar-menu svg {
-        width: 24px;
-        height: 24px;
-    }
-
-    .eduhub__navbar-menu_container {
-        position: fixed;
-        top: 65px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: white;
-        padding: 1.5rem;
-        overflow-y: auto;
-        z-index: 1000;
-    }
-
-    .mobile-search {
-        margin-bottom: 1.5rem;
-    }
-
-    .search-wrapper {
-        position: relative;
-        display: flex;
-        align-items: center;
-    }
-
-    .search-wrapper input {
-        width: 100%;
-        padding: 0.75rem 1rem 0.75rem 2.5rem;
-        border: 1px solid #00308F;
-        border-radius: 8px;
-        font-size: 16px;
-    }
-
-    .search-icon {
-        position: absolute;
-        left: 0.75rem;
-        color: #00308F;
-        width: 20px;
-        height: 20px;
-    }
-
-    .mobile-nav-section {
-        margin-bottom: 1.5rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid #eee;
-        text-align: left;
-    }
-
-    .mobile-nav-section:last-child {
-        border-bottom: none;
-    }
-
-    .mobile-nav-section h3 {
-        color: #666;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 1rem;
-    }
-
-    .mobile-nav-links {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        text-align: left;
-    }
-
-    .mobile-nav-links a {
-        color: #333;
-        text-decoration: none;
-        font-size: 1rem;
-        padding: 0.5rem 0;
-    }
-
-    .mobile-enrollment {
-        display: block;
-        color: #00308F;
-        text-decoration: none;
-        font-weight: 500;
-        margin-bottom: 1rem;
-    }
-
-    .mobile-welcome {
-        color: #666;
-        font-size: 1rem;
-    }
-
-    .mobile-institute {
-        display: block;
-        color: #333;
-        text-decoration: none;
-        margin-bottom: 1.5rem;
-    }
-
-    .mobile-auth {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .mobile-login {
-        color: #00308F;
-        text-decoration: none;
-        font-weight: 500;
-        text-align: left;
-        padding: 0.75rem;
-    }
-
-    .mobile-signup {
-        background: #00308F;
-        color: white;
-        text-decoration: none;
-        text-align: center;
-        padding: 0.75rem;
-        border-radius: 8px;
-        font-weight: 500;
-    }
-
-    .eduhub__navbar-right,
-    .eduhub__search-container {
-        display: none;
-    }
-
-    .eduhub__navbar-links_logo {
-        margin: 0 auto;
-    }
-
-    .eduhub__navbar-links_logo img {
-        width: 120px;
-        height: auto;
-    }
-
-        /* Search Dropdown Styles */
-    .search-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        max-height: 300px; /* Limit height and make it scrollable */
-        overflow-y: auto;
-        background-color: white;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        margin-top: 8px;
-        padding: 8px 0;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.2s ease, visibility 0.2s ease;
-    }
-
-    .search-dropdown.visible {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .search-dropdown a {
-        display: block;
-        padding: 10px 16px;
-        color: #333;
-        text-decoration: none;
-        font-size: 14px;
-        transition: background-color 0.2s ease;
-    }
-
-    .search-dropdown a:hover {
-        background-color: #f5f5f5;
-    }
-
-    .search-dropdown .no-results {
-        padding: 10px 16px;
-        color: #888;
-        font-size: 14px;
-        text-align: center;
-    }
-
-    /* Loading Indicator */
-    .search-dropdown .loading {
-        padding: 10px 16px;
-        color: #888;
-        font-size: 14px;
-        text-align: center;
-    }
-
-    /* Scrollbar Styling */
-    .search-dropdown::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    .search-dropdown::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 4px;
-    }
-
-    .search-dropdown::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 4px;
-    }
-
-    .search-dropdown::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-    
-    /* Animation for slide-in menu */
-    .slide-in {
-        animation: slideIn 0.3s ease-out;
-    }
-
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Prevent body scroll when menu is open */
-    body.menu-open {
-        overflow: hidden;
-    }
-}
-
-/* Tablet Responsive Styles */
-@media screen and (min-width: 769px) and (max-width: 1024px) {
-    .eduhub__navbar-container {
-        padding: 0.8rem 1.5rem;
-    }
-
-    .eduhub__search-container {
-        width: 35vw;
-    }
-
-    .eduhub__navbar-right > * {
-        margin-left: 1rem;
-    }
-}
-
-@media screen and (max-width: 768px) {
-    /* Mobile search dropdown positioning */
-    .mobile-search .search-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        max-height: 50vh;
-        z-index: 1050;
-        margin-top: 5px;
-        border-radius: 8px;
-        align-items: start;
-    }
-    
-    /* Style for mobile search container */
-    .mobile-search {
-        position: relative;
-        margin-bottom: 1.5rem;
-        width: 100%;
-    }
-    
-    /* Style the mobile search icon */
-    .mobile-search .search-icon {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #00308F;
-        width: 18px;
-        height: 18px;
-    }
-    
-    /* Style the mobile search input */
-    .mobile-search .search-wrapper input {
-        width: 100%;
-        padding: 0.75rem 1rem 0.75rem 2.5rem;
-        border: 1px solid #00308F;
-        border-radius: 20px;
-        font-size: 16px;
-        color: #333;
-    }
-    
-    .mobile-search .search-wrapper input:focus {
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(0, 48, 143, 0.2);
-    }
-    
-    /* Mobile-specific results styling */
-    .mobile-search .search-result-item {
-        border-left: none;
-        border-bottom: 1px solid #f0f0f0;
-        padding: 14px 16px;
-        text-align: start;
-    }
-    
-    .mobile-search .search-result-item:last-child {
-        border-bottom: none;
-    }
-    
-    .mobile-search .search-result-item:hover,
-    .mobile-search .search-result-item:active {
-        background-color: #f5f8ff;
-    }
-    
-    /* Mobile search dropdown overlay */
-    .mobile-search-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1040;
-        display: none;
-    }
-    
-    .mobile-search-overlay.visible {
-        display: block;
-    }
+  .nav__logo img {
+    height: 36px;
+  }
 }

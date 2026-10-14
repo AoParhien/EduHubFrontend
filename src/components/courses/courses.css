@@ -1,243 +1,141 @@
-.eduhub__courses {
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    min-height: 100vh;
+.catalog {
+  padding-top: clamp(24px, 4vw, 48px);
+  padding-bottom: clamp(48px, 7vw, 88px);
 }
 
-.eduhub__courses-cards {
-    flex: 1;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-    width: 100%;
-    align-items: stretch;
+.catalog__header h1 {
+  font-size: clamp(1.75rem, 1.3rem + 1.5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-.eduhub__courses-cards > .eduhub__course-card-link {
-    flex: 0 0 calc(33.333% - 12px);
-    max-width: calc(33.333% - 12px);
+.catalog__header p {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 1.0625rem;
 }
 
-.eduhub__course-card-link {
-    display: block;
-    width: 100%;
-    height: 100%;
+.catalog__layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 40px;
+  margin-top: 32px;
+  align-items: start;
 }
 
-.eduhub__course-card {
-    flex: 0 0 calc(33.333% - 15px);
-    max-width: calc(33.333% - 15px);
-    background-color: white;
-    border-radius: 10px;
-    padding: 1rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 15px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+.catalog__filters {
+  position: sticky;
+  top: 104px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  max-height: calc(100vh - 128px);
+  overflow-y: auto;
 }
 
-.eduhub__course-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+.catalog__results {
+  scroll-margin-top: 104px;
 }
 
-/* Adjust for tablets */
-@media screen and (max-width: 1024px) {
-    .eduhub__courses-cards > .eduhub__course-card-link {
-        flex: 0 0 calc(50% - 10px);
-        max-width: calc(50% - 10px);
-    }
+.catalog__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 40px;
+  margin-bottom: 16px;
 }
 
-/* Adjust for smaller screens */
-@media screen and (max-width: 768px) {
-    .eduhub__courses {
-        padding: 0.75rem;
-    }
-
-    .eduhub__courses-cards {
-        gap: 12px;
-        justify-content: center;
-    }
-
-    .eduhub__courses-cards > .eduhub__course-card-link {
-        flex: 0 0 calc(50% - 6px);
-        max-width: calc(50% - 6px);
-    }
-    
-    .eduhub__mobile-filter-button-container {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-    }
-    
-    .eduhub__mobile-filter-button {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-        padding: 14px 16px;
-        background: linear-gradient(135deg, #ffffff 0%, #f7fbff 100%);
-        color: #163a63;
-        border: 1px solid #d6e6fb;
-        border-radius: 20px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        box-shadow: 0 18px 34px -30px rgba(13, 59, 102, 0.35);
-    }
-    
-    .eduhub__mobile-filter-button:hover,
-    .eduhub__mobile-filter-button:active {
-        transform: translateY(-1px);
-    }
-    
-    .filter-icon {
-        font-size: 16px;
-    }
-
-    .filter-chip {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 32px;
-        height: 32px;
-        padding: 0 10px;
-        border-radius: 999px;
-        background: #0d3b66;
-        color: white;
-        font-size: 0.85rem;
-        font-weight: 700;
-    }
-    
-    .eduhub__mobile-filter-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 90;
-        animation: fadeIn 0.3s ease;
-    }
-    
-    .eduhub__mobile-filter-panel {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: 85%;
-        max-width: 350px;
-        background-color: white;
-        z-index: 95;
-        overflow-y: auto;
-        box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
-        transform: translateX(0);
-        transition: transform 0.3s ease;
-        animation: slideIn 0.3s ease;
-    }
-    
-    .eduhub__mobile-filter-panel.hidden {
-        transform: translateX(100%);
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    
-    @keyframes slideIn {
-        from { transform: translateX(100%); }
-        to { transform: translateX(0); }
-    }
-    
-    .filter-open {
-        overflow: hidden;
-    }
+.catalog__count {
+  color: var(--muted);
+  font-weight: 500;
 }
 
-/* Mobile view */
-@media screen and (max-width: 480px) {
-    .eduhub__courses {
-        padding: 0.5rem;
-    }
-
-    .eduhub__courses-cards {
-        gap: 12px;
-        padding: 0 0.5rem;
-    }
-
-    .eduhub__courses-cards > .eduhub__course-card-link {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
-    
-    /* Center loading spinner and no results message */
-    .eduhub__courses-empty-state {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 200px;
-        text-align: center;
-        color: #666;
-        font-size: 1rem;
-        padding: 2rem 1rem;
-    }
-    
-    /* Filter sidebar specific styles for mobile */
-    .eduhub__filter-sidebar {
-        padding: 16px;
-    }
+.catalog__filter-button {
+  display: none !important;
 }
 
-/* Pagination styles */
-.eduhub__courses-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    gap: 1rem;
-    width: 100%;
+.catalog__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
 }
 
-.eduhub__courses-pagination button {
-    padding: 0.5rem 1rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-    background-color: white;
-    color: #2d3748;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
+.catalog__chips button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--navy-tint);
+  color: var(--navy);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
 }
 
-.eduhub__courses-pagination button:hover:not(:disabled) {
-    background-color: #edf2f7;
-    border-color: #cbd5e0;
+.catalog__chips button:hover {
+  border-color: var(--navy);
 }
 
-.eduhub__courses-pagination button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.catalog__chips .catalog__clear {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.eduhub__courses-pagination span {
-    color: #4a5568;
-    font-size: 0.875rem;
+.catalog__empty {
+  padding: 48px 32px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--wash);
 }
 
-@media screen and (max-width: 480px) {
-    .eduhub__courses-pagination {
-        flex-direction: row;
-        gap: 0.5rem;
-        padding: 0 1rem;
-    }
+.catalog__empty h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
 
-    .eduhub__courses-pagination button {
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
-    }
+.catalog__empty p {
+  margin: 8px 0 20px;
+  color: var(--muted);
+}
+
+.course-grid.is-refreshing {
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
+}
+
+.catalog__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 40px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .catalog__layout {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 20px;
+  }
+
+  .catalog__filters {
+    display: none;
+  }
+
+  .catalog__filter-button {
+    display: inline-flex !important;
+  }
 }

@@ -1,0 +1,42 @@
+.fee-table {
+  width: 100%;
+  max-width: 560px;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.fee-table th,
+.fee-table td {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.fee-table th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.fee-table th span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.fee-table td {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.fee-table tfoot th,
+.fee-table tfoot td {
+  border-bottom: 0;
+  padding-top: 16px;
+  font-weight: 700;
+  font-size: 1.0625rem;
+}

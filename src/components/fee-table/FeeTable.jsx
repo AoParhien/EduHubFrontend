@@ -1,34 +1,36 @@
 import React from 'react';
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer } from '@chakra-ui/react';
+import { formatRupees } from '../../utils/format';
+import './FeeTable.css';
 
-const FeeTable = ({ registrationFees, courseFees }) => {
-    const totalFees = registrationFees + courseFees;
+const FeeTable = ({ registrationFees = 0, courseFees = 0 }) => {
+    const dueOnFirstDay = Number(registrationFees || 0) + Number(courseFees || 0);
+
     return (
-        <TableContainer alignItems='center' fontSize={20} color='black.500'>
-            <Table variant="simple" width={800} align='center' mt={10}>
-                <Thead>
-                    <Tr>
-                        <Th fontSize={20} color={'black'}>Fee Type</Th>
-                        <Th fontSize={20} color={'black'}>Amount</Th>
-                    </Tr>
-                </Thead>
-                <Tbody>
-                    <Tr>
-                        <Td>Registration Fee</Td>
-                        <Td>Rs. {registrationFees}</Td>
-                    </Tr>
-                    <Tr>
-                        <Td>Tuition Fee</Td>
-                        <Td>Rs. {courseFees}</Td>
-                    </Tr>
-                    <Tr fontWeight="bold">
-                        <Td>Total</Td>
-                        <Td>Rs. {totalFees}</Td>
-                        <Td></Td>
-                    </Tr>
-                </Tbody>
-            </Table>
-        </TableContainer>
+        <table className="fee-table">
+            <caption className="visually-hidden">Fee breakdown</caption>
+            <tbody>
+                <tr>
+                    <th scope="row">
+                        Tuition fee
+                        <span>Charged every month</span>
+                    </th>
+                    <td>{formatRupees(courseFees)}</td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        Registration fee
+                        <span>One-time, paid when you join</span>
+                    </th>
+                    <td>{formatRupees(registrationFees)}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th scope="row">Due on your first day</th>
+                    <td>{formatRupees(dueOnFirstDay)}</td>
+                </tr>
+            </tfoot>
+        </table>
     );
 };
 

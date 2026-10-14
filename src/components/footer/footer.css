@@ -1,132 +1,79 @@
-.eduhub__footer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #dfdddd;
-    padding: 2rem 0;
+.footer {
+  background: var(--wash);
+  border-top: 1px solid var(--line);
 }
 
-.eduhub__footer-links {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
-    max-width: 1200px;
-    text-align: left;
-    padding: 0 2rem;
+.footer__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  gap: 48px;
+  padding-top: 56px;
+  padding-bottom: 40px;
 }
 
-.eduhub__footer-links_div {
-    flex: 1;
-    margin: 1rem;
-    min-width: 200px;
+.footer__brand img {
+  height: 52px;
+  width: auto;
 }
 
-/* Center contact section */
-.eduhub__footer-links_div:last-child {
-    text-align: center;
+.footer__brand p {
+  margin-top: 16px;
+  max-width: 36ch;
+  color: var(--muted);
+  font-size: 0.9375rem;
 }
 
-.eduhub__footer-links_div:last-child h4,
-.eduhub__footer-links_div:last-child p {
-    text-align: center;
+.footer__columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
 }
 
-.eduhub__footer-links_div h4 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 1rem;
+.footer__columns h2 {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 14px;
 }
 
-.eduhub__footer-links_div p {
-    font-size: 16px;
-    color: #666;
-    margin: 0.5rem 0;
-    cursor: pointer;
-    transition: color 0.3s ease;
+.footer__columns ul {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.eduhub__footer-links_div p:hover {
-    color: #000;
+.footer__columns a {
+  color: var(--muted);
+  font-size: 0.9375rem;
+  transition: color 0.15s ease;
 }
 
-.eduhub__footer-links_logo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.footer__columns a:hover {
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.eduhub__footer-links_logo img {
-    width: 280px;
-    height: auto;
-    margin-bottom: 1rem;
+.footer__legal {
+  padding-top: 20px;
+  padding-bottom: 28px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.875rem;
 }
 
-.eduhub__footer-links_logo p {
-    font-size: 14px;
-    color: #666;
-    text-align: center;
+@media (max-width: 860px) {
+  .footer__inner {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
 }
 
-.eduhub__footer-copyright {
-    margin-top: 2rem;
-    text-align: center;
-    width: 100%;
-    color: #666;
-    font-size: 14px;
-    padding: 0 1rem;
-}
-
-/* Tablet styles */
-@media screen and (max-width: 850px) {
-    .eduhub__footer-links_div h4 {
-        font-size: 24px;
-    }
-
-    .eduhub__footer-links_div p {
-        font-size: 18px;
-    }
-
-    .eduhub__footer-links_logo img {
-        width: 250px;
-    }
-}
-
-/* Mobile styles */
-@media screen and (max-width: 550px) {
-    .eduhub__footer-links {
-        flex-direction: column;
-        padding: 0 1rem;
-    }
-
-    .eduhub__footer-links_div {
-        margin: 1rem 0;
-        width: 100%;
-    }
-
-    .eduhub__footer-links_div h4 {
-        font-size: 20px;
-    }
-
-    .eduhub__footer-links_div p {
-        font-size: 16px;
-    }
-
-    .eduhub__footer-links_logo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .eduhub__footer-links_logo img {
-        width: 200px;
-    }
-
-    .eduhub__footer-copyright {
-        font-size: 12px;
-    }
+@media (max-width: 520px) {
+  .footer__columns {
+    grid-template-columns: 1fr 1fr;
+  }
 }

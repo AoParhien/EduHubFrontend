@@ -1,9 +1,10 @@
 import axios from 'axios';
+import { BACKEND_URL } from './backendUrl';
 import { setupApiSecurity, sanitizeInput } from '../security';
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080',
+  baseURL: BACKEND_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

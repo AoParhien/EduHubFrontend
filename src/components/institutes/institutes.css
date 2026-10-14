@@ -1,69 +1,58 @@
-.eduhub__institutes {
-    display: flex;
+.institutes {
+  padding-top: clamp(24px, 4vw, 48px);
+  padding-bottom: clamp(48px, 7vw, 88px);
+}
+
+.institutes__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.institutes__header h1 {
+  font-size: clamp(1.75rem, 1.3rem + 1.5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.institutes__header p {
+  margin-top: 8px;
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 1.0625rem;
+}
+
+.institutes__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.institutes__empty {
+  padding: 48px 32px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--wash);
+}
+
+.institutes__empty h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.institutes__empty p {
+  margin: 8px 0 20px;
+  color: var(--muted);
+}
+
+@media (max-width: 760px) {
+  .institutes__header {
     flex-direction: column;
-    padding: 2rem 8rem;
-    background-color: transparent;
-    min-height: 100vh;
-}
-
-.eduhub__institutes-header {
-    text-align: center;
-    margin-bottom: 2rem;
-    background: linear-gradient(180deg, #ffffff 0%, var(--eduhub-primary-softer) 100%);
-    border: 1px solid var(--eduhub-border);
-    border-radius: var(--eduhub-radius-2xl);
-    box-shadow: var(--eduhub-shadow-card);
-    padding: 2.5rem 1.5rem;
-}
-
-.eduhub__institutes-header h1 {
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    font-size: 2.5rem;
-    color: var(--eduhub-text);
-}
-
-.eduhub__institutes-header p {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1rem;
-    color: var(--eduhub-muted);
-    margin-top: 0.5rem;
-}
-
-.eduhub__institutes-tabbar {
-    padding: 1rem 0;
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
-.eduhub__institutes-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    padding: 0.5rem 0;
-}
-
-/* Responsive Layout */
-@media (max-width: 1024px) {
-    .eduhub__institutes {
-        padding: 2rem;
-    }
-
-    .eduhub__institutes-header h1 {
-        font-size: 2rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .eduhub__institutes {
-        padding: 1rem;
-    }
-
-    .eduhub__institutes-header h1 {
-        font-size: 1.8rem;
-    }
-    
-    .eduhub__institutes-cards {
-        grid-template-columns: 1fr;
-    }
+    align-items: stretch;
+  }
 }

@@ -1,0 +1,134 @@
+.auth {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(24px, 5vw, 64px);
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: clamp(16px, 3vw, 32px) var(--gutter) clamp(48px, 7vw, 88px);
+}
+
+/* Navy panel with the gold outline, matching the home page hero */
+.auth__panel {
+  position: relative;
+  padding: 0 20px 20px 0;
+}
+
+.auth__panel::before {
+  content: '';
+  position: absolute;
+  inset: 20px 0 0 20px;
+  border: 3px solid var(--gold);
+  border-radius: var(--radius-lg);
+}
+
+.auth__panel-inner {
+  position: relative;
+  height: 100%;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(28px, 4vw, 48px);
+  border-radius: var(--radius-lg);
+  background: var(--navy);
+  color: #fff;
+}
+
+.auth__panel-title {
+  max-width: 22ch;
+  font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.auth__panel ul {
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.auth__panel li {
+  position: relative;
+  padding-left: 22px;
+}
+
+.auth__panel li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--gold);
+}
+
+.auth__form {
+  display: flex;
+  align-items: center;
+}
+
+.auth__form-inner {
+  width: 100%;
+  max-width: 440px;
+}
+
+.auth__form h1 {
+  font-size: clamp(1.75rem, 1.4rem + 1vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.auth__subtitle {
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.auth__fields {
+  display: grid;
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.auth__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.auth__switch {
+  margin-top: 20px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.auth__switch a {
+  color: var(--navy);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 860px) {
+  .auth {
+    grid-template-columns: 1fr;
+  }
+
+  .auth__panel {
+    display: none;
+  }
+
+  .auth__form-inner {
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .auth__row {
+    grid-template-columns: 1fr;
+  }
+}

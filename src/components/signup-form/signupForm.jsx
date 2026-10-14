@@ -1,358 +1,167 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import {
-    Box,
-    Button,
-    Checkbox,
-    FormControl,
-    FormErrorMessage,
-    FormLabel,
-    HStack,
-    Input,
-    InputGroup,
-    InputLeftAddon,
-    Text,
-    VStack,
-    Link,
-    Image,
-    useToast,
-    Flex,
-    useBreakpointValue,
-} from '@chakra-ui/react';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { Alert, AlertDescription, AlertIcon, Button, useToast } from '@chakra-ui/react';
 import axios from 'axios';
+import useUserStore from '../../store/useUserStore';
+import { BACKEND_URL } from '../../utils/backendUrl';
+import { AuthField, AuthLayout } from '../auth-layout/AuthLayout';
+import PageTitle from '../page-title/PageTitle';
 
-const FloatingLabelInput = ({ label, register, name, errors, type = "text", leftAddon, rules, ...rest }) => (
-    <FormControl isInvalid={errors[name]} position="relative">
-        <InputGroup size="lg">
-            {leftAddon && (
-                <InputLeftAddon 
-                    children={leftAddon}
-                    height="3.5rem"
-                    alignItems="center"
-                    minW="4.5rem"
-                    px={3}
-                />
-            )}
-            <Input
-                placeholder=" "
-                {...register(name, rules)}
-                type={type}
-                id={name}
-                height="3.5rem"
-                pt="1.75rem"
-                pb="0.75rem"
-                pl={leftAddon ? "0.75rem" : "1rem"}
-                {...rest}
-            />
-            <FormLabel
-                htmlFor={name}
-                position="absolute"
-                top="0"
-                left={leftAddon ? "4.5rem" : "1rem"}
-                zIndex="2"
-                px="0.5rem"
-                fontSize="sm"
-                fontWeight="medium"
-                bg="white"
-                marginInlineStart="0"
-                transition="all 0.2s"
-                transform="translateY(0.75rem)"
-                pointerEvents="none"
-                _focus={{
-                    fontSize: "xs",
-                    fontWeight: "bold",
-                    transform: "translateY(0.25rem)",
-                }}
-                sx={{
-                    'input:not(:placeholder-shown) + &': {
-                        fontSize: "xs",
-                        fontWeight: "bold",
-                        transform: "translateY(0.25rem)",
-                    },
-                }}
-            >
-                {label}
-            </FormLabel>
-        </InputGroup>
-        <FormErrorMessage>
-            {errors[name]?.message}
-        </FormErrorMessage>
-    </FormControl>
-);
+const PASSWORD_RULE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+// Accepts 3001234567, 03001234567 or +923001234567 and returns the 10-digit form.
+const normalizeMobile = (value = '') => value.replace(/\D/g, '').replace(/^92/, '').replace(/^0+/, '');
 
 const SignUpForm = () => {
-    const { 
-        register, 
-        handleSubmit, 
-        formState: { errors, isSubmitting }, 
-        watch,
-        reset,
-        setError
-    } = useForm({
-        mode: 'onTouched',
-        defaultValues: {
-            role: 'student' // Setting default role as student
-        }
-    });
-
+    const { register, handleSubmit, watch, setError, formState: { errors, isSubmitting } } = useForm({ mode: 'onTouched' });
+    const { fetchUser, setAuth } = useUserStore();
+    const [formError, setFormError] = useState('');
+    const navigate = useNavigate();
+    const location = useLocation();
     const toast = useToast();
-    const authUrl = process.env.REACT_APP_AUTH_SERVICE_URL;
+
+    const returnTo = location.state?.from && location.state.from !== '/signup' ? location.state.from : '/';
+    const returnState = location.state?.fromState;
 
     const onSubmit = async (data) => {
+        setFormError('');
         try {
-            const response = await axios.post(`${authUrl}/api/auth/register`, {
-                email: data.email,
-                password: data.password,
-                role: data.role,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                mobileNumber: data.mobileNumber.replace(/^0+/, '') // Remove leading zeros if any
-            }, {
-                withCredentials: true,
-            });
+            const response = await axios.post(
+                `${BACKEND_URL}/api/auth/register`,
+                {
+                    email: data.email.trim(),
+                    password: data.password,
+                    role: 'student',
+                    firstName: data.firstName.trim(),
+                    lastName: data.lastName.trim(),
+                    mobileNumber: normalizeMobile(data.mobileNumber),
+                },
+                { withCredentials: true }
+            );
 
-            if (response.data) {
-                toast({
-                    title: "Account created successfully!",
-                    description: "You can now login with your credentials.",
-                    status: "success",
-                    duration: 5000,
-                    isClosable: true,
-                });
-                reset();
-                // You can redirect to login page here if needed
-                // navigate('/login');
+            // Registration also signs the new student in.
+            if (response.data?.token) {
+                setAuth({ token: response.data.token, user: response.data.user || null });
+                await fetchUser(response.data.token);
             }
+
+            toast({ title: `Welcome to AoParhein, ${data.firstName.trim()}`, status: 'success', duration: 4000 });
+            navigate(response.data?.token ? returnTo : '/login', { replace: true, state: response.data?.token ? returnState : location.state });
         } catch (error) {
-            console.error('Registration error:', error);
-            
-            // Handle specific error cases
-            if (error.response) {
-                const { status, data } = error.response;
-                
-                switch (status) {
-                    case 400:
-                        // Handle validation errors from backend
-                        if (data.message) {
-                            toast({
-                                title: "Validation Error",
-                                description: data.message,
-                                status: "error",
-                                duration: 5000,
-                                isClosable: true,
-                            });
-                        }
-                        // If the API returns field-specific errors
-                        if (data.errors) {
-                            Object.keys(data.errors).forEach(field => {
-                                setError(field, {
-                                    type: 'manual',
-                                    message: data.errors[field]
-                                });
-                            });
-                        }
-                        break;
-                        
-                    case 409:
-                        // Handle duplicate email
-                        setError('email', {
-                            type: 'manual',
-                            message: 'This email is already registered'
-                        });
-                        break;
-                        
-                    case 500:
-                        toast({
-                            title: "Server Error",
-                            description: "Unable to create account. Please try again later.",
-                            status: "error",
-                            duration: 5000,
-                            isClosable: true,
-                        });
-                        break;
-                        
-                    default:
-                        toast({
-                            title: "Error",
-                            description: "An unexpected error occurred. Please try again.",
-                            status: "error",
-                            duration: 5000,
-                            isClosable: true,
-                        });
-                }
-            } else if (error.request) {
-                // Network error
-                toast({
-                    title: "Connection Error",
-                    description: "Unable to connect to the server. Please check your internet connection.",
-                    status: "error",
-                    duration: 5000,
-                    isClosable: true,
-                });
+            const status = error.response?.status;
+            const message = error.response?.data?.message || '';
+
+            if (!error.response) {
+                setFormError('We couldn’t reach AoParhein. Check your internet connection and try again.');
+            } else if (/already exists/i.test(message)) {
+                setError('email', { type: 'server', message: 'An account with this email already exists. Log in instead.' });
+            } else if (/mobile number/i.test(message)) {
+                setError('mobileNumber', { type: 'server', message: 'This mobile number is already registered.' });
+            } else if (status === 429) {
+                setFormError(message || 'Too many attempts. Wait a few minutes and try again.');
+            } else if (status === 400 && message) {
+                setFormError(message);
             } else {
-                toast({
-                    title: "Error",
-                    description: "An unexpected error occurred. Please try again.",
-                    status: "error",
-                    duration: 5000,
-                    isClosable: true,
-                });
+                setFormError('Your account couldn’t be created because of a problem on our side. Try again in a moment.');
             }
         }
     };
 
-    // Determine layout direction based on screen size
-    const flexDirection = useBreakpointValue({ base: 'column', md: 'row' });
-    const imageDisplay = useBreakpointValue({ base: 'none', md: 'block' });
-
     return (
-        <Flex 
-            direction={flexDirection} 
-            minH="100vh"
-        >
-            <Box 
-                flex={1} 
-                display={imageDisplay}
-            >
-                <Image
-                    src="https://as1.ftcdn.net/v2/jpg/01/75/84/48/1000_F_175844887_q9693JpeyWzJikA7xSKdMLwKgzdGHaEx.jpg"
-                    alt="Sign Up Image"
-                    objectFit="cover"
-                    width="100%"
-                    height="100%"
-                />
-            </Box>
-            <Box 
-                flex={1} 
-                p={{ base: 4, md: 8 }} 
-                display="flex" 
-                alignItems="center" 
-                justifyContent="center"
-            >
-                <Box width={{ base: "100%", md: "80%", lg: "60%" }}>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <VStack spacing={4} align="stretch">
-                            <Text 
-                                fontSize={{ base: "2xl", md: "3xl" }} 
-                                fontWeight="bold" 
-                                mb={3}
-                                textAlign={{ base: "center", md: "left" }}
-                            >
-                                Sign Up
-                            </Text>
-                            <HStack spacing={4} flexWrap="wrap">
-                                <FloatingLabelInput
-                                    label="First Name"
-                                    register={register}
-                                    name="firstName"
-                                    errors={errors}
-                                    rules={{ 
-                                        required: 'First name is required',
-                                        minLength: { value: 2, message: 'Minimum 2 characters' }
-                                    }}
-                                    flex={{ base: "100%", md: "48%" }}
-                                />
-                                <FloatingLabelInput
-                                    label="Last Name"
-                                    register={register}
-                                    name="lastName"
-                                    errors={errors}
-                                    rules={{ 
-                                        required: 'Last name is required',
-                                        minLength: { value: 2, message: 'Minimum 2 characters' }
-                                    }}
-                                    flex={{ base: "100%", md: "48%" }}
-                                />
-                            </HStack>
-                            <FloatingLabelInput
-                                label="Email"
-                                register={register}
-                                name="email"
-                                errors={errors}
-                                type="email"
-                                rules={{
-                                    required: 'Email is required',
-                                    pattern: {
-                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                        message: 'Invalid email address',
-                                    },
-                                }}
-                            />
-                            <FloatingLabelInput
-                                label="Mobile Number"
-                                register={register}
-                                name="mobileNumber"
-                                errors={errors}
-                                type="tel"
-                                leftAddon="+92"
-                                rules={{
-                                    required: 'Mobile number is required',
-                                    pattern: {
-                                        value: /^[0-9]{10}$/,
-                                        message: 'Please enter a valid 10-digit number'
-                                    }
-                                }}
-                            />
-                            <FloatingLabelInput
-                                label="Password"
-                                register={register}
-                                name="password"
-                                errors={errors}
-                                type="password"
-                                rules={{ 
-                                    required: 'Password is required', 
-                                    minLength: { value: 8, message: 'Password must be at least 8 characters' },
-                                    pattern: {
-                                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                                        message: 'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character'
-                                    }
-                                }}
-                            />
-                            <FloatingLabelInput
-                                label="Confirm Password"
-                                register={register}
-                                name="confirmPassword"
-                                errors={errors}
-                                type="password"
-                                rules={{
-                                    required: 'Please confirm your password',
-                                    validate: (val) => watch('password') === val || "Passwords do not match"
-                                }}
-                            />
-                            <FormControl isInvalid={errors.termsAccepted}>
-                                <Checkbox
-                                    {...register('termsAccepted', {
-                                        required: 'You must accept the terms and conditions'
-                                    })}
-                                >
-                                    By signing up you accept the <Link color="blue.500">Terms of Service</Link> and{" "}
-                                    <Link color="blue.500">Privacy Policy</Link>
-                                </Checkbox>
-                                <FormErrorMessage>
-                                    {errors.termsAccepted?.message}
-                                </FormErrorMessage>
-                            </FormControl>
-                            <Button 
-                                type="submit" 
-                                bg="#00308F" 
-                                color="white" 
-                                _hover={{ bg: "colors.brand.600" }} 
-                                _active={{ bg: "brand.700" }}
-                                width="full" 
-                                height="3.5rem"
-                                isLoading={isSubmitting}
-                                loadingText="Logging in..."
-                            >
-                                Sign Up
-                            </Button>
-                            <Text textAlign="center">
-                                Already have an account? <Link color="blue.500">Login</Link>
-                            </Text>
-                        </VStack>
-                    </form>
-                </Box>
-            </Box>
-        </Flex>
+        <AuthLayout title="Create your account" subtitle="Free for students. You’ll need it to reserve a seat.">
+            <PageTitle title="Create an account" />
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
+                <div className="auth__fields">
+                    {formError && (
+                        <Alert status="error" borderRadius="md">
+                            <AlertIcon />
+                            <AlertDescription>{formError}</AlertDescription>
+                        </Alert>
+                    )}
+                    <div className="auth__row">
+                        <AuthField
+                            label="First name"
+                            name="firstName"
+                            autoComplete="given-name"
+                            register={register}
+                            errors={errors}
+                            rules={{ required: 'Enter your first name', minLength: { value: 2, message: 'Use at least 2 letters' } }}
+                        />
+                        <AuthField
+                            label="Last name"
+                            name="lastName"
+                            autoComplete="family-name"
+                            register={register}
+                            errors={errors}
+                            rules={{ required: 'Enter your last name', minLength: { value: 2, message: 'Use at least 2 letters' } }}
+                        />
+                    </div>
+                    <AuthField
+                        label="Email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        register={register}
+                        errors={errors}
+                        rules={{
+                            required: 'Enter your email address',
+                            pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: 'Enter a valid email, like name@example.com' },
+                        }}
+                    />
+                    <AuthField
+                        label="Mobile number"
+                        name="mobileNumber"
+                        type="tel"
+                        inputMode="numeric"
+                        autoComplete="tel-national"
+                        placeholder="300 1234567"
+                        addon="+92"
+                        register={register}
+                        errors={errors}
+                        rules={{
+                            required: 'Enter your mobile number',
+                            validate: (value) => /^3\d{9}$/.test(normalizeMobile(value)) || 'Enter a Pakistani mobile number, like 300 1234567',
+                        }}
+                    />
+                    <AuthField
+                        label="Password"
+                        name="password"
+                        type="password"
+                        autoComplete="new-password"
+                        helper="At least 8 characters, with an uppercase letter, a lowercase letter, a number and a symbol (@$!%*?&)."
+                        register={register}
+                        errors={errors}
+                        rules={{
+                            required: 'Create a password',
+                            pattern: {
+                                value: PASSWORD_RULE,
+                                message: 'Use at least 8 characters, with an uppercase letter, a lowercase letter, a number and a symbol (@$!%*?&).',
+                            },
+                        }}
+                    />
+                    <AuthField
+                        label="Confirm password"
+                        name="confirmPassword"
+                        type="password"
+                        autoComplete="new-password"
+                        register={register}
+                        errors={errors}
+                        rules={{
+                            required: 'Enter your password again',
+                            validate: (value) => value === watch('password') || 'The passwords don’t match',
+                        }}
+                    />
+                    <Button type="submit" size="lg" width="full" isLoading={isSubmitting} loadingText="Creating your account">
+                        Create account
+                    </Button>
+                </div>
+            </form>
+            <p className="auth__switch">
+                Already have an account?{' '}
+                <RouterLink to="/login" state={location.state}>Log in</RouterLink>
+            </p>
+        </AuthLayout>
     );
 };
 

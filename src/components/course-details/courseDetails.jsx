@@ -1,431 +1,234 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { 
-    Box, 
-    Text, 
-    Breadcrumb, 
-    BreadcrumbItem, 
-    BreadcrumbLink, 
-    Heading, 
-    Stack, 
-    Flex, 
-    Icon, 
-    Button, 
-    Divider,
-    VStack,
-    useBreakpointValue,
-    Drawer,
-    DrawerBody,
-    DrawerHeader,
-    DrawerOverlay,
-    DrawerContent,
-    DrawerCloseButton,
-    useDisclosure
-} from '@chakra-ui/react';
-import { BsCreditCard2Back, BsArrowRight, BsFilterRight } from 'react-icons/bs';
-import { Tabs, TabList, Tab } from "@chakra-ui/react";
-import { Link as ScrollLink } from "react-scroll";
-import { Image } from '@chakra-ui/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Link as RouterLink, useParams } from 'react-router-dom';
+import { Button, Skeleton, SkeletonText } from '@chakra-ui/react';
+import { FiCalendar, FiClock, FiMapPin, FiUser } from 'react-icons/fi';
 import Schedule from '../schedule/schedule';
 import MapWithPlusCode from '../map/map';
 import FeeTable from '../fee-table/FeeTable';
-import CenteredSpinner from '../centered-spinner/centeredSpinner';
 import CourseBatches from '../course-batches/courseBatches';
+import PageTitle from '../page-title/PageTitle';
+import { BACKEND_URL } from '../../utils/backendUrl';
+import { formatBoard, formatClassFormat, formatMonths, formatRupees, normalizeBoard } from '../../utils/format';
+import './courseDetails.css';
 
-const selectedFontWeight = 650;
-// const courses = [
-//     { id: 1, title: 'Course 1' },
-//     { id: 2, title: 'Course 2' },
-//     { id: 3, title: 'Course 3' },
-// ];
+const SECTIONS = [
+    { id: 'teacher', label: 'Teacher' },
+    { id: 'timetable', label: 'Timetable' },
+    { id: 'location', label: 'Location' },
+    { id: 'fees', label: 'Fees' },
+];
 
-const CourseDetails = () => {
-    const [course, setCourse] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const { courseId } = useParams();
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    
-    // Responsive values
-    const isMobile = useBreakpointValue({ base: true, md: false });
-    const responsivePadding = useBreakpointValue({ base: 2, md: 5 });
-    const responsiveHeadingSize = useBreakpointValue({ base: 'md', md: 'lg' });
-
-    const getCourse = async () => {
-        try {
-            const apiUrl = process.env.REACT_APP_INSTITUTE_SERVICE_URL;
-            const response = await fetch(`${apiUrl}/api/courses/getCourseDetails/${courseId}`, {
-                method: 'GET',
-                credentials: 'include',
-            });
-            const data = await response.json();
-            setCourse(data)
-        }
-        catch (error) {
-            console.error('Error fetching course data:', error);
-        }
-        finally {
-            setLoading(false)
-        }
-    }
-
-    useEffect(() => {
-        getCourse();
-    }, [])
-
-    if (loading) {
-        return <CenteredSpinner />
-    }
-    if (course === 'Internal server error') {
-        return <div>No course data available.</div>;
-    }
-
-    // Mobile Tabs Drawer
-    const MobileTabDrawer = () => (
-        <Drawer isOpen={isOpen} placement="bottom" onClose={onClose}>
-            <DrawerOverlay />
-            <DrawerContent borderTopRadius="lg">
-                <DrawerCloseButton />
-                <DrawerHeader>Course Sections</DrawerHeader>
-                <DrawerBody>
-                    <VStack spacing={4} align="stretch">
-                        {['About', 'Schedule', 'Location', 'Fees Structure'].map((tab) => (
-                            <ScrollLink 
-                                key={tab} 
-                                to={tab.toLowerCase().replace(' ', '')} 
-                                smooth={true} 
-                                duration={500}
-                                onClick={onClose}
-                            >
-                                <Button width="full" variant="ghost">
-                                    {tab}
-                                </Button>
-                            </ScrollLink>
-                        ))}
-                    </VStack>
-                </DrawerBody>
-            </DrawerContent>
-        </Drawer>
-    );
-
+const EnrollCard = ({ course }) => {
+    const hasBatches = (course.batches || []).length > 0;
     return (
-        <Box 
-            className='section__padding' 
-            maxW="7xl" 
-            mx="auto" 
-            p={responsivePadding} 
-            bg="white" 
-            boxShadow={isMobile ? "none" : "md"} 
-            borderRadius="lg"
-            mb={10}
-        >
-            {/* Breadcrumb with mobile adjustment */}
-            <Breadcrumb 
-                fontSize={isMobile ? "xs" : "sm"} 
-                color="gray.500" 
-                separator=">"
-                mb={isMobile ? 2 : 0}
+        <div className="enroll-card">
+            <p className="enroll-card__price">
+                <strong>{formatRupees(course.fees)}</strong> / month
+            </p>
+            <p className="enroll-card__sub">
+                Plus {formatRupees(course.institute?.registrationFees)} one-time registration
+            </p>
+            <Button
+                as={RouterLink}
+                to="/checkout"
+                state={{ course }}
+                size="lg"
+                width="full"
+                mt={5}
+                isDisabled={!hasBatches}
+                pointerEvents={hasBatches ? undefined : 'none'}
             >
-                <BreadcrumbItem>
-                    <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbItem>
-                    <BreadcrumbLink href="/courses">Courses</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbItem isCurrentPage>
-                    <BreadcrumbLink href={`/course-details/${courseId}`}>
-                        {course.title}
-                    </BreadcrumbLink>
-                </BreadcrumbItem>
-            </Breadcrumb>
-
-            {/* Mobile Section Toggle */}
-            {isMobile && (
-                <Flex 
-                    position="sticky" 
-                    top="0" 
-                    zIndex="10" 
-                    justifyContent="flex-end" 
-                    p={2}
-                    width="100%"
-                >
-                    <Button 
-                        leftIcon={<BsFilterRight />} 
-                        variant="ghost"
-                        onClick={onOpen}
-                        color="gray.600"
-                        width="auto"
-                        p={1}
-                    >
-                        Sections
-                    </Button>
-                    <MobileTabDrawer />
-                </Flex>
-            )}
-            {/* Course Header */}
-            <Flex 
-                flexDirection={{ base: 'column', md: 'row' }} 
-                mt={isMobile ? 2 : 5}
-                gap={isMobile ? 4 : 0}
-            >
-                <Stack flex="1" spacing={isMobile ? 3 : 5}>
-                    <Heading 
-                        color="#00308F" 
-                        size={responsiveHeadingSize}
-                        textAlign={isMobile ? 'left' : 'left'}
-                    >
-                        {course.title}
-                    </Heading>
-
-                    {/* Course Details */}
-                    <Box>
-                        <Text 
-                            fontSize={isMobile ? 'md' : 'lg'} 
-                            fontWeight="bold"
-                            textAlign={isMobile ? 'left' : 'left'}
-                        >
-                            Course Details:
-                        </Text>
-                        <VStack 
-                            pl={isMobile ? 0 : 4} 
-                            mt={2} 
-                            spacing={1} 
-                            fontSize={isMobile ? 'sm' : 'md'} 
-                            color="gray.700"
-                            align={isMobile ? 'start' : 'start'}
-                        >
-                            <Text>• Instructor: {course.teacher.name}</Text>
-                            <Text>• Board: {course.board}</Text>
-                            <Text>• Duration: {course.durationMonths} months</Text>
-                            <Text>• Class Format: {course.classFormat === 'InPerson' ? 'Onsite' : course.classFormat}</Text>
-                        </VStack>
-                    </Box>
-
-                    {/* Fee Section - Mobile Friendly */}
-                    <Box 
-                        display={isMobile ? 'block' : 'none'}
-                        border="1px"
-                        borderColor="gray.300"
-                        borderRadius="lg"
-                        p={4}
-                        textAlign="center"
-                        width="100%"
-                    >
-                        <Flex justifyContent="center" alignItems="center">
-                            <Icon as={BsCreditCard2Back} boxSize={5} mr={2} />
-                            <Text mr={2} fontSize="md">Fees: </Text>
-                            <Text fontSize="xl" fontWeight="bold" color="black.600">
-                                Rs.{course.fees}
-                            </Text>
-                        </Flex>
-                        <Divider my={3} />
-                        <Link to="/checkout" state={{ course: course }}>
-                            <Button
-                                color="white"
-                                background="#00308F"
-                                width="full"
-                                size="md"
-                                rightIcon={<BsArrowRight />}
-                            >
-                                Enroll Now
-                            </Button>
-                        </Link>
-                    </Box>
-                </Stack>
-
-                {/* Desktop Fee Section */}
-                {!isMobile && (
-                    <Flex ml="auto" mt="auto" justify="flex-end">
-                        <Box
-                            border="1px"
-                            borderColor="gray.300"
-                            borderRadius="lg"
-                            p={5}
-                            width="350px"
-                            height="150px"
-                            textAlign="center"
-                        >
-                            <Flex alignContent="center">
-                                <Icon as={BsCreditCard2Back} boxSize={5} mr={2} mt={3} />
-                                <Text mr={2} mt={3} fontSize={15}>Fees: </Text>
-                                <Text as="span" color="black.600" fontSize={28} fontWeight="bold">
-                                    Rs.{course.fees}
-                                </Text>
-                            </Flex>
-                            <Divider my={4} />
-                            <Link to="/checkout" state={{ course: course }}>
-                                <Button
-                                    color="white"
-                                    background="#00308F"
-                                    width="full"
-                                    rightIcon={<BsArrowRight />}
-                                >
-                                    Enroll Now
-                                </Button>
-                            </Link>
-                        </Box>
-                    </Flex>
-                )}
-            </Flex>
-
-            {/* Desktop Tab Navigation */}
-            {!isMobile && (
-                <Tabs variant="unstyled" mt={5}>
-                    <TabList justifyContent="flex-start" bg="#00308F" pl={10} py={3}>
-                        {['About', 'Schedule', 'Location', 'Fees Structure', 'Reviews'].map((tab) => (
-                            <Tab 
-                                key={tab} 
-                                _selected={{ fontWeight: selectedFontWeight, color: 'white' }} 
-                                _hover={{ color: 'whiteAlpha.800' }} 
-                                color={'white'}
-                            >
-                                <ScrollLink to={tab.toLowerCase().replace(' ', '')} smooth={true} duration={500}>
-                                    {tab}
-                                </ScrollLink>
-                            </Tab>
-                        ))}
-                    </TabList>
-                </Tabs>
-            )}
-
-            {/* Sections Content */}
-            <Box pl={isMobile ? 0 : 8} mt={isMobile ? 4 : 8}>
-                {/* About Section */}
-                <Box id="about" py={4}>
-                    <Heading as="h2" size={responsiveHeadingSize} textAlign={isMobile ? 'left' : 'left'}>
-                        About Instructor
-                    </Heading>
-                    <Flex 
-                        pt={5} 
-                        gap={isMobile ? 6 : 6} 
-                        flexDirection={isMobile ? 'row' : 'row'}
-                        alignItems="left"
-                        pr={isMobile ? 0 : 150}
-                    >
-                        <Image
-                            src={course.teacher.picture}
-                            alt="Instructor"
-                            boxSize={isMobile ? "100px" : "130px"}
-                            borderRadius="full"
-                            objectFit="cover"
-                        />
-                        <VStack align={isMobile ? 'center' : 'start'}>
-                            <Heading fontWeight={600} fontSize={isMobile ? 'lg' : 20}>
-                                {course.teacher.name}
-                            </Heading>
-                            <Text 
-                                fontSize={isMobile ? 'sm' : 'md'} 
-                                color="gray.600" 
-                                textAlign={isMobile ? 'center' : 'left'}
-                            >
-                                {course.teacher.description}
-                            </Text>
-                        </VStack>
-                    </Flex>
-                </Box>
-
-                {/* Schedule Section */}
-                <Box id="schedule" py={10}>
-                    <Heading 
-                        as="h2" 
-                        size={responsiveHeadingSize} 
-                        textAlign={isMobile ? 'center' : 'left'}
-                    >
-                        Class Schedule
-                    </Heading>
-                    <Flex 
-                        flexDirection={{ base: 'column', md: 'row' }}
-                        gap={isMobile ? 4 : 0}
-                    >
-                        <Box width={isMobile ? '100%' : 'auto'}>
-                            <Schedule 
-                                batches={course.batches} 
-                                schedules={course.schedules} 
-                            />
-                        </Box>
-                        <VStack 
-                            ml={{ base: 0, md: 15 }} 
-                            mt={{ base: 5, md: 0 }} 
-                            spacing={5} 
-                            width={{ base: '100%', md: '400px' }}
-                        >
-                            <CourseBatches 
-                                batches={course.batches} 
-                                schedules={course.schedules} 
-                            />
-                        </VStack>
-                    </Flex>
-                </Box>
-
-                {/* Location Section */}
-                <Box id="location" py={10}>
-                    <Heading 
-                        as="h2" 
-                        size={responsiveHeadingSize} 
-                        textAlign={isMobile ? 'center' : 'left'}
-                    >
-                        Location
-                    </Heading>
-                    <Text 
-                        as={Link} 
-                        to={`/institute/${course.institute.id}`} // Adjust URL as needed
-                        fontSize={isMobile ? 'md' : 'lg'} 
-                        mb={8} 
-                        textAlign={isMobile ? 'center' : 'left'} 
-                        color="blue.500" // Optional: Change link color
-                        _hover={{ textDecoration: 'underline', color: 'blue.700' }} // Optional: Hover effect
-                    >
-                        {course.institute.name}
-                    </Text>
-                    <Box width="100%" height={isMobile ? '250px' : '400px'}>
-                        <MapWithPlusCode plusCode={course.institute.plusCode} coordinates={course.institute.location} />
-                    </Box>
-                </Box>
-
-                {/* Fees Structure Section */}
-                <Box id="feesstructure" py={10} mt={isMobile ? 60 : 20}>
-                    <Heading 
-                        as="h2" 
-                        size={responsiveHeadingSize} 
-                        textAlign={isMobile ? 'center' : 'left'}
-                    >
-                        Fees Structure
-                    </Heading>
-                    <Box 
-                        width="100%" 
-                        overflowX={isMobile ? 'auto' : 'visible'}
-                        sx={{
-                            '& table': {
-                                width: '100%',
-                                ...(isMobile && {
-                                    fontSize: 'xs',
-                                    '& th, & td': {
-                                        padding: '8px 10px',
-                                        fontSize: '12px',
-                                    }
-                                })
-                            }
-                        }}
-                    >
-                        <FeeTable 
-                            registrationFees={course.institute.registrationFees} 
-                            courseFees={course.fees} 
-                        />
-                    </Box>
-                </Box>
-                {/* Reviews Section */}
-                {/* <Box id="reviews" py={10}>
-                    <Heading 
-                        as="h2" 
-                        size={responsiveHeadingSize} 
-                        textAlign={isMobile ? 'center' : 'left'}
-                    >
-                        Similar Courses
-                    </Heading>
-                    <CourseCarousel courses={courses} />
-                </Box> */}
-            </Box>
-        </Box>
+                {hasBatches ? 'Reserve a seat' : 'No batches open yet'}
+            </Button>
+            <p className="enroll-card__note">
+                {hasBatches
+                    ? 'Nothing to pay online. You pay the institute on your first day.'
+                    : 'This course has no open batch right now. Check back soon.'}
+            </p>
+        </div>
     );
 };
 
-export default CourseDetails
+const CourseDetails = () => {
+    const { courseId } = useParams();
+    const [course, setCourse] = useState(null);
+    const [status, setStatus] = useState('loading');
+
+    const loadCourse = useCallback(async () => {
+        setStatus('loading');
+        try {
+            const response = await fetch(`${BACKEND_URL}/api/courses/getCourseDetails/${courseId}`);
+            if (response.status === 404) {
+                setStatus('missing');
+                return;
+            }
+            const data = await response.json();
+            if (!response.ok || !data || typeof data !== 'object' || !data.title) {
+                setStatus(response.ok ? 'missing' : 'error');
+                return;
+            }
+            setCourse(data);
+            setStatus('ready');
+        } catch (error) {
+            setStatus('error');
+        }
+    }, [courseId]);
+
+    useEffect(() => {
+        loadCourse();
+    }, [loadCourse]);
+
+    if (status === 'loading') {
+        return (
+            <div className="page course-page" aria-busy="true">
+                <Skeleton height="16px" width="200px" mb={6} />
+                <Skeleton height="40px" width="60%" mb={4} />
+                <SkeletonText noOfLines={3} spacing={3} maxW="560px" />
+            </div>
+        );
+    }
+
+    if (status !== 'ready') {
+        return (
+            <div className="page course-page">
+                <PageTitle title="Course not found" />
+                <div className="course-page__state">
+                    <h1>{status === 'missing' ? 'This course is no longer available' : "This course couldn't be loaded"}</h1>
+                    <p>
+                        {status === 'missing'
+                            ? 'It may have been removed by the institute. Have a look at other courses instead.'
+                            : 'Check your connection and try again.'}
+                    </p>
+                    {status === 'error' && <Button onClick={loadCourse} mr={3}>Try again</Button>}
+                    <Button as={RouterLink} to="/courses" variant="outline">Browse courses</Button>
+                </div>
+            </div>
+        );
+    }
+
+    const boardLabel = formatBoard(course.board);
+    const batches = course.batches || [];
+    const schedules = course.schedules || [];
+    const facts = [
+        course.teacher?.name && { icon: FiUser, label: 'Teacher', value: course.teacher.name },
+        course.durationMonths && { icon: FiCalendar, label: 'Duration', value: formatMonths(course.durationMonths) },
+        course.classFormat && { icon: FiClock, label: 'Classes', value: formatClassFormat(course.classFormat) },
+        course.institute?.name && { icon: FiMapPin, label: 'Institute', value: course.institute.name, to: `/institute/${course.institute.id}` },
+    ].filter(Boolean);
+
+    return (
+        <div className="page course-page">
+            <PageTitle title={course.title} />
+
+            <nav className="breadcrumb" aria-label="Breadcrumb">
+                <ol>
+                    <li><RouterLink to="/courses">Courses</RouterLink></li>
+                    {boardLabel && <li><RouterLink to={`/courses/${normalizeBoard(course.board)}`}>{boardLabel}</RouterLink></li>}
+                    <li aria-current="page">{course.title}</li>
+                </ol>
+            </nav>
+
+            <div className="course-page__layout">
+                <div className="course-page__main">
+                    <header className="course-hero">
+                        {course.imageUrl && (
+                            <div className="course-hero__image">
+                                <img src={course.imageUrl} alt="" />
+                            </div>
+                        )}
+                        {boardLabel && <p className="course-hero__board">{boardLabel}{course.subject ? `, ${course.subject}` : ''}</p>}
+                        <h1>{course.title}</h1>
+                        {course.description && <p className="course-hero__description">{course.description}</p>}
+
+                        <dl className="course-facts">
+                            {facts.map(({ icon: Icon, label, value, to }) => (
+                                <div key={label}>
+                                    <dt><Icon aria-hidden="true" />{label}</dt>
+                                    <dd>{to ? <RouterLink to={to}>{value}</RouterLink> : value}</dd>
+                                </div>
+                            ))}
+                        </dl>
+                    </header>
+
+                    <div className="course-page__enroll-mobile">
+                        <EnrollCard course={course} />
+                    </div>
+
+                    <nav className="section-tabs" aria-label="On this page">
+                        {SECTIONS.map((section) => (
+                            <a key={section.id} href={`#${section.id}`}>{section.label}</a>
+                        ))}
+                    </nav>
+
+                    <section id="teacher" className="course-section-block" aria-labelledby="teacher-title">
+                        <h2 id="teacher-title">Teacher</h2>
+                        <div className="teacher-row">
+                            {course.teacher?.picture ? (
+                                <img src={course.teacher.picture} alt="" className="teacher-row__photo" />
+                            ) : (
+                                <span className="teacher-row__photo teacher-row__photo--empty" aria-hidden="true" />
+                            )}
+                            <div>
+                                <p className="teacher-row__name">{course.teacher?.name || 'To be announced'}</p>
+                                {course.teacher?.description && <p className="teacher-row__bio">{course.teacher.description}</p>}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="timetable" className="course-section-block" aria-labelledby="timetable-title">
+                        <h2 id="timetable-title">Timetable</h2>
+                        <p className="course-section-block__intro">
+                            {batches.length > 0
+                                ? `${batches.length} ${batches.length === 1 ? 'batch' : 'batches'} for this course. You'll choose one when you reserve your seat.`
+                                : 'No batches have been published for this course yet.'}
+                        </p>
+                        {batches.length > 0 && (
+                            <>
+                                <Schedule batches={batches} schedules={schedules} />
+                                <div className="course-section-block__spacer" />
+                                <CourseBatches batches={batches} schedules={schedules} />
+                            </>
+                        )}
+                    </section>
+
+                    <section id="location" className="course-section-block" aria-labelledby="location-title">
+                        <h2 id="location-title">Location</h2>
+                        {course.institute?.name && (
+                            <p className="course-section-block__intro">
+                                Classes are held at{' '}
+                                <RouterLink to={`/institute/${course.institute.id}`} className="text-link">{course.institute.name}</RouterLink>.
+                                {Array.isArray(course.institute.location) && course.institute.location.length === 2 && (
+                                    <>
+                                        {' '}
+                                        <a
+                                            className="text-link"
+                                            href={`https://www.google.com/maps/dir/?api=1&destination=${course.institute.location[0]},${course.institute.location[1]}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            Get directions
+                                        </a>
+                                    </>
+                                )}
+                            </p>
+                        )}
+                        <div className="course-map">
+                            <MapWithPlusCode plusCode={course.institute?.plusCode} coordinates={course.institute?.location} />
+                        </div>
+                    </section>
+
+                    <section id="fees" className="course-section-block" aria-labelledby="fees-title">
+                        <h2 id="fees-title">Fees</h2>
+                        <FeeTable registrationFees={course.institute?.registrationFees} courseFees={course.fees} />
+                    </section>
+                </div>
+
+                <aside className="course-page__aside">
+                    <EnrollCard course={course} />
+                </aside>
+            </div>
+        </div>
+    );
+};
+
+export default CourseDetails;

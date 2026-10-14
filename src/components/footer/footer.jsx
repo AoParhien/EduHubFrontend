@@ -1,38 +1,52 @@
 import React from 'react';
-import { Link } from 'react-router-dom';  // Import Link from react-router-dom
+import { Link } from 'react-router-dom';
+import Dblue from '../../assets/Dblue.png';
 import './footer.css';
 
+const INSTITUTE_SIGNUP_URL =
+    process.env.REACT_APP_INSTITUTE_SIGNUP_URL ||
+    process.env.VITE_INSTITUTE_SIGNUP_URL ||
+    'mailto:aoparhien@gmail.com?subject=List%20my%20institute%20on%20AoParhein';
+
 const Footer = () => (
-    <div className="eduhub__footer section__padding">
-        <div className="eduhub__footer-links">
-            <div className="eduhub__footer-links_div">
-                <h4>Quick Links</h4>
-                <Link to="/about-us"><p>About Us</p></Link>  {/* Add routes here */}
-                <Link to="/institutes"><p>Institutes On-Board</p></Link>
-                <Link to="/blog"><p>Blog</p></Link>
-                <Link to="/faq"><p>FAQs</p></Link>
-                <Link to="/contact-us"><p>Contact Us</p></Link>
+    <footer className="footer">
+        <div className="page footer__inner">
+            <div className="footer__brand">
+                <Link to="/" aria-label="AoParhein home">
+                    <img src={Dblue} alt="AoParhein" />
+                </Link>
+                <p>Find tuition classes across Pakistan, compare timetables and fees, and book your seat online.</p>
             </div>
-            <div className="eduhub__footer-links_div">
-                <h4>Company</h4>
-                <Link to="/terms"><p>Terms & Conditions</p></Link>
-                <Link to="/privacy-policy"><p>Privacy Policy</p></Link>
-                <Link to="/careers"><p>Careers</p></Link>
-            </div>
-            <div className="eduhub__footer-links_div">
-                <h4>Contact Us</h4>
-                <p>+92-331-2316152</p>
-                <p>aoparhien@gmail.com</p>
-            </div>
-            <div className="eduhub__footer-links_logo">
-              <img src="Dblue.png" alt="eduhub_logo" />
-                <p>Ao Parhein<br /> Platform which makes education accessible</p>
-            </div>
+
+            <nav className="footer__columns" aria-label="Footer">
+                <div>
+                    <h2>Students</h2>
+                    <ul>
+                        <li><Link to="/courses">Browse courses</Link></li>
+                        <li><Link to="/institutes">Institutes</Link></li>
+                        <li><Link to="/student">My courses</Link></li>
+                        <li><a href="/#how-it-works">How booking works</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h2>Institutes</h2>
+                    <ul>
+                        <li><a href={INSTITUTE_SIGNUP_URL}>List your institute</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h2>Contact</h2>
+                    <ul>
+                        <li><a href="tel:+923312316152">+92 331 2316152</a></li>
+                        <li><a href="mailto:aoparhien@gmail.com">aoparhien@gmail.com</a></li>
+                    </ul>
+                </div>
+            </nav>
         </div>
-        <div className="eduhub__footer-copyright">
-            <p>&copy; {new Date().getFullYear()} AoParhein. All rights reserved.</p>
+        <div className="page">
+            <p className="footer__legal">&copy; {new Date().getFullYear()} AoParhein. All rights reserved.</p>
         </div>
-    </div>
+    </footer>
 );
 
 export default Footer;

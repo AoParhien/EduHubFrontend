@@ -1,54 +1,10 @@
-/* Reset default browser margin and padding */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  height: 100%;
-  width: 100%;
-}
-
-
-
-body {
-  font-family: var(--main-font-family, sans-serif); /* Example font family variable */
-  background: linear-gradient(131deg, rgba(215, 220, 245, 1) 52%, rgba(255, 255, 255, 1) 100%);
-}
-
-z
-
 .App {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensure it covers the full viewport height */
+  min-height: 100vh;
 }
 
-.gradient__bg {
-  flex: 1; /* Makes sure it takes the full available space */
-  /* background: radial-gradient(circle at 9% 12%, rgba(255, 255, 0, 1) 0%, rgba(207, 186, 245, 1) 0%, rgba(255, 253, 253, 1) 26%); */
-  background: white;
-}
-
-.section__padding {
-  padding: 1rem 4rem;
-}
-
-.section__margin {
-  margin: 2rem 2rem;
-}
-
-.gradient__text {
-  background: var(--gradient-text);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-
-@media screen and (max-width: 490px) {
-  .section__padding {
-    padding: 1rem 1rem;
-  }
+.app-main {
+  flex: 1;
+  width: 100%;
 }
