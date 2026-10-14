@@ -123,6 +123,7 @@ const InstituteDetails = () => {
             </p>
           </div>
         </div>
+        {institute.about && <p className="institute-hero__about">{institute.about}</p>}
         {contacts.length > 0 && (
           <ul className="institute-hero__contacts">
             {contacts.map(({ icon: Icon, label, href }) => (
@@ -178,11 +179,12 @@ const InstituteDetails = () => {
 
       <section id="location" className="course-section-block" aria-labelledby="institute-location-title">
         <h2 id="institute-location-title">Location</h2>
+        {institute.address && <p className="course-section-block__intro">{institute.address}</p>}
         {hasCoordinates && (
           <p className="course-section-block__intro">
             <a
               className="text-link"
-              href={`https://www.google.com/maps/dir/?api=1&destination=${coordinates[0]},${coordinates[1]}`}
+              href={`https://www.google.com/maps/dir/?api=1&destination=${coordinates[1]},${coordinates[0]}`}
               target="_blank"
               rel="noreferrer"
             >

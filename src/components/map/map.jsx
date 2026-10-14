@@ -23,8 +23,8 @@ const MapWithPlusCode = ({ plusCode, coordinates }) => {
     setMapError(null);
 
     if (hasCoordinates) {
-      // If coordinates are provided, use them directly
-      setMapCenter({ lat: coordinates[0], lng: coordinates[1] });
+      // Stored in GeoJSON order: [longitude, latitude]
+      setMapCenter({ lat: coordinates[1], lng: coordinates[0] });
       return;
     }
 

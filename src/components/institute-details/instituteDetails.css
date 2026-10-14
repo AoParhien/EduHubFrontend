@@ -55,6 +55,14 @@
   color: var(--muted);
 }
 
+.institute-hero__about {
+  max-width: 68ch;
+  margin-top: 16px;
+  padding: 0 24px;
+  color: var(--muted);
+  font-size: 1.0625rem;
+}
+
 .institute-hero__contacts {
   display: flex;
   flex-wrap: wrap;
@@ -106,7 +114,8 @@
     margin-top: -40px;
   }
 
-  .institute-hero__contacts {
+  .institute-hero__contacts,
+  .institute-hero__about {
     padding: 0 8px;
   }
 }

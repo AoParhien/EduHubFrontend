@@ -170,6 +170,9 @@ const CourseDetails = () => {
                             )}
                             <div>
                                 <p className="teacher-row__name">{course.teacher?.name || 'To be announced'}</p>
+                                {Number(course.teacher?.experience) > 0 && (
+                                    <p className="teacher-row__bio">{course.teacher.experience} {Number(course.teacher.experience) === 1 ? 'year' : 'years'} teaching</p>
+                                )}
                                 {course.teacher?.description && <p className="teacher-row__bio">{course.teacher.description}</p>}
                             </div>
                         </div>
@@ -196,13 +199,14 @@ const CourseDetails = () => {
                         {course.institute?.name && (
                             <p className="course-section-block__intro">
                                 Classes are held at{' '}
-                                <RouterLink to={`/institute/${course.institute.id}`} className="text-link">{course.institute.name}</RouterLink>.
+                                <RouterLink to={`/institute/${course.institute.id}`} className="text-link">{course.institute.name}</RouterLink>
+                                {course.institute.address ? `, ${course.institute.address}` : ''}.
                                 {Array.isArray(course.institute.location) && course.institute.location.length === 2 && (
                                     <>
                                         {' '}
                                         <a
                                             className="text-link"
-                                            href={`https://www.google.com/maps/dir/?api=1&destination=${course.institute.location[0]},${course.institute.location[1]}`}
+                                            href={`https://www.google.com/maps/dir/?api=1&destination=${course.institute.location[1]},${course.institute.location[0]}`}
                                             target="_blank"
                                             rel="noreferrer"
                                         >
@@ -219,7 +223,7 @@ const CourseDetails = () => {
 
                     <section id="fees" className="course-section-block" aria-labelledby="fees-title">
                         <h2 id="fees-title">Fees</h2>
-                        <FeeTable registrationFees={course.institute?.registrationFees} courseFees={course.fees} />
+                        <FeeTable registrationFees={course.institute?.registrationFees} courseFees={course.fees} oneTimeCharges={course.externalCharges} />
                     </section>
                 </div>
 
